@@ -13,3 +13,5 @@ Nach wahlung diese programm will geben Sie ein weg zu ConsoleUtilitys korrekt ve
 Spater es will schreiben ein rat fur einfahrung mit spezifischen dienstprogramms befehlen: --help, --h (Englisch ConsoleUtility) oder --helfen, --hel (Deutsch KonsoleDienstProgramm).
 # Montages system
 ConsoleUtility wie ein projekt war sammelt mit Mavens system
+# Ein Beispiel fur arbeiten mit diesem projekt: 
+<img width="1920" height="1080" alt="2025-07-25_04-35-19" src="https://github.com/user-attachments/assets/cd4449dc-567d-4cd3-a711-fba10a66a56c" />
