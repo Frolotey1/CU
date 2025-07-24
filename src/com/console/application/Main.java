@@ -29,17 +29,17 @@ public class Main {
         } else if(choose == 2) {
             System.out.println("Write the password: ");
             char[]password = console.readPassword();
-            try(BufferedReader checkThePassword = new BufferedReader(new FileReader("PasswordManager.txt"))) {
-                if(Arrays.equals(password, checkThePassword.readLine().toCharArray())) {
-                    System.err.println(RED + "This password exists. Login to system or register the new password" + RESET);
-                    System.exit(0);
-                }
-            }
             File saveThePassword = new File("PasswordManager.txt");
-            try(BufferedWriter write = new BufferedWriter(new FileWriter(saveThePassword))) {
-                write.write(password);
-            } catch (IOException e) {
-                System.err.println(RED + "This is error for writing the password." + RESET);
+            if(console != null) {
+                System.out.println("Write the password: ");
+                char[]password = console.readPassword();
+                try(BufferedWriter write = new BufferedWriter(new FileWriter(saveThePassword))) {
+                    write.write(password);
+                } catch (IOException e) {
+                    System.err.println(RED + "This is error for writing the password." + RESET);
+                }
+            } else {
+                System.err.println(RED + "Console doesn't support the IDE, which you use" + RESET);
             }
         } else {
             System.err.println(RED + "This variant doesn't exist" + RESET);
