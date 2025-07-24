@@ -27,8 +27,6 @@ public class Main {
                 }
             }
         } else if(choose == 2) {
-            System.out.println("Write the password: ");
-            char[]password = console.readPassword();
             File saveThePassword = new File("PasswordManager.txt");
             if(console != null) {
                 System.out.println("Write the password: ");
