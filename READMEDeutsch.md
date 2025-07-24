@@ -5,8 +5,8 @@ Java wie programmieresprache war fur dieses projekts einstellen benutzt. Javas v
 # Windows PowerShell 
 KonsoleDienstProgramm arbeitet mit Windows PowerShell.
 # Wie starten diese projekt? 
-Sie mussen 'ConsoleUtility' wie datei vom diese repositorei downloaden und stellen es nach C:\ weg in Windows PowerShell (Ein Rat: benutzen set-location wie befehle in Windows PowerShell fur wegs anderung). 
-Und weg will an C:\ConsoleUtility anderen. Nach C:\ConsoleUtility mussen sie schreiben: java src/Main.java. Diese befehle will starten ConsoleUtility und sie brauchen registieren im ConsoleUtility. 
+Sie mussen 'ConsoleUtility--main' wie datei vom diese repositorei downloaden und stellen es nach C:\ weg in Windows PowerShell (Ein Rat: benutzen set-location wie befehle in Windows PowerShell fur wegs anderung). 
+Und weg will an C:\ConsoleUtility--main anderen. Nach C:\ConsoleUtility--main mussen sie schreiben: java src/Main.java. Diese befehle will starten ConsoleUtility und sie brauchen registieren im ConsoleUtility. 
 (ACHTUNG: PasswordManagering in diesem projekt ist einfach und benutzt programms txt datei. Das ist ein trainierungschandbuch). 
 Nach registierung oder loginierung (wenn hatten Sie ein kennwort fruher) konnen Sie eine sprache fur arbeiten mit programm wahlen: Deutsch oder Englisch. 
 Nach wahlung diese programm will geben Sie ein weg zu ConsoleUtilitys korrekt version: src/ConsoleUtilityItself.java (Englisch) oder src/KonsoleDienstProgramm.java (Deutsch). 
