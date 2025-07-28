@@ -14,4 +14,4 @@ Spater es will schreiben ein rat fur einfahrung mit spezifischen dienstprogramms
 # Montages system
 ConsoleUtility wie ein projekt war sammelt mit Mavens system
 # Ein Beispiel fur arbeiten mit diesem projekt: 
-<img width="1920" height="1080" alt="2025-07-25_04-35-19" src="https://github.com/user-attachments/assets/cd4449dc-567d-4cd3-a711-fba10a66a56c" />
+<img width="1920" height="320" alt="470572312-f4348b0c-7e7d-48cf-badd-4fee29f60cf3" src="https://github.com/user-attachments/assets/02edef4c-22da-4bcd-9b94-d708704f8c7f" />
