@@ -1,6 +1,8 @@
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.logging.*;
@@ -116,6 +118,23 @@ public class ConsoleUtilityItself {
                         System.err.println(RED + "System doesn't support including the taskmgr" + RESET);
                     }
                 }
+                case "--stopgap", "--s" -> {
+                    System.out.println("Write the name for the stopgap file: ");
+                    String stopGapNameForFile = operation.nextLine();
+                    System.out.println("Write the extension for the file: ");
+                    String extension = operation.nextLine();
+                    try {
+                        Path stopGapPath = Files.createTempFile(stopGapNameForFile,extension);
+                        System.out.println(GREEN + "The stopgap file was created successfully: " +
+                                stopGapPath.toAbsolutePath() + RESET);
+                        Files.writeString(stopGapPath,"The stopgap file was created successfully | " + LocalDateTime.now());
+                    } catch (FileSystemException e) {
+                        throw new RuntimeException(e.getLocalizedMessage());
+                    }
+                }
+                case "--GUI", "--g" -> {
+                    System.out.println(new ConsoleUtilitysGUI());
+                }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
         }
@@ -129,7 +148,56 @@ public class ConsoleUtilityItself {
                         "--copy       / --c = copy the data from one file to other file",
                         "--move       / --m = move the file from one disk to other disk",
                         "--newname    / --n = rename the file",
-                        "--taskmgr    / --t = include the Taskmgr.exe from the system files in Windows"
+                        "--taskmgr    / --t = include the Taskmgr.exe from the system files in Windows",
+                        "--stopgap    / --s = create the stopgap (temporary) file",
+                        "--GUI        / --g = GUI version of Console Utility"
                 )).forEach(System.out::println);
+    }
+
+    private static class ConsoleUtilitysGUI extends JFrame {
+        private final JLabel selectedLabel;
+        public ConsoleUtilitysGUI() {
+            super("Console Utility's GUI");
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            JButton saveFile = new JButton("Save the file: "),
+                    openDirectory = new JButton("Open the directory: ");
+            JPanel panel = new JPanel();
+            panel.add(saveFile);
+            panel.add(openDirectory);
+            setContentPane(panel);
+            selectedLabel = new JLabel("No file/directory selected.");
+            pack();
+            setLocationRelativeTo(null);
+            saveFile.addActionListener(_ -> saveTheFileChooser());
+            openDirectory.addActionListener(_ -> openDirectoryChooser());
+            setVisible(true);
+        }
+        private void saveTheFileChooser() {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            int result = fileChooser.showSaveDialog(this);
+            if(result == JFileChooser.APPROVE_OPTION) {
+                selectedLabel.setText("Selected file: " + fileChooser.getSelectedFile().getAbsolutePath());
+                System.out.println("Selected file: " + fileChooser.getSelectedFile().getAbsolutePath());
+            } else {
+                if(result == JFileChooser.CANCEL_OPTION) {
+                    System.out.println("Command is cancelled");
+                }
+            }
+        }
+        private void openDirectoryChooser() {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = fileChooser.showSaveDialog(this);
+            if(result == JFileChooser.APPROVE_OPTION) {
+                selectedLabel.setText("Selected file: " + fileChooser.getSelectedFile().getAbsolutePath());
+                System.out.println("Directory: " + fileChooser.getSelectedFile().getAbsolutePath());
+            } else {
+                if(result == JFileChooser.CANCEL_OPTION) {
+                    System.out.println("Command is cancelled");
+                }
+            }
+        }
     }
 }
