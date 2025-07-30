@@ -134,7 +134,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--GBS", "--gbs" -> System.out.println(new KonsoleDienstProgrammsGBS());
-                case null, default -> System.err.println(RED + "Diese datei existiert nicht" + RESET);
+                case null, default -> System.err.println(RED + "Diese operation existiert nicht" + RESET);
             }
         }
     }
