@@ -1,6 +1,8 @@
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.logging.*;
@@ -117,6 +119,21 @@ public class KonsoleDienstProgramm {
                         System.err.println(RED + "System doesn't support including the taskmgr" + RESET);
                     }
                 }
+                case "--zeitweiligen", "--zei" -> {
+                    System.out.println("Schreiben eine name fur zeitwiliger datei: ");
+                    String zeitweiligeNameFurDatei = operation.nextLine();
+                    System.out.println("Schreiben eine verbreitenung fur dieser datei: ");
+                    String verbreitenung = operation.nextLine();
+                    try {
+                        Path zeitwiligWeg = Files.createTempFile(zeitweiligeNameFurDatei,verbreitenung);
+                        System.out.println(GREEN + "Diese zeitwilige datei war erfolgreich einstellt: " +
+                                zeitwiligWeg.toAbsolutePath() + RESET);
+                        Files.writeString(zeitwiligWeg,"Diese zeitwilige datei war erfolgreich einstellt | " + LocalDateTime.now());
+                    } catch (FileSystemException e) {
+                        throw new RuntimeException(e.getLocalizedMessage());
+                    }
+                }
+                case "--GBS", "--gbs" -> System.out.println(new KonsoleDienstProgrammsGBS());
                 case null, default -> System.err.println(RED + "Diese datei existiert nicht" + RESET);
             }
         }
@@ -130,7 +147,54 @@ public class KonsoleDienstProgramm {
                         "--kopieren       / --kop = kopieren daten von eines datei zu andere datei",
                         "--bewegen        / --bew = bewegen ein datei von eines LaufWerk zu andere LaufWerk",
                         "--umbenennen     / --umb = umbenennen einen datei",
-                        "--taskmanageren  / --tas = anmachen Taskmgr.exe in system datei in Windows"
+                        "--taskmanageren  / --tas = anmachen Taskmgr.exe in system datei in Windows",
+                        "--zeitweiligen   / --zei = einstellen eine zeitweilige datei",
+                        "--GBS            / --gbs = GBS (oder Grafik Benutzer Schnittstelle) ist KonsoleDienstProgramms grafik version"
                 )).forEach(System.out::println);
+    }
+    private static class KonsoleDienstProgrammsGBS extends JFrame {
+        private final JLabel wahlEtikett;
+        public KonsoleDienstProgrammsGBS() {
+            super("KonsoleDienstProgramms GBS");
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            JButton spreichernDatei = new JButton("Spreichern eine datei: "),
+                    offnenDirektorei = new JButton("Offnen eine direktorei: ");
+            JPanel panel = new JPanel();
+            panel.add(spreichernDatei);
+            panel.add(offnenDirektorei);
+            setContentPane(panel);
+            wahlEtikett = new JLabel("Eine datei oder eine direktorei war wahlt nicht.");
+            pack();
+            setLocationRelativeTo(null);
+            spreichernDatei.addActionListener(_ -> spreichernEineDateiWahler());
+            offnenDirektorei.addActionListener(_ -> offnenDirektoreiWahler());
+            setVisible(true);
+        }
+        private void spreichernEineDateiWahler() {
+            JFileChooser dateiWahler = new JFileChooser();
+            dateiWahler.setCurrentDirectory(new File(System.getProperty("user.home")));
+            int ergebnis = dateiWahler.showSaveDialog(this);
+            if(ergebnis == JFileChooser.APPROVE_OPTION) {
+                wahlEtikett.setText("Ausgewahlte datei: " + dateiWahler.getSelectedFile().getAbsolutePath());
+                System.out.println("Ausgewahlte datei: " + dateiWahler.getSelectedFile().getAbsolutePath());
+            } else {
+                if(ergebnis == JFileChooser.CANCEL_OPTION) {
+                    System.out.println("Befehle funktioniert nicht");
+                }
+            }
+        }
+        private void offnenDirektoreiWahler() {
+            JFileChooser dateiWahler = new JFileChooser();
+            dateiWahler.setCurrentDirectory(new File(System.getProperty("user.home")));
+            int ergebnis = dateiWahler.showSaveDialog(this);
+            if(ergebnis == JFileChooser.APPROVE_OPTION) {
+                wahlEtikett.setText("Ausgewahlte datei: " + dateiWahler.getSelectedFile().getAbsolutePath());
+                System.out.println("Ausgewahlte datei: " + dateiWahler.getSelectedFile().getAbsolutePath());
+            } else {
+                if(ergebnis == JFileChooser.CANCEL_OPTION) {
+                    System.out.println("Befehle funktioniert nicht");
+                }
+            }
+        }
     }
 }
