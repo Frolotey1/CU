@@ -12,3 +12,6 @@ ConsoleUtility like project was collected by Maven's system.
 # Example of working with the project: 
 <img width="1920" height="320" alt="470572312-f4348b0c-7e7d-48cf-badd-4fee29f60cf3" src="https://github.com/user-attachments/assets/55a4a513-84f3-49d7-b8ea-341058d554e1" />
 
+# Integration with different projects 
+You can integrate this projekt with your. This projekt includes the pom.xml file which has the system of the project's creation.
+
