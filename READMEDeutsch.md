@@ -15,3 +15,5 @@ Spater es will schreiben ein rat fur einfahrung mit spezifischen dienstprogramms
 ConsoleUtility wie ein projekt war sammelt mit Mavens system
 # Ein Beispiel fur arbeiten mit diesem projekt: 
 <img width="1920" height="320" alt="471703479-02edef4c-22da-4bcd-9b94-d708704f8c7f" src="https://github.com/user-attachments/assets/1d6c1631-8310-4195-9d84-171d61e625bc" />
+# Integration mit andere IDE
+Sie konnen integrate diesen projekt fur eurem IDE. Diese repositorei entshaltet pom.xml datei welche hat eine erstellenungs system fur projekt. 
