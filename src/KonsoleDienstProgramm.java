@@ -5,7 +5,9 @@ import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
+import java.util.jar.*;
 import java.util.logging.*;
+import java.util.zip.*;
 
 public class KonsoleDienstProgramm {
     private static final String
@@ -134,7 +136,49 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--GBS", "--gbs" -> System.out.println(new KonsoleDienstProgrammsGBS());
-                case null, default -> System.err.println(RED + "Diese operation existiert nicht" + RESET);
+                case "--jarchiv", "--jar","--pfeifen","--pfe" -> {
+                    String name;
+                    if(Objects.equals(arg,"--jarchiv") || Objects.equals(arg,"--jar")) {
+                        System.out.println("Schreiben eine name fur jar datei: ");
+                        String dateiName = operation.nextLine();
+                        String jarName = "";
+                        if(Files.exists(Path.of(dateiName))) {
+                            name = dateiName;
+                            System.out.println("Schreiben eine datei welche wollen sie zu jar hinzufugen: ");
+                            jarName = operation.nextLine();
+                        } else {
+                            System.out.println("Dieser jar datei existiert nicht. Einstellen sie neue: ");
+                            name = operation.nextLine();
+                        }
+                        try (JarOutputStream zuDatei = new JarOutputStream(new FileOutputStream(name))) {
+                            JarEntry entry = new JarEntry(jarName);
+                            zuDatei.putNextEntry(entry);
+                            zuDatei.setComment("Zeit fur einstellen datei: " + LocalDateTime.now());
+                            System.out.println(GREEN + "Jar datei war erfolgreich hinzufugt: " + new File(name).getAbsolutePath() + RESET);
+                            zuDatei.closeEntry();
+                        }
+                    } else {
+                        System.out.println("Schreiben eine name fur zip datei: ");
+                        String dateiName = operation.nextLine();
+                        String zipDatei = "";
+                        if(Files.exists(Path.of(dateiName))) {
+                            name = dateiName;
+                            System.out.println("Schreiben eine datei welche wollen sie zu zip hinzufugen: ");
+                            zipDatei = operation.nextLine();
+                        } else {
+                            System.out.println("Dieser datei existiert nicht. Einstellen sie neue: ");
+                            name = operation.nextLine();
+                        }
+                        try (ZipOutputStream zuDatei = new ZipOutputStream(new FileOutputStream(name))) {
+                            ZipEntry entry = new ZipEntry(zipDatei);
+                            zuDatei.putNextEntry(entry);
+                            zuDatei.setComment("Zeit fur einstellen zip: " + LocalDateTime.now());
+                            System.out.println(GREEN + "Zip datei war erfolgreich hinzufugt: " + new File(name).getAbsolutePath() + RESET);
+                            zuDatei.closeEntry();
+                        }
+                    }
+                }
+                case null, default -> System.err.println(RED + "Diese datei existiert nicht" + RESET);
             }
         }
     }
@@ -149,7 +193,9 @@ public class KonsoleDienstProgramm {
                         "--umbenennen     / --umb = umbenennen einen datei",
                         "--taskmanageren  / --tas = anmachen Taskmgr.exe in system datei in Windows",
                         "--zeitweiligen   / --zei = einstellen eine zeitweilige datei",
-                        "--GBS            / --gbs = GBS (oder Grafik Benutzer Schnittstelle) ist KonsoleDienstProgramms grafik version"
+                        "--GBS            / --gbs = GBS (oder Grafik Benutzer Schnittstelle) ist KonsoleDienstProgramms grafik version",
+                        "--jardatei       / --jar = eine jar datei erstellen",
+                        "--zipdatei       / --zip = eine zip datei erstellen"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
