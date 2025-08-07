@@ -14,4 +14,9 @@ ConsoleUtility like project was collected by Maven's system.
 
 # Integration with different IDE
 You can integrate this projekt with your. This projekt includes the pom.xml file which has the system of the project's creation.
+# Another ways how install the project
+So, you can install this project like download file with zip extension in the repository for "<> Code" button. Another way: install with command line and use the command: 
+`git clone https://github.com/Frolotey1/ConsoleUtility-.git` 
+After that the file of the project will installed in the directory where you write the command. 
+
 
