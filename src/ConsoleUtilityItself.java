@@ -5,7 +5,11 @@ import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 import java.util.logging.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class ConsoleUtilityItself {
     private static final String
@@ -132,8 +136,48 @@ public class ConsoleUtilityItself {
                         throw new RuntimeException(e.getLocalizedMessage());
                     }
                 }
-                case "--GUI", "--g" -> {
-                    System.out.println(new ConsoleUtilitysGUI());
+                case "--GUI", "--g" -> System.out.println(new ConsoleUtilitysGUI());
+                case "--jar", "--j","--zip","--z" -> {
+                    String name;
+                    if(Objects.equals(arg,"--jar") || Objects.equals(arg, "--j")) {
+                        System.out.println("Write the name for jar file: ");
+                        String fileName = operation.nextLine();
+                        String jarName = "";
+                        if(Files.exists(Path.of(fileName))) {
+                            name = fileName;
+                            System.out.println("Write the file which you want to include to the jar: ");
+                            jarName = operation.nextLine();
+                        } else {
+                            System.out.println("This jar file doesn't exist. Create the new: ");
+                            name = operation.nextLine();
+                        }
+                        try (JarOutputStream toTheFile = new JarOutputStream(new FileOutputStream(name))) {
+                            JarEntry entry = new JarEntry(jarName);
+                            toTheFile.putNextEntry(entry);
+                            toTheFile.setComment("Time of the creation jar: " + LocalDateTime.now());
+                            System.out.println(GREEN + "Jar file was created successfully: " + new File(name).getAbsolutePath() + RESET);
+                            toTheFile.closeEntry();
+                        }
+                    } else {
+                        System.out.println("Write the name for zip file: ");
+                        String fileName = operation.nextLine();
+                        String zipName = "";
+                        if(Files.exists(Path.of(fileName))) {
+                            name = fileName;
+                            System.out.println("Write the file which you want to include to the zip");
+                            zipName = operation.nextLine();
+                        } else {
+                            System.out.println("This zip file doesn't exist. Create the new: ");
+                            name = operation.nextLine();
+                        }
+                        try (ZipOutputStream toTheFile = new ZipOutputStream(new FileOutputStream(name))) {
+                            ZipEntry entry = new ZipEntry(zipName);
+                            toTheFile.putNextEntry(entry);
+                            toTheFile.setComment("Time of the creation zip: " + LocalDateTime.now());
+                            System.out.println(GREEN + "Zip file was created successfully: " + new File(name).getAbsolutePath() + RESET);
+                            toTheFile.closeEntry();
+                        }
+                    }
                 }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
@@ -150,7 +194,7 @@ public class ConsoleUtilityItself {
                         "--newname    / --n = rename the file",
                         "--taskmgr    / --t = include the Taskmgr.exe from the system files in Windows",
                         "--stopgap    / --s = create the stopgap (temporary) file",
-                        "--GUI        / --g = GUI version of Console Utility"
+                        "--GUI        / --g = GUI's version of the Console Utility"
                 )).forEach(System.out::println);
     }
 
