@@ -192,7 +192,9 @@ public class ConsoleUtilityItself {
                         "--newname    / --n = rename the file",
                         "--taskmgr    / --t = include the Taskmgr.exe from the system files in Windows",
                         "--stopgap    / --s = create the stopgap (temporary) file",
-                        "--GUI        / --g = GUI's version of the Console Utility"
+                        "--GUI        / --g = GUI's version of the Console Utility",
+                        "--jar        / --j = creation of the jar files",
+                        "--zip        / --z = creation of the zip files"
                 )).forEach(System.out::println);
     }
 
