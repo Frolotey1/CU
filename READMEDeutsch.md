@@ -17,4 +17,6 @@ ConsoleUtility wie ein projekt war sammelt mit Mavens system
 <img width="1920" height="320" alt="471703479-02edef4c-22da-4bcd-9b94-d708704f8c7f" src="https://github.com/user-attachments/assets/1d6c1631-8310-4195-9d84-171d61e625bc" />
 
 # Integration mit andere IDE
-Sie konnen integrate diesen projekt fur eurem IDE. Diese repositorei entshaltet pom.xml datei welche hat eine erstellenungs system fur projekt. 
+Sie konnen integrieren diesen projekt fur eurem IDE. Diese repositorei entshaltet pom.xml datei welche hat eine erstellenungs system fur projekt. 
+# Andere wegen wie den projekt erstellen
+Sie konnen diesen projekt erstellen mit "<> Code" Taste im GutHub. Andere weg: mit dieser befehle: `git clone https://github.com/Frolotey1/ConsoleUtility-.git` Diese befehle will den projekt erstellen dort wo haben sie die befehle starten. 
