@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.nio.file.*;
 import java.time.LocalDateTime;
@@ -212,8 +213,8 @@ public class KonsoleDienstProgramm {
             wahlEtikett = new JLabel("Eine datei oder eine direktorei war wahlt nicht.");
             pack();
             setLocationRelativeTo(null);
-            spreichernDatei.addActionListener(_ -> spreichernEineDateiWahler());
-            offnenDirektorei.addActionListener(_ -> offnenDirektoreiWahler());
+            spreichernDatei.addActionListener(this::actionPerformed);
+            offnenDirektorei.addActionListener(this::actionPerformed2);
             setVisible(true);
         }
         private void spreichernEineDateiWahler() {
@@ -241,6 +242,14 @@ public class KonsoleDienstProgramm {
                     System.out.println("Befehle funktioniert nicht");
                 }
             }
+        }
+
+        private void actionPerformed(ActionEvent wahler) {
+            spreichernEineDateiWahler();
+        }
+
+        private void actionPerformed2(ActionEvent wahler) {
+            offnenDirektoreiWahler();
         }
     }
 }
