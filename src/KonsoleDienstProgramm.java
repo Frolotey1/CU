@@ -179,7 +179,7 @@ public class KonsoleDienstProgramm {
                         }
                     }
                 }
-                case null, default -> System.err.println(RED + "Diese datei existiert nicht" + RESET);
+                case null, default -> System.err.println(RED + "Diese befehle existiert nicht" + RESET);
             }
         }
     }
@@ -195,8 +195,8 @@ public class KonsoleDienstProgramm {
                         "--taskmanageren  / --tas = anmachen Taskmgr.exe in system datei in Windows",
                         "--zeitweiligen   / --zei = einstellen eine zeitweilige datei",
                         "--GBS            / --gbs = GBS (oder Grafik Benutzer Schnittstelle) ist KonsoleDienstProgramms grafik version",
-                        "--jardatei       / --jar = eine jar datei erstellen",
-                        "--zipdatei       / --zip = eine zip datei erstellen"
+                        "--jarchiv        / --jar = eine jar datei erstellen",
+                        "--pfeifen        / --pfe = eine zip datei erstellen"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
