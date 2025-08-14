@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.nio.file.*;
 import java.time.LocalDateTime;
@@ -7,15 +8,29 @@ import java.util.*;
 import java.util.List;
 import java.util.jar.*;
 import java.util.logging.*;
+import java.util.stream.Stream;
 import java.util.zip.*;
 
 public class ConsoleUtilityItself {
+    private static final Path HistoricalFile = Path.of(System.getProperty("user.home"), ".consoleutility_history");
+    private static List<String> loadHistory() throws IOException {
+        if (Files.exists(HistoricalFile)) {
+            return new ArrayList<>(Files.readAllLines(HistoricalFile));
+        }
+        return new ArrayList<>();
+    }
+    private static void appendHistory(String command) throws IOException {
+        Files.writeString(HistoricalFile, command + System.lineSeparator(),
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+    }
     private static final String
             ESC = "\u001B",
             GREEN = ESC + "[32m",
             RED = ESC + "[31m",
             RESET = ESC + "[0m";
     public static void main(String[] args) throws IOException {
+        List<String> historyOFCommands = loadHistory();
+        int index = historyOFCommands.size();
         Logger loggerForProgramm = Logger.getLogger(ConsoleUtilityItself.class.getName());
         FileHandler programmError = new FileHandler("LogFileWithErrors.log",true);
         programmError.setFormatter(new SimpleFormatter());
@@ -27,8 +42,12 @@ public class ConsoleUtilityItself {
         }
         for (String arg : args) {
             switch (arg) {
-                case "--help", "--h" -> allCommands();
-                case "--add", "--a" -> {
+                case "--help", "--hp" -> {
+                    appendHistory((index++) + " | " + arg);
+                    allCommands();
+                }
+                case "--add", "--ad" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name for file: ");
                     String nameFile = operation.nextLine();
                     System.out.println("Write the text for file: ");
@@ -40,7 +59,8 @@ public class ConsoleUtilityItself {
                         loggerForProgramm.log(Level.WARNING, RED + "This is error for writing a text in file" + RESET);
                     }
                 }
-                case "--read", "--r" -> {
+                case "--read", "--rd" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the dateiName fur checking his existence: ");
                     String nameFile = operation.nextLine();
                     if (Files.exists(Path.of(nameFile))) {
@@ -53,7 +73,8 @@ public class ConsoleUtilityItself {
                         System.err.println(RED + "This file doesn't exist" + RESET);
                     }
                 }
-                case "--delete", "--d" -> {
+                case "--delete", "--de" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name of the file for checking existence: ");
                     String nameFile = operation.nextLine();
                     file = new File(nameFile);
@@ -64,7 +85,8 @@ public class ConsoleUtilityItself {
                         System.err.println(RED + "This file doesn't exist" + RESET);
                     }
                 }
-                case "--copy", "--c" -> {
+                case "--copy", "--cp" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name of the file for checking existence: ");
                     String nameFile = operation.nextLine();
                     System.out.println("Write the name of the new file, which will added the information from the past file in: ");
@@ -77,7 +99,8 @@ public class ConsoleUtilityItself {
                         System.err.println(RED + "This file doesn't exist" + RESET);
                     }
                 }
-                case "--move", "--m" -> {
+                case "--move", "--mv" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name of the file for checking existence: ");
                     String nameFile = operation.nextLine();
                     System.out.println("Write the new disk: ");
@@ -90,7 +113,8 @@ public class ConsoleUtilityItself {
                         System.err.println(RED + "This file doesn't exist" + RESET);
                     }
                 }
-                case "--newname", "--n" -> {
+                case "--newname", "--nn" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the file, which you want to rename: ");
                     String theFile = operation.nextLine();
                     file = new File(theFile);
@@ -111,7 +135,8 @@ public class ConsoleUtilityItself {
                         }
                     }
                 }
-                case "--taskmgr", "--t" -> {
+                case "--taskmgr", "--tm" -> {
+                    appendHistory((index++) + " | " + arg);
                     if(Desktop.isDesktopSupported()) {
                         file = new File("C:\\Windows\\System32\\Taskmgr.exe");
                         Desktop desktop = Desktop.getDesktop();
@@ -120,7 +145,8 @@ public class ConsoleUtilityItself {
                         System.err.println(RED + "System doesn't support including the taskmgr" + RESET);
                     }
                 }
-                case "--stopgap", "--s" -> {
+                case "--stopgap", "--sg" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name for the stopgap file: ");
                     String stopGapNameForFile = operation.nextLine();
                     System.out.println("Write the extension for the file: ");
@@ -134,8 +160,12 @@ public class ConsoleUtilityItself {
                         throw new RuntimeException(e.getLocalizedMessage());
                     }
                 }
-                case "--GUI", "--g" -> System.out.println(new ConsoleUtilitysGUI());
-                case "--jar", "--j","--zip","--z" -> {
+                case "--GUI", "--gi" -> {
+                    appendHistory((index++) + " | " + arg);
+                    System.out.println(new ConsoleUtilitysGUI());
+                }
+                case "--jar", "--jr","--zip","--zp" -> {
+                    appendHistory((index++) + " | " + arg);
                     String name;
                     if(Objects.equals(arg,"--jar") || Objects.equals(arg, "--j")) {
                         System.out.println("Write the name for jar file: ");
@@ -177,24 +207,119 @@ public class ConsoleUtilityItself {
                         }
                     }
                 }
+                case "--write","--wt" -> {
+                    appendHistory((index++) + " | " + arg);
+                    System.out.println("Write the text or data: ");
+                    String data = operation.nextLine();
+                    System.out.println("Write the filename where you want to write the data in: ");
+                    String filename = operation.nextLine();
+                    String name;
+                    if(Files.exists(Path.of(filename))) {
+                        name = filename;
+                    } else {
+                        System.out.println("This file doesn't exist. Create the new: ");
+                        name = operation.nextLine();
+                    }
+                    try(FileOutputStream fos = new FileOutputStream(name)) {
+                        fos.write(data.getBytes());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex.getLocalizedMessage());
+                    }
+                }
+                case "--grep","--gp" -> {
+                    appendHistory((index++) + " | " + arg);
+                    System.out.println("Write the file where you want to become the text from: ");
+                    String filename = operation.nextLine();
+                    String name, data;
+                    if(Files.exists(Path.of(filename))) {
+                        name = filename;
+                    } else {
+                        System.out.println("This file doesn't exist. Create the new");
+                        name = operation.nextLine();
+                        System.out.println("Write the text in the file: ");
+                        data = operation.nextLine();
+                        try(BufferedWriter writeTo = new BufferedWriter(new FileWriter(name))) {
+                            writeTo.write(data);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex.getLocalizedMessage());
+                        }
+                    }
+                    System.out.println("Write the word or text which you want to become from the file: ");
+                    String text = operation.nextLine();
+                    String textFrom;
+                    int countTheWords;
+                    try(BufferedReader readFrom = new BufferedReader(new FileReader(name))) {
+                        textFrom = readFrom.readLine();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex.getLocalizedMessage());
+                    }
+                    StringTokenizer token = new StringTokenizer(textFrom);
+                    List<String> saveTheTokens = new LinkedList<>();
+                    while(token.hasMoreTokens()) {
+                        saveTheTokens.add(token.nextToken());
+                    }
+                    countTheWords = (int) saveTheTokens.stream().filter(object -> Objects.equals(object,text)).count();
+                    for(int findText = 0; findText < saveTheTokens.size(); ++findText) {
+                        if(Objects.equals(saveTheTokens.get(findText), text)) {
+                            saveTheTokens.set(findText,RED + text + RESET);
+                        }
+                    }
+                    saveTheTokens.add("| " + countTheWords);
+                    for(String result : saveTheTokens) {
+                        System.out.printf("%s ",result);
+                    }
+                    System.out.println("\n");
+                    saveTheTokens.clear();
+                }
+                case "--history","--hi" -> {
+                    appendHistory((index++) + " | " + arg);
+                    loadHistory().forEach(System.out::println);
+                }
+                case "--find","--fd" -> {
+                    appendHistory((index++) + " | " + arg);
+                    System.out.println("Write the directory where you want to find the files: ");
+                    String directory = operation.nextLine();
+                    if(!directory.startsWith("C:\\") || !directory.startsWith("/")) {
+                        System.err.println("Directories must be started with C:\\ (for Windows) or / (for Linux)");
+                    } else {
+                        Path analysis = Path.of(directory);
+                        System.out.println("Write the extension of the files for searching: ");
+                        String extension = operation.nextLine();
+                        if(!extension.startsWith(".")) {
+                            System.err.println(RED + "Extensions must be started with '.'" + RESET);
+                        } else {
+                            try(Stream<Path> paths = Files.walk(analysis)) {
+                                paths.filter(Files::isRegularFile).filter(isTxt -> isTxt.toString().endsWith(extension) &&
+                                        !Objects.equals(isTxt.toString(),new File("HistoryFile.txt").getAbsolutePath())
+                                        && !Objects.equals(isTxt.toString(),new File("PasswordManager.txt").getAbsolutePath())).forEach(System.out::println);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex.getLocalizedMessage());
+                            }
+                        }
+                    }
+                }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
         }
     }
     public static void allCommands() {
         new LinkedList<>(
-                List.of("--help       / --h = familiarization with commands of the programm",
-                        "--add        / --a = add file and write information in computer system",
-                        "--read       / --r = read the information from the file",
-                        "--delete     / --d = delete the file from computer",
-                        "--copy       / --c = copy the data from one file to other file",
-                        "--move       / --m = move the file from one disk to other disk",
-                        "--newname    / --n = rename the file",
-                        "--taskmgr    / --t = include the Taskmgr.exe from the system files in Windows",
-                        "--stopgap    / --s = create the stopgap (temporary) file",
-                        "--GUI        / --g = GUI's version of the Console Utility",
-                        "--jar        / --j = creation of the jar files",
-                        "--zip        / --z = creation of the zip files"
+                List.of("--help       / --hp = familiarization with commands of the programm",
+                        "--add        / --ad = add file and write information in computer system",
+                        "--read       / --rd = read the information from the file",
+                        "--delete     / --de = delete the file from computer",
+                        "--copy       / --cp = copy the data from one file to other file",
+                        "--move       / --mv = move the file from one disk to other disk",
+                        "--newname    / --nn = rename the file",
+                        "--taskmgr    / --tm = include the Taskmgr.exe from the system files in Windows",
+                        "--stopgap    / --sg = create the stopgap (temporary) file",
+                        "--GUI        / --gi = GUI's version of the Console Utility",
+                        "--jar        / --jr = creation of the jar files",
+                        "--zip        / --zp = creation of the zip files",
+                        "--write      / --wt = write the text or data to the definite file",
+                        "--grep       / --gp = find the text or word in the file",
+                        "--history    / --hi = show the history of the commands which were used in the ConsoleUtility",
+                        "--find       / --fd = find the files with the definite extension (exclude HistoryFile.txt and PasswordManager.txt if user wants to find the files with .txt extensions)"
                 )).forEach(System.out::println);
     }
 
@@ -212,8 +337,8 @@ public class ConsoleUtilityItself {
             selectedLabel = new JLabel("No file/directory selected.");
             pack();
             setLocationRelativeTo(null);
-            saveFile.addActionListener(_ -> saveTheFileChooser());
-            openDirectory.addActionListener(_ -> openDirectoryChooser());
+            saveFile.addActionListener(this::actionPerformed);
+            openDirectory.addActionListener(this::actionPerformed2);
             setVisible(true);
         }
         private void saveTheFileChooser() {
@@ -242,6 +367,14 @@ public class ConsoleUtilityItself {
                     System.out.println("Command is cancelled");
                 }
             }
+        }
+
+        private void actionPerformed(ActionEvent chooser) {
+            saveTheFileChooser();
+        }
+
+        private void actionPerformed2(ActionEvent choose) {
+            openDirectoryChooser();
         }
     }
 }
