@@ -8,15 +8,29 @@ import java.util.*;
 import java.util.List;
 import java.util.jar.*;
 import java.util.logging.*;
+import java.util.stream.Stream;
 import java.util.zip.*;
 
 public class KonsoleDienstProgramm {
+    private static final Path HistorischDatei = Path.of(System.getProperty("user.home"), ".consoleutility_history");
+    private static List<String> loadenGeschichte() throws IOException {
+        if (Files.exists(HistorischDatei)) {
+            return new ArrayList<>(Files.readAllLines(HistorischDatei));
+        }
+        return new ArrayList<>();
+    }
+    private static void hinzufugenGeschichte(String befehle) throws IOException {
+        Files.writeString(HistorischDatei, befehle + System.lineSeparator(),
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+    }
     private static final String
             ESC = "\u001B",
             GREEN = ESC + "[32m",
             RED = ESC + "[31m",
             RESET = ESC + "[0m";
     public static void main(String[] args) throws IOException {
+        List<String> geschichteBefehlen = loadenGeschichte();
+        int index = geschichteBefehlen.size();
         File datei;
         Scanner operation = new Scanner(System.in);
         Logger loggerFurProgramm = Logger.getLogger(KonsoleDienstProgramm.class.getName());
@@ -179,6 +193,96 @@ public class KonsoleDienstProgramm {
                         }
                     }
                 }
+                case "--schreiben","--sch" -> {
+                    System.out.println("Schreiben ein text oder daten: ");
+                    String daten = operation.nextLine();
+                    System.out.println("Schreiben eine name fur datei wohin wollen Sie eine daten integrieren: ");
+                    String dateiname = operation.nextLine();
+                    String datei_;
+                    if(Files.exists(Path.of(dateiname))) {
+                        datei_ = dateiname;
+                    } else {
+                        System.out.println("This file doesn't exist. Create the new: ");
+                        datei_ = operation.nextLine();
+                    }
+                    try(FileOutputStream fos = new FileOutputStream(datei_)) {
+                        fos.write(daten.getBytes());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex.getLocalizedMessage());
+                    }
+                }
+                case "--grep","--gre" -> {
+                    hinzufugenGeschichte((index++) + " | " + arg);
+                    System.out.println("Schreiben eine datei wo wollen Sie eine text bekommen: ");
+                    String dateiname = operation.nextLine();
+                    String name, daten;
+                    if(Files.exists(Path.of(dateiname))) {
+                        name = dateiname;
+                    } else {
+                        System.out.println("Diese datei existiert nicht. Erstellen Sie neue");
+                        name = operation.nextLine();
+                        System.out.println("Schreiben eine text in datei: ");
+                        daten = operation.nextLine();
+                        try(BufferedWriter schreibenZu = new BufferedWriter(new FileWriter(name))) {
+                            schreibenZu.write(daten);
+                        } catch (IOException aus) {
+                            throw new RuntimeException(aus.getLocalizedMessage());
+                        }
+                    }
+                    System.out.println("Schreiben ein wort oder text welche wollen Sie vom datei bekommen: ");
+                    String text = operation.nextLine();
+                    String textVom;
+                    int zahleWorten;
+                    try(BufferedReader lesenVom = new BufferedReader(new FileReader(name))) {
+                        textVom = lesenVom.readLine();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex.getLocalizedMessage());
+                    }
+                    StringTokenizer token = new StringTokenizer(textVom);
+                    List<String> spreichernTokens = new LinkedList<>();
+                    while(token.hasMoreTokens()) {
+                        spreichernTokens.add(token.nextToken());
+                    }
+                    zahleWorten = (int) spreichernTokens.stream().filter(object -> Objects.equals(object,text)).count();
+                    for(int findenText = 0; findenText < spreichernTokens.size(); ++findenText) {
+                        if(Objects.equals(spreichernTokens.get(findenText), text)) {
+                            spreichernTokens.set(findenText,RED + text + RESET);
+                        }
+                    }
+                    spreichernTokens.add("| " + zahleWorten);
+                    for(String ergebnis : spreichernTokens) {
+                        System.out.printf("%s ",ergebnis);
+                    }
+                    System.out.println("\n");
+                    spreichernTokens.clear();
+                }
+                case "--geschichte","--ges" -> {
+                    hinzufugenGeschichte((index++) + " | " + arg);
+                    loadenGeschichte().forEach(System.out::println);
+                }
+                case "--finden","--fin" -> {
+                    hinzufugenGeschichte((index++) + " | " + arg);
+                    System.out.println("Schreiben eine direktorei wo wollen Sie dateis finden: ");
+                    String directorei = operation.nextLine();
+                    if(!directorei.startsWith("C:\\") || !directorei.startsWith("/")) {
+                        System.err.println("Directoreis mussen mit C:\\ (fur Windows) oder / (fur Linux) aktiv sein");
+                    } else {
+                        Path analyzieren = Path.of(directorei);
+                        System.out.println("Schreiben eine dateis erweiterung fur suchen: ");
+                        String erweiterung = operation.nextLine();
+                        if(!erweiterung.startsWith(".")) {
+                            System.err.println(RED + "Erweiterungen mussen mit '.' aktiv sein" + RESET);
+                        } else {
+                            try(Stream<Path> paths = Files.walk(analyzieren)) {
+                                paths.filter(Files::isRegularFile).filter(isTxt -> isTxt.toString().endsWith(erweiterung) &&
+                                        !Objects.equals(isTxt.toString(),new File("HistoryFile.txt").getAbsolutePath())
+                                        && !Objects.equals(isTxt.toString(),new File("PasswordManager.txt").getAbsolutePath())).forEach(System.out::println);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex.getLocalizedMessage());
+                            }
+                        }
+                    }
+                }
                 case null, default -> System.err.println(RED + "Diese befehle existiert nicht" + RESET);
             }
         }
@@ -196,7 +300,11 @@ public class KonsoleDienstProgramm {
                         "--zeitweiligen   / --zei = einstellen eine zeitweilige datei",
                         "--GBS            / --gbs = GBS (oder Grafik Benutzer Schnittstelle) ist KonsoleDienstProgramms grafik version",
                         "--jarchiv        / --jar = eine jar datei erstellen",
-                        "--pfeifen        / --pfe = eine zip datei erstellen"
+                        "--pfeifen        / --pfe = eine zip datei erstellen",
+                        "--schreiben      / --sch = schreiben eine daten zu datei",
+                        "--grep           / --gre = finden einen teil von text in datei",
+                        "--geschichte     / --ges = analyzieren eine geschichte von befehlen welche haben Sie fruher benutzen",
+                        "--finden         / --fin = finden eine datei mit erweiterung welche wollen Sie finden (ausschliesen HistoryFile.txt und PasswordManager.txt wenn will benutzer eine datei in KonsoleDienstProgramm finden)"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
