@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.nio.file.*;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
@@ -12,7 +15,16 @@ import java.util.stream.Stream;
 import java.util.zip.*;
 
 public class ConsoleUtilityItself {
-    private static final Path HistoricalFile = Path.of(System.getProperty("user.home"), ".consoleutility_history");
+    private static final
+    Path HistoricalFile = Path.of(System.getProperty("user.home"), ".consoleutility_history"),
+        DirectoryFile = Paths.get("Directory.txt");
+    private static void appendPathOfDirectory(String directoryName) throws IOException {
+        Files.writeString(DirectoryFile, directoryName + System.lineSeparator(),
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+    }
+    private static ArrayList<String> loadPathsOfDirectory() throws IOException {
+        return new ArrayList<>(Files.readAllLines(DirectoryFile));
+    }
     private static List<String> loadHistory() throws IOException {
         if (Files.exists(HistoricalFile)) {
             return new ArrayList<>(Files.readAllLines(HistoricalFile));
@@ -30,7 +42,7 @@ public class ConsoleUtilityItself {
             RESET = ESC + "[0m";
     public static void main(String[] args) throws IOException {
         List<String> historyOFCommands = loadHistory();
-        int index = historyOFCommands.size();
+        int index = historyOFCommands.size(), indexPath = loadPathsOfDirectory().size();
         Logger loggerForProgramm = Logger.getLogger(ConsoleUtilityItself.class.getName());
         FileHandler programmError = new FileHandler("LogFileWithErrors.log",true);
         programmError.setFormatter(new SimpleFormatter());
@@ -164,7 +176,7 @@ public class ConsoleUtilityItself {
                     appendHistory((index++) + " | " + arg);
                     System.out.println(new ConsoleUtilitysGUI());
                 }
-                case "--jar", "--jr","--zip","--zp" -> {
+                case "--jar", "--jr","--zip","--zp","--tar.gz","--tr" -> {
                     appendHistory((index++) + " | " + arg);
                     String name;
                     if(Objects.equals(arg,"--jar") || Objects.equals(arg, "--j")) {
@@ -187,7 +199,7 @@ public class ConsoleUtilityItself {
                             toTheFile.closeEntry();
                         }
                     } else {
-                        System.out.println("Write the name for zip file: ");
+                        System.out.println("Write the name for zip (or tar.gz for Linux) file: ");
                         String fileName = operation.nextLine();
                         String zipName = "";
                         if(Files.exists(Path.of(fileName))) {
@@ -279,7 +291,7 @@ public class ConsoleUtilityItself {
                     appendHistory((index++) + " | " + arg);
                     System.out.println("Write the directory where you want to find the files: ");
                     String directory = operation.nextLine();
-                    if(!directory.startsWith("C:\\") || !directory.startsWith("/")) {
+                    if(!directory.startsWith("C:\\") && !directory.startsWith("/")) {
                         System.err.println("Directories must be started with C:\\ (for Windows) or / (for Linux)");
                     } else {
                         Path analysis = Path.of(directory);
@@ -297,6 +309,102 @@ public class ConsoleUtilityItself {
                             }
                         }
                     }
+                }
+                case "--lstcat", "--ls" -> {
+                    appendHistory((index) + " | " + arg);
+                    System.out.println("Write the directory where want you to see the catalogs: ");
+                    String directory = operation.nextLine();
+                    if(!directory.startsWith("C:\\") && !directory.startsWith("/")) {
+                        System.err.println("The directories must started with C:\\ (for Windows) or / (for Linux}: ");
+                    } else {
+                        try(Stream<Path> paths = Files.walk(Path.of(directory))) {
+                            paths.forEach(System.out::println);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex.getLocalizedMessage());
+                        }
+                    }
+                }
+                case "--replace","--re" -> {
+                    appendHistory((index) + " | " + arg);
+                    System.out.println("Write the file where will you change the chars in: ");
+                    String filename = operation.nextLine();
+                    String name, data = "", firstChar, secondChar, newData;
+                    if(Files.exists(Path.of(filename))) {
+                        name = filename;
+                    } else {
+                        System.out.println("This file doesn't exist. Create the new: ");
+                        name = operation.nextLine();
+                    }
+                    System.out.println("Write the first char which you want to change: ");
+                    firstChar = operation.nextLine();
+                    System.out.println("Write the second char for changing: ");
+                    secondChar = operation.nextLine();
+                    try(BufferedReader readFrom = new BufferedReader(new FileReader(name))) {
+                        String line = readFrom.readLine();
+                        if(line.isEmpty()) {
+                            System.err.println(RED + "There is not string for replacing" + RESET);
+                        } else {
+                            data = line;
+                        }
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex.getLocalizedMessage());
+                    }
+                    char first = firstChar.charAt(0), second = secondChar.charAt(0);
+                    newData = data.replace(first,second);
+                    System.out.println(GREEN + newData + RESET);
+                    try(BufferedWriter writeNewData = new BufferedWriter(new FileWriter(name))) {
+                        writeNewData.write(newData);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex.getLocalizedMessage());
+                    }
+                }
+                case "--crtdir", "--cr" -> {
+                    appendHistory((index) + " | " + arg);
+                    System.out.println("Write the name for the directory: ");
+                    String directory = operation.nextLine();
+                    System.out.println("Write the main directory: ");
+                    String mainDirectory = operation.nextLine();
+                    if(!mainDirectory.startsWith("C:\\") && !mainDirectory.startsWith("/")) {
+                        System.err.println(RED + "The directories must started with C:\\ (for Windows) or / (for Linux}: " + RESET);
+                    } else {
+                        if(!mainDirectory.endsWith("/")) {
+                            mainDirectory = mainDirectory + "/";
+                        }
+                        String createDir = mainDirectory + directory;
+                        appendPathOfDirectory(indexPath + " | " + createDir);
+                        Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxr-xr-x");
+                        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
+                        Path path = Path.of(createDir);
+                        Files.createDirectory(path,attr);
+                        System.out.println(GREEN + "The directory was created: " + path.toAbsolutePath() + RESET);
+                    }
+                }
+                case "--candir", "--ca" -> {
+                    appendHistory((index++) + " | " + arg);
+                    System.out.println("Write the directory which you want to delete: ");
+                    String findDirectory = operation.nextLine();
+                    if(!findDirectory.startsWith("C:\\") && !findDirectory.startsWith("/")) {
+                        System.err.println(RED + "The directories must started with C:\\ (for Windows) or / (for Linux}: " + RESET);
+                    } else {
+                        Path path = Path.of(findDirectory);
+                        Files.deleteIfExists(path);
+                        if(!Files.isDirectory(path)) {
+                            Path fromFile = Paths.get("Directory.txt");
+                            List<String> removeTheDirectory = new ArrayList<>(Files.readAllLines(fromFile));
+                            removeTheDirectory.remove(findDirectory);
+                            Files.delete(fromFile);
+                            for(String rewriteAllDirectories : removeTheDirectory) {
+                                appendPathOfDirectory(rewriteAllDirectories);
+                            }
+                            System.out.println(GREEN + "The directory '" + findDirectory + "' was deleted successfully" + RESET);
+                        } else {
+                            System.out.println("The directory '" + findDirectory + "' exists yet");
+                        }
+                    }
+                }
+                case "--exstdirs", "--ex" -> {
+                    appendHistory((index) + " | " + arg);
+                    loadPathsOfDirectory().forEach(System.out::println);
                 }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
@@ -319,7 +427,12 @@ public class ConsoleUtilityItself {
                         "--write      / --wt = write the text or data to the definite file",
                         "--grep       / --gp = find the text or word in the file",
                         "--history    / --hi = show the history of the commands which were used in the ConsoleUtility",
-                        "--find       / --fd = find the files with the definite extension (exclude HistoryFile.txt and PasswordManager.txt if user wants to find the files with .txt extensions)"
+                        "--find       / --fd = find the files with the definite extension",
+                        "--lstcat     / --ls = analyse and read all files from the definite catalog",
+                        "--replace    / --re = replace the char symbol in the text of the file to another",
+                        "--crtdir     / --cr = create the directory in the system's explorer",
+                        "--candir     / --ca = delete the directory from the system's explorer",
+                        "--exstdirs   / --ex = read all directories which the user created und exist"
                 )).forEach(System.out::println);
     }
 
