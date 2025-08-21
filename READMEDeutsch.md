@@ -1,22 +1,24 @@
-# ConsoleUtility (KonsoleDienstProgramm)
-Gewohnlich version fur konsole dienstprogramm mit einfach befehlen. Diese projekt war mit Java geschreibt und einschaltet eine unterstutzung mit zwei sprachen: Deutsch und Englisch.
-# Java 
-Java wie programmieresprache war fur dieses projekts einstellen benutzt. Javas version ist 23. KonsoleDienstProgramm unterstutzt alle Javas versionen nach Java 10/11 und neuer. 
-# Windows PowerShell 
-KonsoleDienstProgramm arbeitet mit Windows PowerShell.
-# Wie starten diese projekt? 
-Sie mussen 'ConsoleUtility--main' wie datei vom diese repositorei downloaden und stellen es nach C:\ weg in Windows PowerShell (Ein Rat: benutzen set-location wie befehle in Windows PowerShell fur wegs anderung). 
-Und weg will an C:\ConsoleUtility--main anderen. Nach C:\ConsoleUtility--main mussen sie schreiben: java src/com/console/application/Main.java. Diese befehle will starten ConsoleUtility und sie brauchen registieren im ConsoleUtility. 
-(ACHTUNG: PasswordManagering in diesem projekt ist einfach und benutzt programms txt datei. Das ist ein trainierungschandbuch). 
-Nach registierung oder loginierung (wenn hatten Sie ein kennwort fruher) konnen Sie eine sprache fur arbeiten mit programm wahlen: Deutsch oder Englisch. 
-Nach wahlung diese programm will geben Sie ein weg zu ConsoleUtilitys korrekt version: src/ConsoleUtilityItself.java (Englisch) oder src/KonsoleDienstProgramm.java (Deutsch). 
-Spater es will schreiben ein rat fur einfahrung mit spezifischen dienstprogramms befehlen: --help, --h (Englisch ConsoleUtility) oder --helfen, --hel (Deutsch KonsoleDienstProgramm).
-# Montages system
-ConsoleUtility wie ein projekt war sammelt mit Mavens system
-# Ein Beispiel fur arbeiten mit diesem projekt: 
+# CU-ConsoleUtility 
+Die einfache Version des Konsolen-Dienstprogramms mit einfachen Befehlen. Es wurde in Java geschrieben und unterstützt die beiden Sprachen Deutsch und Englisch.
+# Java
+Dieses Projekt wurde in einer Java-ähnlichen Sprache erstellt. Die Java-Version ist 23. ConsoleUtility unterstützt alle Java-Versionen ab Java 10/11.
+# Befehlszeilen
+ConsoleUtility funktioniert in Windows PowerShell und der Bash-Zeile unter Linux.
+# Compiler für Java
+Zum Starten dieses Projekts benötigen Sie einen Java-Compiler oder JavaC. Unter Windows wird dieser Compiler automatisch hinzugefügt, wenn Sie die Intellig Idea IDE verwenden. Wenn Sie unter Linux das Standard-JDK-Paket nicht haben, müssen Sie es in Ihre Bash-Zeile und Ihre verwendete Distribution importieren. Sie können das Standard-JDK-Paket einfach mit `sudo apt install default-jdk` installieren (Beispiel für die Ubuntu-Distribution unter Linux).
+# Wie starte ich das Projekt?
+Laden Sie die Datei CU-ConsoleUtility aus diesem Repository herunter und platzieren Sie sie in Windows PowerShell nach dem Pfad C:\ oder in Linux nach dem Pfad /home/ in der Bash-Zeile.
+
+*(Hinweis: Verwenden Sie zum Ändern des Pfads (unter Windows) den Befehl set-location wie in Windows PowerShell. Unter Linux können Sie mit cd in das Verzeichnis dieses Repositorys wechseln und mit cd - zum vorherigen Katalog bzw. zum Home-Verzeichnis /home/ zurückkehren.)*
+
+Und der Pfad ändert sich zu `C:\CU-ConsoleUtility` (unter Windows). Im Linux-System in der Bash-Zeile: `/home/CU-ConsoleUtility`. Nach `C:\CU-ConsoleUtility` müssen Sie schreiben: **java src/com/console/application/Main.java**. In der Bash-Zeile unter Linux nach `/home/CU-ConsoleUtility`: **java src\con\console\application\Main.java**. Dieser Befehl startet das ConsoleUtility und Sie müssen sich beim ConsoleUtility registrieren (WARNUNG: Die Passwortverwaltung in diesem Projekt ist einfach und verwendet die TXT-Datei des Programms. Dies ist das Schulungshandbuch). Nach der Registrierung oder Anmeldung (falls Sie das Passwort bereits hatten) können Sie eine Arbeitssprache auswählen: Deutsch oder Englisch. Nach der Auswahl des Programms erhalten Sie den Pfad zur richtigen Version des ConsoleUtility: src/ConsoleUtilityItself.java (Englisch) oder src/KonsoleDienstProgramm.java (Deutsch). Außerdem werden Ratschläge zur Einarbeitung in die Befehle des konkreten Dienstprogramms gegeben: --help, --h (englisches ConsoleUtility) oder --helfen, --hel (deutsches ConsoleUtility).
+
+# Montagesystem
+ConsoleUtility wie ein Projekt, das mit dem Mavens-System gesammelt wurde
+# Ein Beispiel für die Arbeit mit diesem Projekt: 
 <img width="1920" height="320" alt="471703479-02edef4c-22da-4bcd-9b94-d708704f8c7f" src="https://github.com/user-attachments/assets/1d6c1631-8310-4195-9d84-171d61e625bc" />
 
-# Integration mit andere IDE
-Sie konnen integrieren diesen projekt fur eurem IDE. Diese repositorei entshaltet pom.xml datei welche hat eine erstellenungs system fur projekt. 
-# Andere wegen wie den projekt erstellen
-Sie konnen diesen projekt erstellen mit "<> Code" Taste im GutHub. Andere weg: mit dieser befehle: `git clone https://github.com/Frolotey1/ConsoleUtility-.git` Diese befehle will den projekt erstellen dort wo haben sie die befehle starten. 
+# Integration mit anderer IDE
+Sie können dieses Projekt für Ihre IDE integrieren. Diese Repositorei enthält die pom.xml-Datei, die ein Erstellungssystem für ein Projekt hat. 
+# Andere Wege wie dieses Projekt erstellen
+Sie können dieses Projekt mit „<> Code“ Taste im GutHub erstellen. Anderer Weg: mit diesen Befehlen: `git clone https://github.com/Frolotey1/ConsoleUtility-.git` Diese Befehle werden das Projekt dort erstellen, wo sie die Befehle gestartet haben.
