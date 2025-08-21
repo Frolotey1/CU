@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.nio.file.*;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
@@ -12,7 +15,17 @@ import java.util.stream.Stream;
 import java.util.zip.*;
 
 public class KonsoleDienstProgramm {
-    private static final Path HistorischDatei = Path.of(System.getProperty("user.home"), ".consoleutility_history");
+    private static final
+    Path
+            HistorischDatei = Path.of(System.getProperty("user.home"), ".consoleutility_history"),
+            DirektoreiDatei = Path.of("Directory.txt");
+    private static void hinzufugenWegDirectoreis(String direktoreiName) throws IOException {
+        Files.writeString(DirektoreiDatei, direktoreiName + System.lineSeparator(),
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+    }
+    private static ArrayList<String> loadenWegDirectoreis() throws IOException {
+        return new ArrayList<>(Files.readAllLines(DirektoreiDatei));
+    }
     private static List<String> loadenGeschichte() throws IOException {
         if (Files.exists(HistorischDatei)) {
             return new ArrayList<>(Files.readAllLines(HistorischDatei));
@@ -30,7 +43,7 @@ public class KonsoleDienstProgramm {
             RESET = ESC + "[0m";
     public static void main(String[] args) throws IOException {
         List<String> geschichteBefehlen = loadenGeschichte();
-        int index = geschichteBefehlen.size();
+        int index = geschichteBefehlen.size(), indexWeg = loadenWegDirectoreis().size();
         File datei;
         Scanner operation = new Scanner(System.in);
         Logger loggerFurProgramm = Logger.getLogger(KonsoleDienstProgramm.class.getName());
@@ -38,12 +51,13 @@ public class KonsoleDienstProgramm {
         programmFehler.setFormatter(new SimpleFormatter());
         loggerFurProgramm.addHandler(programmFehler);
         if(args.length == 0) {
-            loggerFurProgramm.log(Level.WARNING, RED + "Sie mussen haben mehr als 0 argumenten ins Konsole DienstProgramm" + RESET);
+            loggerFurProgramm.log(Level.WARNING, RED + "Sie mussel haben mehr als 0 argumenten ins Konsole DienstProgramm" + RESET);
         }
         for (String arg : args) {
             switch (arg) {
                 case "--helfen", "--hel" -> alleBefehlen();
                 case "--hinzufugen", "--hin" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben eine name fur datei: ");
                     String dateiName = operation.nextLine();
                     System.out.println("Schreiben ein text fur datei: ");
@@ -56,6 +70,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--lesen", "--les" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben eine dateiName fur prufung es existieren: ");
                     String dateiName = operation.nextLine();
                     if (Files.exists(Path.of(dateiName))) {
@@ -69,6 +84,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--loschen", "--los" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben eine dateiName fur prufung es existieren: ");
                     String dateiName = operation.nextLine();
                     datei = new File(dateiName);
@@ -80,6 +96,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--kopieren", "--kop" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben eine dateiName fur prufung es existieren: ");
                     String dateiName = operation.nextLine();
                     System.out.println("Schreiben eine neue datei: ");
@@ -93,6 +110,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--bewegen", "--bew" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben eine dateiName fur prufung es existieren: ");
                     String dateiName = operation.nextLine();
                     System.out.println("Schreiben eine neue laufwerk: ");
@@ -106,6 +124,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--umbenennen", "--umb" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben ein datei, welche wollen sie umbenennen: ");
                     String einDatei = operation.nextLine();
                     datei = new File(einDatei);
@@ -128,6 +147,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--taskmanageren", "--tas" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     if(Desktop.isDesktopSupported()) {
                         datei = new File("C:\\Windows\\System32\\Taskmgr.exe");
                         Desktop desktop = Desktop.getDesktop();
@@ -137,6 +157,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--zeitweiligen", "--zei" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben eine name fur zeitwiliger datei: ");
                     String zeitweiligeNameFurDatei = operation.nextLine();
                     System.out.println("Schreiben eine verbreitenung fur dieser datei: ");
@@ -150,8 +171,12 @@ public class KonsoleDienstProgramm {
                         throw new RuntimeException(e.getLocalizedMessage());
                     }
                 }
-                case "--GBS", "--gbs" -> System.out.println(new KonsoleDienstProgrammsGBS());
-                case "--jarchiv", "--jar","--pfeifen","--pfe" -> {
+                case "--GBS", "--gbs" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println(new KonsoleDienstProgrammsGBS());
+                }
+                case "--jarchiv", "--jar","--pfeifen","--pfe","--tar.gz","--tar" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     String name;
                     if(Objects.equals(arg,"--jarchiv") || Objects.equals(arg,"--jar")) {
                         System.out.println("Schreiben eine name fur jar datei: ");
@@ -194,6 +219,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--schreiben","--sch" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben ein text oder daten: ");
                     String daten = operation.nextLine();
                     System.out.println("Schreiben eine name fur datei wohin wollen Sie eine daten integrieren: ");
@@ -283,6 +309,102 @@ public class KonsoleDienstProgramm {
                         }
                     }
                 }
+                case "--lstkat", "--lst" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("Schreiben Sie direktorei wo wollen Sie eine katalogien sehen: ");
+                    String direktorei = operation.nextLine();
+                    if(!direktorei.startsWith("C:\\") && !direktorei.startsWith("/")) {
+                        System.err.println("Direktoreis mussen mit C:\\ (fur Windows) oder / (fur Linux} starten sein: ");
+                    } else {
+                        try(Stream<Path> wegs = Files.walk(Path.of(direktorei))) {
+                            wegs.forEach(System.out::println);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex.getLocalizedMessage());
+                        }
+                    }
+                }
+                case "--ersetzen","--ers" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("Schreiben Sie eine datei welche hat einen text und Sie wollen in ihnen eine zeichnen anderen: ");
+                    String dateiName = operation.nextLine();
+                    String name, daten = "", ersteZeichne, zweiteZeichne, neueDaten;
+                    if(Files.exists(Path.of(dateiName))) {
+                        name = dateiName;
+                    } else {
+                        System.out.println("Diese datei existiert nicht. Erstellen Sie eine neue: ");
+                        name = operation.nextLine();
+                    }
+                    System.out.println("Schreiben Sie eine erste zeichne welche wollen Sie anderen: ");
+                    ersteZeichne = operation.nextLine();
+                    System.out.println("Schreiben Sie eine zweite zeichne fur anderung: ");
+                    zweiteZeichne = operation.nextLine();
+                    try(BufferedReader lesenVom = new BufferedReader(new FileReader(name))) {
+                        String line = lesenVom.readLine();
+                        if(line.isEmpty()) {
+                            System.err.println(RED + "Es gibt keinen string fur erstetzenung" + RESET);
+                        } else {
+                            daten = line;
+                        }
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex.getLocalizedMessage());
+                    }
+                    char erste = ersteZeichne.charAt(0), zweite = zweiteZeichne.charAt(0);
+                    neueDaten = daten.replace(erste,zweite);
+                    System.out.println(GREEN + neueDaten + RESET);
+                    try(BufferedWriter schreibenNeueDaten = new BufferedWriter(new FileWriter(name))) {
+                        schreibenNeueDaten.write(neueDaten);
+                    } catch (IOException aus) {
+                        throw new RuntimeException(aus.getLocalizedMessage());
+                    }
+                }
+                case "--ertdir", "--ert" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("Schreiben ein name fur direktorei: ");
+                    String direktorei = operation.nextLine();
+                    System.out.println("Schreiben eine haupte direktorei (С:\\Users\\...) oder (/home/...): ");
+                    String hauptDirectorei = operation.nextLine();
+                    if(!hauptDirectorei.startsWith("C:\\") && !hauptDirectorei.startsWith("/")) {
+                        System.err.println(RED + "Directoreis mussen mit C:\\ (fur Windows) oder / (fur Linux} beginnen sein: " + RESET);
+                    } else {
+                        if(!hauptDirectorei.endsWith("/")) {
+                            hauptDirectorei = hauptDirectorei + "/";
+                        }
+                        String erstellenDir = hauptDirectorei + direktorei;
+                        hinzufugenWegDirectoreis(indexWeg + " | " + erstellenDir);
+                        Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxr-xr-x");
+                        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
+                        Path weg = Path.of(erstellenDir);
+                        Files.createDirectory(weg,attr);
+                        System.out.println(GREEN + "Direktorei war hinzufugt: " + weg.toAbsolutePath() + RESET);
+                    }
+                }
+                case "--lshdir", "--lsh" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("Schreiben Sie eine direktorei welche wollen Sie loschen: ");
+                    String findenDirektorei = operation.nextLine();
+                    if(!findenDirektorei.startsWith("C:\\") && !findenDirektorei.startsWith("/")) {
+                        System.err.println(RED + "Direktoreis mussen mit C:\\ (fur Windows) oder / (fur Linux} starten sein: " + RESET);
+                    } else {
+                        Path weg = Path.of(findenDirektorei);
+                        Files.deleteIfExists(weg);
+                        if(!Files.isDirectory(weg)) {
+                            Path vomDatei = Paths.get("Directory.txt");
+                            List<String> loschenDirektorei = new ArrayList<>(Files.readAllLines(vomDatei));
+                            loschenDirektorei.remove(findenDirektorei);
+                            Files.delete(vomDatei);
+                            for(String schreibenWiderAlleDirektoreis : loschenDirektorei) {
+                                hinzufugenWegDirectoreis(schreibenWiderAlleDirektoreis);
+                            }
+                            System.out.println(GREEN + "Direktorei '" + findenDirektorei + "' war erfolgreich loscht" + RESET);
+                        } else {
+                            System.out.println("Direktorei'" + findenDirektorei + "' existiert noch");
+                        }
+                    }
+                }
+                case "--exstdirs", "--exs" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    loadenWegDirectoreis().forEach(System.out::println);
+                }
                 case null, default -> System.err.println(RED + "Diese befehle existiert nicht" + RESET);
             }
         }
@@ -300,11 +422,16 @@ public class KonsoleDienstProgramm {
                         "--zeitweiligen   / --zei = einstellen eine zeitweilige datei",
                         "--GBS            / --gbs = GBS (oder Grafik Benutzer Schnittstelle) ist KonsoleDienstProgramms grafik version",
                         "--jarchiv        / --jar = eine jar datei erstellen",
-                        "--pfeifen        / --pfe = eine zip datei erstellen",
+                        "--pfeifen        / --pfe = eine zip datei erstellen (tar.gz format fur Linux system)",
                         "--schreiben      / --sch = schreiben eine daten zu datei",
                         "--grep           / --gre = finden einen teil von text in datei",
                         "--geschichte     / --ges = analyzieren eine geschichte von befehlen welche haben Sie fruher benutzen",
-                        "--finden         / --fin = finden eine datei mit erweiterung welche wollen Sie finden (ausschliesen HistoryFile.txt und PasswordManager.txt wenn will benutzer eine datei in KonsoleDienstProgramm finden)"
+                        "--finden         / --fin = finden eine datei mit erweiterung welche wollen Sie finden",
+                        "--lstkat         / --lst = analysieren und sehen alle katalogien in definischen direktorei",
+                        "--ersetzen       / --ers = ersetzen eine zeichne zu andere zeichne in text vom datei",
+                        "--ertdir         / --ert = erstellen direktorei in System-Explorer",
+                        "--lshdir         / --lsh = loschen direktorei vom System-Explorer",
+                        "--exstdirs       / --exs = analysieren alle direktoreis welche hat ein benutzer erstellt"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
