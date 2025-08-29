@@ -15,7 +15,8 @@ And path will changing on ``C:\CU-ConsoleUtility`` (in Windows). In the Linux Sy
 # Assembly's system 
 ConsoleUtility like project was collected by Maven's system.
 # Example of working with the project: 
-<img width="1920" height="320" alt="470572312-f4348b0c-7e7d-48cf-badd-4fee29f60cf3" src="https://github.com/user-attachments/assets/55a4a513-84f3-49d7-b8ea-341058d554e1" />
+<img width="1153" height="294" alt="2025-08-30_00-02" src="https://github.com/user-attachments/assets/6e95aef3-fdf1-4a3c-8800-6f9f03f61626" />
+
 
 # Integration with different IDE
 You can integrate this project with your. This project includes the pom.xml file which has the system of the project's creation.
