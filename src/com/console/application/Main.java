@@ -50,10 +50,10 @@ public class Main {
         switch(chooseLanguage) {
             case 1 -> System.out.println("Ein weg zu Console Utility's deutsch version: "
                     + GREEN + "src\\KonsoleDienstProgramm.java" + RESET + // deutsch version fur konsole dienstprogramm
-                    YELLOW + "\nFur eines einfuhrung mit deutsches befehlen - schreiben --helfen oder --hel\n" + RESET);
+                    YELLOW + "\nFur eines einfuhrung mit deutsches befehlen - schreiben --helfen oder --hel / fur befehlens syntax: --tldr oder --tld\n" + RESET);
             case 2 -> System.out.println("The path to Console Utility's english version: "
                     + GREEN + "src\\ConsoleUtilityItself.java" + RESET +  // english version for console utility
-                    YELLOW + "\nFor familiarization with english commands - write --help or --h" + RESET);
+                    YELLOW + "\nFor familiarization with english commands - write --help or --h / for syntax of commands: --tldr or --tl" + RESET);
             default -> System.err.println(RED + "This language is not supported in the console utility" + RESET);
         }
     }
