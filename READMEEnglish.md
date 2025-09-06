@@ -1,4 +1,4 @@
-# CU-ConsoleUtility / Konsole Dienst Programm
+# CU-ConsoleUtility
 The simple version of the console utility with simple commands. Written on Java and includes supporting of the two languages: Deutsch and English.
 # Java 
 Java like language was used for creation of this project. The Java's version is 23. ConsoleUtility supports all Java's versions after Java 10/11 and newer. 
