@@ -55,7 +55,7 @@ public class ConsoleUtilityItself {
                     "--help or --hp","--add or --ad",
                     "--read or --rd", "--delete or --dt","--copy or --cp",
                     "--move or --mv","--newname or --nn",
-                    "--taskmgr or --tm","--stopgap or --sg",
+                    "--stopgap or --sg",
                     "--GUI or --gi","--jar or --jr",
                     "--zip or -zp (Windows) / --tar.gz or -tr (Linux)",
                     "--write or --wt","--grep or --gp",
@@ -1049,3 +1049,4 @@ public class ConsoleUtilityItself {
         }
     }
 }
+
