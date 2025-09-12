@@ -49,12 +49,28 @@ public class KonsoleDienstProgramm {
         int index = geschichteBefehlen.size(), indexWeg = loadenWegDirectoreis().size();
         File datei;
         Scanner operation = new Scanner(System.in);
-        Logger loggerFurProgramm = Logger.getLogger(KonsoleDienstProgramm.class.getName());
-        FileHandler programmFehler = new FileHandler("DateiLogFehler.log",true);
-        programmFehler.setFormatter(new SimpleFormatter());
-        loggerFurProgramm.addHandler(programmFehler);
         if(args.length == 0) {
-            loggerFurProgramm.log(Level.WARNING, ROT + "Sie mussel haben mehr als 0 argumenten ins Konsole DienstProgramm" + RESET);
+            System.out.println(GELB + "Maybe you wanted to put: " + RESET);
+            List<String> prompt = new ArrayList<>(List.of(
+                    "--hilfen oder --hil","--hinzufugen oder --hin",
+                    "--lesen oder --les", "--loschen oder --los","--kopieren oder --kop",
+                    "--bewegen oder --bew","--umbenennen oder --umb",
+                    "--zeitweiligen oder --zei", "--GBS oder --gbs","--jarchiv oder --jar",
+                    "--pfeifen oder -pfe (Windows) / --tar.gz oder -tr (Linux)",
+                    "--schreiben oder --sch","--grep oder --gre",
+                    "--geschichte oder --ges","--finden oder --fin",
+                    "--lstkat oder --lst","--ersetzen oder --ers","--ertdir oder --ert",
+                    "--lshdir oder --lsh","--exstdirs oder --exs",
+                    "--tldr oder --tld","--andriten oder --and",
+                    "--adverungen oder --adv","--symlink oder --sym",
+                    "--leer oder --lee","--sortieren oder --sor",
+                    "--umkehren oder --umk","--entAlle oder --ena",
+                    "--entfernen oder --ent","--integrieren or ing",
+                    "--grsdti,--grs","--editieren,--edt","--symzln,--szn"
+            ));
+            for(String alle : prompt) {
+                System.out.println(alle);
+            }
         }
         for (String arg : args) {
             switch (arg) {
@@ -76,7 +92,7 @@ public class KonsoleDienstProgramm {
                         try (BufferedReader bekommen = new BufferedReader(new FileReader(dateiName))) {
                             System.out.println(bekommen.readLine());
                         } catch (IOException e) {
-                            loggerFurProgramm.log(Level.WARNING, ROT + "Das ist fehler fur schreiben eines text zu datei" + RESET);
+                            throw new RuntimeException(ROT + "Das ist fehler fur schreiben eines text zu datei");
                         }
                     } else {
                         System.err.println(ROT + "Diese datei existiert nicht" + RESET);
@@ -143,16 +159,6 @@ public class KonsoleDienstProgramm {
                         } catch (IOException e) {
                             System.err.println(ROT + "Das ist ein fehler mit eingang/ausgang operationen" + RESET);
                         }
-                    }
-                }
-                case "--taskmanageren", "--tas" -> {
-                    hinzufugenGeschichte((index) + " | " + arg);
-                    if(Desktop.isDesktopSupported()) {
-                        datei = new File("C:\\Windows\\System32\\Taskmgr.exe");
-                        Desktop desktop = Desktop.getDesktop();
-                        desktop.open(datei);
-                    } else {
-                        System.err.println(ROT + "System doesn't support including the taskmgr" + RESET);
                     }
                 }
                 case "--zeitweiligen", "--zei" -> {
@@ -404,7 +410,7 @@ public class KonsoleDienstProgramm {
                     hinzufugenGeschichte((index) + " | " + arg);
                     loadenWegDirectoreis().forEach(System.out::println);
                 }
-                case "--tldr","--tl" -> {
+                case "--tldr","--tld" -> {
                     hinzufugenGeschichte((index) + " | " + arg);
                     String []allCommandsInstruction =
                             {"",
@@ -622,6 +628,19 @@ public class KonsoleDienstProgramm {
                                 "Schreiben Sie Ihre Datei: -> (Ihre Datei. Beispiel: test.txt) -> [ENTER] -> " +
                                 "Schreiben Sie Ihr Verzeichnis: -> (Ihr Verzeichnis) -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> <NACHRICHT> Datei (Ihre Datei) wurde erfolgreich zum Verzeichnis (Ihr Verzeichnis) hinzugefügt");
+                        case 30 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--grsdti / --grs -> [ENTER] -> " +
+                                "Geben Sie das Verzeichnis (für die Analyse aller Dateien) oder die Datei ein: (Ihr Verzeichnis oder Ihre Datei) -> [ENTER] -> " +
+                                "{WENN SIE VERZEICHNIS SCHREIBEN} -> (Alle Dateien werden mit der Größe in Bytes analysiert)" +
+                                "<> {SONST WENN SIE PFAD ZUR DATEI SCHREIBEN} -> Geben Sie den Pfad zu Ihrer Datei ein: (Ihr Pfad zur Datei) -> [ENTER] ->\" +\n" +
+                                "(Die bestimmte Datei wurde mit der Größe in Bytes analysiert)");
+                        case 31 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--editieren / --edt -> [ENTER] -> " +
+                                "(will zeigt datei in GUI version. Sie konnen schreiben alles was wollen Sie mit moglichungen spreichern und offnen datei");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -831,6 +850,49 @@ public class KonsoleDienstProgramm {
                     Files.createFile(Path.of(fullPath),attr);
                     System.out.println(GRUN + "Datei '" + neueDatei  + "' war hinzufugt zu direktorei '" + direktorei + "' erfolgreich" + RESET);
                 }
+                case "--grsdti","--grs" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("Schreiben Sie direktorei (fur analysieren alle datei) oder datei: ");
+                    String alleOderEin = operation.nextLine();
+                    if(new File(alleOderEin).isDirectory()) {
+                        if(!alleOderEin.startsWith("C:\\") && !alleOderEin.startsWith("/")) {
+                            System.err.println(ROT + "Direktoreis mussen mit C:\\ (fur Windows) oder / (Linux) starten sein" + RESET);
+                        } else {
+                            try(Stream<Path> wegs = Files.walk(Path.of(alleOderEin))) {
+                                wegs.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (datei_ -> System.out.println(datei_ + " = " + GELB + datei_.length() + RESET + " bytes"));
+                            }
+                        }
+                    } else {
+                        System.out.println("Schreiben Sie ein weg zu deinem datei: ");
+                        alleOderEin = operation.nextLine();
+                        if(Files.exists(Path.of(alleOderEin))) {
+                            System.out.println(alleOderEin + " = " + GELB + new File(alleOderEin).length() + RESET + " bytes");
+                        } else {
+                            System.err.println(GELB + "Dieser datei existiert nicht" + RESET);
+                        }
+                    }
+                }
+                case "--editieren","--edt" -> {
+                   hinzufugenGeschichte((index) + " | " + arg);
+                   SwingUtilities.invokeLater(() -> new KonsoleDienstProgrammsGBS.TextEditor().setVisible(true));
+                }
+                case "--symzln","--szn" -> {
+                    System.out.println("Schreiben Sie ein name fur deinem datei: ");
+                    String dateiName = operation.nextLine();
+                    if(Files.exists(Path.of(dateiName))) {
+                        try(BufferedReader symboleZahlen = new BufferedReader(new FileReader(dateiName))) {
+                            String linie = symboleZahlen.readLine();
+                            if(linie == null || linie.isEmpty()) {
+                                System.out.println(GRUN + "Symbole: " + 0 + RESET);
+                            } else {
+                                System.out.println(GRUN + "Symbole: " + linie.length() + RESET);
+                            }
+                        }
+                    } else {
+                        System.err.println(ROT + "Dieser datei existiert nicht" + RESET);
+                    }
+                }
                 case null, default -> System.err.println(ROT + "Diese befehle existiert nicht" + RESET);
             }
         }
@@ -867,7 +929,10 @@ public class KonsoleDienstProgramm {
                         "--umkehren       / --umk = umkehren deine daten vom begin zu end",
                         "--entAlle        / --ena = entfernen alle katalogien vom deiner direktorei",
                         "--entfernen      / --ent = entfernen eine katalogie vom deiner direktorei",
-                        "--integrieren    / --ing = integrieren deine katalogie zur direktorei"
+                        "--integrieren    / --ing = integrieren deine katalogie zur direktorei",
+                        "--grsdti         / --grs = analysieren alle datei oder ein datei mit grose in bytes",
+                        "--editieren      / --edt = editieren datei mit GUI version wann will benutzer schreiben all texten in datei",
+                        "--symzln         / --szn = symbole zahlen in deinem datei"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
@@ -914,13 +979,65 @@ public class KonsoleDienstProgramm {
                 }
             }
         }
-
         private void actionPerformed(ActionEvent wahler) {
             spreichernEineDateiWahler();
         }
-
         private void actionPerformed2(ActionEvent wahler) {
             offnenDirektoreiWahler();
+        }
+        private static class TextEditor extends JFrame {
+            private final JTextArea textplatz;
+            private final JFileChooser dateiWahler;
+            public TextEditor() {
+                setTitle("Datei editor");
+                setSize(800, 600);
+                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                textplatz = new JTextArea();
+                JScrollPane scrollPane = new JScrollPane(textplatz);
+                add(scrollPane, BorderLayout.CENTER);
+                dateiWahler = new JFileChooser();
+                initMenu();
+            }
+            private void initMenu() {
+                JMenuBar menuBar = new JMenuBar();
+                JMenu dateiMenu = new JMenu("Datei");
+                dateiMenu.setSize(300,300);
+                JMenuItem offnen = new JMenuItem("Offnen");
+                offnen.addActionListener(e -> offnenDatei());
+                JMenuItem spreichern = new JMenuItem("Spreichern");
+                spreichern.addActionListener(e -> spreichernDatei());
+                dateiMenu.add(offnen);
+                dateiMenu.add(spreichern);
+                menuBar.add(dateiMenu);
+                setJMenuBar(menuBar);
+            }
+            private void offnenDatei() {
+                int zuruckVal = dateiWahler.showOpenDialog(this);
+                if (zuruckVal == JFileChooser.APPROVE_OPTION) {
+                    File file = dateiWahler.getSelectedFile();
+                    try (BufferedReader leser = new BufferedReader(new FileReader(file))) {
+                        String linie;
+                        StringBuilder content = new StringBuilder();
+                        while ((linie = leser.readLine()) != null) {
+                            content.append(linie).append("\n");
+                        }
+                        textplatz.setText(content.toString());
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(this, ROT + "Lesen datei fehler" + RESET);
+                    }
+                }
+            }
+            private void spreichernDatei() {
+                int zuruckVal = dateiWahler.showSaveDialog(this);
+                if (zuruckVal  == JFileChooser.APPROVE_OPTION) {
+                    File datei = dateiWahler.getSelectedFile();
+                    try (BufferedWriter schreiber = new BufferedWriter(new FileWriter(datei))) {
+                        schreiber.write(textplatz.getText());
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(this, ROT + "Spreichern datei fehler" + RESET);
+                    }
+                }
+            }
         }
     }
 }
