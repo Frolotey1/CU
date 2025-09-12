@@ -474,23 +474,17 @@ public class KonsoleDienstProgramm {
                                 "Schreiben Sie den neuen Namen für die Datei: -> (Neuer Name für Ihre Datei) -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> (Ihre Datei hat den neuen Namen erhalten)");
                         case 7 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
-                                "java src\\\\ConsoleUtilityItself.java (Windows) " +
-                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "--taskmanageren / --tas [ENTER] (für Windows-Systeme) -> " +
-                                "(Unter Windows wird das Taskmgr-Fenster mit den im Windows-System ausgeführten Tasks geöffnet. \" +\n" +
-                                "Unter Linux wird dieser Befehl nicht gestartet.)");
-                        case 8 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--zeitweiligen / --zei [ENTER] -> " +
                                 "Name der Übergangsdatei eingeben: -> (Name der temporären Datei) -> [ENTER] -> " +
                                 "Dateierweiterung eingeben: -> (Dateierweiterung. Beispiel: .txt, .bin usw.) -> [ENTER} " +
                                 "-> <MElDUNG> 'Die Übergangsdatei wurde erfolgreich erstellt: (Pfad zu Ihrer temporären Datei)'");
-                        case 9 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 8 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--GUI / --gi [ENTER] -> (GUI-Version für ConsoleUtility. Funktioniert unter Windows und Linux)");
-                        case 10 -> System.out.println("""
+                        case 9 -> System.out.println("""
                                 Ihr Pfad (C:\\CU-ConsoleUtility \
                                 java src\\ConsoleUtilityItself.java (Windows) \
                                 oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) \
@@ -500,7 +494,7 @@ public class KonsoleDienstProgramm {
                                 (Ihre Datei. Beispiel: test.txt) {ELSE} Diese JAR-Datei existiert nicht. Erstellen Sie eine neue: " +
                                 -> (die neue JAR-Datei) -> [ENTER] -> \
                                 <MELDUNG> JAR-Datei wurde erfolgreich erstellt: (Pfad zu Ihrer JAR-Datei)""");
-                        case 11 -> System.out.println("""
+                        case 10 -> System.out.println("""
                                 Ihr Pfad (C:\\CU-ConsoleUtility \
                                 java src\\ConsoleUtilityItself.java (Windows) \
                                 oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
@@ -509,14 +503,14 @@ public class KonsoleDienstProgramm {
                                 Geben Sie die Datei ein, die Sie in die Zip-Datei (oder Tar.gz) einbinden möchten: -> (Ihre Datei. Beispiel: test.txt) " +
                                 -> [ENTER] -> {WENN IHRE DATEI VORHANDEN} -> <MELDUNG> Zip-Datei wurde erfolgreich erstellt: (Pfad zu Ihrer Zip-Datei) -> " +
                                 {SONST} Diese Zip-Datei (Tar.gz) existiert nicht. Erstellen Sie eine neue: -> (Ihre Datei mit zip,tar.gz)""");
-                        case 12 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 11 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--write,--wt -> [ENTER] -> " +
                                 "Schreiben Sie den Text oder die Daten: -> (Ihr Text) -> [ENTER] -> " +
                                 "Schreiben Sie den Dateinamen, in den die Daten geschrieben werden sollen: -> (Name Ihrer Datei) -> [ENTER] -> \" +\n" +
                                 "{WENN EXISTIERT} -> (Ihr Text wurde in die Datei geschrieben) {ELSE} -> Diese Datei existiert nicht. Erstellen Sie die neue:");
-                        case 13 -> System.out.println("""
+                        case 12 -> System.out.println("""
                                 Ihr Pfad (C:\\CU-ConsoleUtility \
                                 java src\\ConsoleUtilityItself.java (Windows) " \
                                 oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) \
@@ -525,11 +519,11 @@ public class KonsoleDienstProgramm {
                                 {WENN EXISTIERT} -> Schreiben Sie das Wort oder den Text, der aus der Datei stammen soll: (Wort aus Ihrem Text) {ELSE} -> " +
                                 Diese Datei existiert nicht. Erstellen Sie eine neue -> (Neue Datei erstellen) -> [ENTER] -> Schreiben Sie den Text in die Datei: -> " +
                                 (Text in die Datei)""");
-                        case 14 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 13 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--history / --hi -> [ENTER] -> (zeigt die Liste der Befehle an, die Sie im ConsoleUtility verwendet haben)");
-                        case 15 -> System.out.println("""
+                        case 14 -> System.out.println("""
                                 Ihr Pfad (C:\\CU-ConsoleUtility \
                                 java src\\\\ConsoleUtilityItself.java (Windows) \
                                 oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) \
@@ -537,13 +531,13 @@ public class KonsoleDienstProgramm {
                                 Geben Sie das Verzeichnis ein, in dem Sie die Dateien suchen möchten: -> (Ihr Verzeichnis) -> [Eingabe] -> " +
                                 Geben Sie die Dateierweiterung für die Suche ein: -> (Ihre Dateierweiterung: Beispiel: .txt, .bin) -> [Eingabe] -> " +
                                 (zeigt alle Dateien/Kataloge mit einer bestimmten Erweiterung an)""");
-                        case 16 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 15 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--lstcat / --ls -> [ENTER] -> " +
                                 "Geben Sie das Verzeichnis ein, in dem die Kataloge angezeigt werden sollen: -> (Ihr Verzeichnis) -> [ENTER] -> \" +\n" +
                                 "(zeigt alle Dateien/Kataloge im angegebenen Verzeichnis an)");
-                        case 17 -> System.out.println("""
+                        case 16 -> System.out.println("""
                                 Ihr Pfad (C:\\CU-ConsoleUtility \
                                 java ConsoleUtilityItself.java (Windows) " +
                                 oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux)) " +
@@ -551,7 +545,7 @@ public class KonsoleDienstProgramm {
                                 Schreiben Sie die Datei, in der Sie die Zeichen ändern möchten: -> (Ihre Datei. Beispiel: test.txt) -> [ENTER] -> " +
                                 {IF EXISTS} -> Schreiben Sie das erste Zeichen, das Sie ändern möchten: (erstes Zeichen. Beispiel: c) -> [ENTER] -> " +
                                 Schreiben Sie das zweite Zeichen, das Sie ändern möchten: -> (zweites Zeichen. Beispiel: i) -> [ENTER] -> (ersetzt das erste Zeichen durch das zweite)""");
-                        case 18 -> System.out.println("""
+                        case 17 -> System.out.println("""
                                 Ihr Pfad (C:\\CU-ConsoleUtility " 
                                 java srConsoleUtilityItself.java (Windows) " 
                                 oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " 
@@ -559,76 +553,76 @@ public class KonsoleDienstProgramm {
                                 Geben Sie den Namen des Verzeichnisses ein: -> (Ihr Verzeichnis) -> [EINGABE] -> " 
                                 Geben Sie das Hauptverzeichnis ein: (Ihr Hauptverzeichnis) (Beispiel: C:\\Users\\... oder /home/...) -> [EINGABE] -> " 
                                 <MELDUNG> 'Das Verzeichnis wurde erstellt: (Ihr erstelltes Verzeichnis)'""");
-                        case 19 -> System.out.println("""
+                        case 18 -> System.out.println("""
                                 Ihr Pfad (C:\\CU-ConsoleUtility " 
                                 java src\\ConsoleUtilityItself.java (Windows) " 
                                 oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux)) "                                 
                                 --candir / --ca -> [ENTER] -> " 
                                 Geben Sie das zu löschende Verzeichnis ein: (Ihr zu löschendes Verzeichnis) -> [ENTER] -> " 
                                 Das Verzeichnis (Ihr Verzeichnis) wurde erfolgreich gelöscht""");
-                        case 20 -> System.out.println("""
+                        case 19 -> System.out.println("""
                                 Ihr Pfad (C:\\CU-ConsoleUtility " 
                                 java src\\ConsoleUtilityItself.java (Windows) " 
                                 oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux)) " 
                                 --exstdirs / --ex -> [ENTER] -> "
                                 (zeigt alle mit crtdir erstellten Verzeichnisse an)""");
-                        case 21 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility" +
+                        case 20 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--andriten / --and -> [ENTER] -> " +
                                 "Schreiben eine datei welche wollen Sie fur richten in datei andern: (deine datei) -> " +
                                 "[ENTER] -> Schreiben richten in octal system (Beispiel: 700): (richten mit octal system) -> [ENTER]" +
                                 "{IF ERFOLG} -> <MELDUNG> Richten fur datei: '(deine spreicherische datei)' waren anderen erfolgreich");
-                        case 22 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility" +
+                        case 21 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility" +
                                 " java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--adverungen / --and -> [ENTER] -> Schreiben deine datei ohne verlanderung: (deine datei ohne verlanderung) [ENTER] -> " +
                                 "Schreiben eine verlanderung fur deine datei: (verlanderung dur deine datei. Beispiel: .txt) -> [ENTER]" +
                                 "Schreiben eine neue verlanderung due deine datei: (neue verlanderung fur deine datei. Beispiel: .bin) -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> <MELDUNG> Die dateis verlanderung war andert erfolgreich");
-                        case 23 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility" +
+                        case 22 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--symlink / --sym -> [ENTER] -> Schreiben Sie symbole link: (deine symbole link) -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> <MELDUNG> Symbole link war erstellt erfolgreich: (ein weg zu deinem symbole link)");
-                        case 24 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility) " +
+                        case 23 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility) " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--leer / --lee -> [ENTER] -> " +
                                 "Geben Sie die Datei ein, aus der Sie den Text löschen möchten: (Ihre Datei. Beispiel: test.txt) -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> <NACHRICHT> Der Text aus der Datei wurde erfolgreich gelöscht.");
-                        case 25 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 24 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--sortieren / --sor -> [ENTER] -> " +
                                 "Schreiben Sie Ihre Datei: -> (Ihre Datei. Beispiel: test.txt) " +
                                 "Schreiben Sie Ihr Verzeichnis: -> (Ihr Verzeichnis) -> [ENTER]");
-                        case 26 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 25 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--umkehren / --umk -> [ENTER] -> " +
                                 "Schreiben Sie die Datei, aus der Sie Daten lesen möchten: (Ihre Datei. Beispiel: test.txt) -> [ENTER]");
-                        case 27 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 26 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--entAlle / --ena -> [ENTER] -> " +
                                 "Schreiben Sie Ihr Verzeichnis: -> (Ihr Verzeichnis) -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> <NACHRICHT> Alle Kataloge und Dateien in (Ihrem Verzeichnis) wurden erfolgreich gelöscht");
-                        case 28 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 27 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--entfernen / --ent -> [ENTER] -> " +
                                 "Dateinamen eingeben: -> (Ihre Datei. Beispiel: test.txt) -> [ENTER] -> " +
                                 "Verzeichnis eingeben: -> (Ihr Verzeichnis) -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> <NACHRICHT> Die Datei (Ihre Datei) wurde erfolgreich aus dem Verzeichnis (Ihrem Verzeichnis) gelöscht");
-                        case 29 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 28 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--integrieren / --ing -> [ENTER] -> " +
                                 "Schreiben Sie Ihre Datei: -> (Ihre Datei. Beispiel: test.txt) -> [ENTER] -> " +
                                 "Schreiben Sie Ihr Verzeichnis: -> (Ihr Verzeichnis) -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> <NACHRICHT> Datei (Ihre Datei) wurde erfolgreich zum Verzeichnis (Ihr Verzeichnis) hinzugefügt");
-                        case 30 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 29 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--grsdti / --grs -> [ENTER] -> " +
@@ -636,11 +630,17 @@ public class KonsoleDienstProgramm {
                                 "{WENN SIE VERZEICHNIS SCHREIBEN} -> (Alle Dateien werden mit der Größe in Bytes analysiert)" +
                                 "<> {SONST WENN SIE PFAD ZUR DATEI SCHREIBEN} -> Geben Sie den Pfad zu Ihrer Datei ein: (Ihr Pfad zur Datei) -> [ENTER] ->\" +\n" +
                                 "(Die bestimmte Datei wurde mit der Größe in Bytes analysiert)");
-                        case 31 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                        case 30 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--editieren / --edt -> [ENTER] -> " +
                                 "(will zeigt datei in GUI version. Sie konnen schreiben alles was wollen Sie mit moglichungen spreichern und offnen datei");
+                        case 31 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--editieren / --edt -> [ENTER] -> " +
+                                "{WENN ERFOLG} -> (will zahlen alle symbole in deinem daten vom deinem datei)");
+                                );
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
