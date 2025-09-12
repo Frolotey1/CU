@@ -8,7 +8,7 @@ public class Main {
             GREEN = ESC + "[32m",
             YELLOW = ESC + "[33m",
             RED = ESC + "[31m",
-            PURPLE = "[35m",
+            PURPLE = ESC + "[35m",
             RESET = ESC + "[0m";
     public static void main(String[] args) throws IOException {
         Console console = System.console();
