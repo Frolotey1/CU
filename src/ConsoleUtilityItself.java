@@ -46,14 +46,32 @@ public class ConsoleUtilityItself {
         List<String>resultRights = new ArrayList<>();
         List<String> historyOFCommands = loadHistory();
         int index = historyOFCommands.size(), indexPath = loadPathsOfDirectory().size();
-        Logger loggerForProgramm = Logger.getLogger(ConsoleUtilityItself.class.getName());
-        FileHandler programmError = new FileHandler("LogFileWithErrors.log",true);
-        programmError.setFormatter(new SimpleFormatter());
-        loggerForProgramm.addHandler(programmError);
         File file;
+        String directory;
         Scanner operation = new Scanner(System.in);
         if(args.length == 0) {
-            loggerForProgramm.log(Level.WARNING, RED + "You must have not less than 2 arguments in this console utility" + RESET);
+            System.out.println(YELLOW + "Maybe you wanted to put: " + RESET);
+            List<String> prompt = new ArrayList<>(List.of(
+                    "--help or --hp","--add or --ad",
+                    "--read or --rd", "--delete or --dt","--copy or --cp",
+                    "--move or --mv","--newname or --nn",
+                    "--taskmgr or --tm","--stopgap or --sg",
+                    "--GUI or --gi","--jar or --jr",
+                    "--zip or -zp (Windows) / --tar.gz or -tr (Linux)",
+                    "--write or --wt","--grep or --gp",
+                    "--history or --hi","--find or --fd",
+                    "--lstcat or --ls","--replace or --re","--crtdir or --cr",
+                    "--candir or --ca","--exstdirs or --ex",
+                    "--tldr or --tl","--chgrits or --cs",
+                    "--chgextn or --cx","--symlink or --sl",
+                    "--empty or --em","--sort or --st",
+                    "--reverse or --rv","--remall or --ra",
+                    "--remove or --rm","--integrate or --ig",
+                    "--sizfls,--sf","--edit,--et","--symcnt,--sc"
+            ));
+            for(String all : prompt) {
+                System.out.println(all);
+            }
         }
         for (String arg : args) {
             switch (arg) {
@@ -83,7 +101,7 @@ public class ConsoleUtilityItself {
                                 System.out.println(get.readLine());
                             }
                         } catch (IOException e) {
-                            loggerForProgramm.log(Level.WARNING, RED + "This is error for writing a text in file" + RESET);
+                           throw new RuntimeException(RED + "This is error for writing a text in file" + RESET);
                         }
                     } else {
                         System.err.println(RED + "This file doesn't exist" + RESET);
@@ -149,16 +167,6 @@ public class ConsoleUtilityItself {
                         } catch (IOException e) {
                             System.err.println(RED + "This is the error of the input/output operations" + RESET);
                         }
-                    }
-                }
-                case "--taskmgr", "--tm" -> {
-                    appendHistory((index++) + " | " + arg);
-                    if(Desktop.isDesktopSupported()) {
-                        file = new File("C:\\Windows\\System32\\Taskmgr.exe");
-                        Desktop desktop = Desktop.getDesktop();
-                        desktop.open(file);
-                    } else {
-                        System.err.println(RED + "System doesn't support including the taskmgr" + RESET);
                     }
                 }
                 case "--stopgap", "--sg" -> {
@@ -291,7 +299,7 @@ public class ConsoleUtilityItself {
                 case "--find","--fd" -> {
                     appendHistory((index++) + " | " + arg);
                     System.out.println("Write the directory where you want to find the files: ");
-                    String directory = operation.nextLine();
+                    directory = operation.nextLine();
                     if(!directory.startsWith("C:\\") && !directory.startsWith("/")) {
                         System.err.println("Directories must be started with C:\\ (for Windows) or / (for Linux)");
                     } else {
@@ -314,7 +322,7 @@ public class ConsoleUtilityItself {
                 case "--lstcat", "--ls" -> {
                     appendHistory((index) + " | " + arg);
                     System.out.println("Write the directory where want you to see the catalogs: ");
-                    String directory = operation.nextLine();
+                    directory = operation.nextLine();
                     if(!directory.startsWith("C:\\") && !directory.startsWith("/")) {
                         System.err.println("The directories must started with C:\\ (for Windows) or / (for Linux}: ");
                     } else {
@@ -362,7 +370,7 @@ public class ConsoleUtilityItself {
                 case "--crtdir", "--cr" -> {
                     appendHistory((index) + " | " + arg);
                     System.out.println("Write the name for the directory: ");
-                    String directory = operation.nextLine();
+                    directory = operation.nextLine();
                     System.out.println("Write the main directory: ");
                     String mainDirectory = operation.nextLine();
                     if(!mainDirectory.startsWith("C:\\") && !mainDirectory.startsWith("/")) {
@@ -408,13 +416,13 @@ public class ConsoleUtilityItself {
                     String []allCommandsInstruction =
                             {"",
                                     "add","read","delete","copy",
-                                    "move","newname","taskmgr","stopgap",
+                                    "move","newname","stopgap",
                                     "GUI","jar","zip / tar.gz","write",
                                     "grep","history","find","lstcat",
                                     "replace","crtdir","candir","exstdirs",
                                     "chgrits","chgextn","symlink", "empty",
                                     "sort","reverse","remall", "remove",
-                                    "integrate"
+                                    "integrate","--sizfls","--edit"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -471,21 +479,15 @@ public class ConsoleUtilityItself {
                         case 7 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "--taskmgr / --tm [ENTER] (for Windows System) -> " +
-                                "(in Windows will started the taskmgr window with tasks which work in the Windows system). " +
-                                "In Linux system this command will not started)");
-                        case 8 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
-                                "java src\\ConsoleUtilityItself.java (Windows) " +
-                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--stopgap / --sg [ENTER] -> " +
                                 "Write the name for the stopgap file: -> (name for the temp file) -> [ENTER] -> " +
                                 "Write the extension for the file: -> (extension for your file. Example: .txt,.bin and etc.) -> [ENTER} " +
                                 "-> <MESSAGE> 'The stopgap file was created successfully: (path to your temp file)'");
-                        case 9 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 8 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--GUI / --gi [ENTER] -> (GUI's version for ConsoleUtility. Work in Windows and Linux)");
-                        case 10 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 9 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--jar / --jr [ENTER] -> " +
@@ -494,7 +496,7 @@ public class ConsoleUtilityItself {
                                 "(your file. Example: test.txt) {ELSE} This jar file doesn't exist. Create the new: " +
                                 "-> (the new jar file) -> [ENTER] -> " +
                                 "<MESSAGE> Jar file was created successfully: (path to your jar file)");
-                        case 11 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 10 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--zip,--zp (for Windows) / --tar.gz,--tr [ENTER] -> " +
@@ -502,14 +504,14 @@ public class ConsoleUtilityItself {
                                 "Write the file which you want to include to the zip (or tar.gz): -> (your file. Example: test.txt) " +
                                 "-> [ENTER] -> {IF YOUR FILE EXISTS} -> <MESSAGE> Zip file was created successfully: (path to your zip file) -> " +
                                 "{ELSE} This zip (tar.gz) file doesn't exist. Create the new: -> (your file with zip,tar.gz)");
-                        case 12 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 11 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--write,--wt -> [ENTER] -> " +
                                 "Write the text or data: -> (your text) -> [ENTER] -> " +
                                 "Write the filename where you want to write the data in: -> (name for your file) -> [ENTER] -> " +
                                 "{IF EXISTS} -> (your text was written to the file) {ELSE} -> This file doesn't exist. Create the new: ");
-                        case 13 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 12 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--grep,--gp -> [ENTER] -> " +
@@ -517,56 +519,56 @@ public class ConsoleUtilityItself {
                                 "{IF EXISTS} -> Write the word or text which you want to become from the file: (word from your text) {ELSE} -> " +
                                 "This file doesn't exist. Create the new -> (create the new file) -> [ENTER] -> Write the text in the file: -> " +
                                 "(text to the file)");
-                        case 14 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 13 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--history / --hi -> [ENTER] -> (will showed the list of the commands which you used in the ConsoleUtility)");
-                        case 15 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 14 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--find / --fd -> [ENTER] -> " +
                                 "Write the directory where you want to find the files: -> (your directory) -> [ENTER] -> " +
                                 "Write the extension of the files for searching: -> (your extension for files: Example: .txt,.bin) -> [ENTER] -> " +
                                 "(will showed all files / catalogs with definite extension)");
-                        case 16 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 15 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--lstcat / --ls -> [ENTER] -> " +
                                 "Write the directory where want you to see the catalogs: -> (your directory) -> [ENTER] -> " +
                                 "(will showed all the files / catalogs in the definite directory)");
-                        case 17 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 16 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--replace / --re -> [ENTER] -> " +
                                 "Write the file where will you change the chars in: -> (your file. Example: test.txt) -> [ENTER] -> " +
                                 "{IF EXISTS} -> Write the first char which you want to change: (first char. Example: c) -> [ENTER] -> " +
                                 "Write the second char for changing: -> (second char. Example: i) -> [ENTER] -> (will replaced first char to second char)");
-                        case 18 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 17 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--crtdir / --cr -> [ENTER] -> " +
                                 "Write the name for the directory: -> (your directory) -> [ENTER] -> " +
                                 "Write the main directory: (your main directory) (Example: C:\\Users\\... or /home/...) -> [ENTER] -> " +
                                 "<MESSAGE> 'The directory was created: (your created directory)'");
-                        case 19 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 18 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--candir / --ca -> [ENTER] -> " +
                                 "Write the directory which you want to delete: (your directory for deleting) -> [ENTER] -> " +
                                 "The directory (your directory) was deleted successfully");
-                        case 20 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 19 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--exstdirs / --ex -> [ENTER] -> " +
                                 "(will showed all directories which were created with crtdir)");
-                        case 21 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 20 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--chgrits / --cs -> [ENTER] -> " +
                                 "Write the file which you want to change the rights for using this file in: -> (your file with name) -> [ENTER] -> " +
                                 "Write the rights in the view of the octal system (Example: 700): (rights for your file. Example: 700) -> [ENTER] -> " +
                                 "{IF SUCCESS} -> <MESSAGE> The rights for the file: '(name for your saving file)' were changed successfully");
-                        case 22 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 21 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--chgextn / --cx -> [ENTER] -> " +
@@ -574,50 +576,69 @@ public class ConsoleUtilityItself {
                                 "Write the extension for your file: (extension for your file) -> [ENTER] -> " +
                                 "Write the new extension for your file: (new extension for your file) -> [ENTER] -> " +
                                 "{IF SUCCESS} -> <MESSAGE> The file's extension was changed successfully");
-                        case 23 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 22 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--symlink / --sl -> [ENTER] -> " +
                                 "Write the directory for which you want to create the symbolic link: (your directory) -> [ENTER] -> " +
                                 "Write the symbolic link: (symbolic link for your file) -> [ENTER] -> " +
                                 "{IF SUCCESS} -> <MESSAGE> The symbolic link was created successfully: (path to your link directory)");
-                        case 24 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 23 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--empty / --em -> [ENTER] -> " +
                                 "Write the file which you want to delete the text from: (your file. Example: test.txt) -> [ENTER] -> " +
                                 "{IF SUCCESS} -> <MESSAGE> Text from the file was deleted successfully");
-                        case 25 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 24 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--sort / --st -> [ENTER] -> " +
                                 "Write your file: -> (your file. Example: test.txt) " +
                                 "Write your directory: -> (your directory) -> [ENTER]");
-                        case 26 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 25 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--reverse / --rv -> [ENTER] -> " +
                                 "Write the file which you want to read data from: (your file. Example: test.txt) -> [ENTER]");
-                        case 27 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 26 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--remall / --ra -> [ENTER] -> " +
                                 "Write your directory: -> (your directory) -> [ENTER] -> "  +
                                 "{IF SUCCESS} -> <MESSAGE> All catalogies and files in (your directory) were deleted successfully");
-                        case 28 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 27 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--remove / --rm -> [ENTER] -> " +
                                 "Write name of the file: -> (your file. Example: test.txt) -> [ENTER] -> " +
                                 "Write your directory: -> (your directory) -> [ENTER] -> " +
                                 "{IF SUCCESS} -> <MESSAGE> File (your file) was deleted from directory (your directory) successfully");
-                        case 29 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                        case 28 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--integrate / --ig -> [ENTER] -> " +
                                 "Write your file: -> (your file. Example: test.txt) -> [ENTER] -> " +
                                 "Write your directory: -> (your directory) -> [ENTER] -> " +
                                 "{IF SUCCESS} -> <MESSAGE> File (your file) was added to directory (your directory) successfully");
+                        case 29 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--sizfls / --sf -> [ENTER] ->  " +
+                                "Write the directory (for analysis all files) or file: (your directory or file) -> [ENTER] -> " +
+                                "{IF YOU WRITE DIRECTORY} -> (all files will analysed with size in bytes) " +
+                                "<> {ELSE IF YOU WRITE PATH TO FILE} -> Write the path to your file: (your path to file) -> [ENTER] ->" +
+                                "(the definite file was analysed with size in bytes)");
+                        case 30 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--edit / --et -> [ENTER] -> " +
+                                "(will shown the file in GUI version. You can write all what you want with possible save and open file itself)"
+                                );
+                        case 31 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--wrdcnt / --wc -> [ENTER] -> " +
+                                "{IF SUCCESS} -> (will counted all symbols in rou date from your file)");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -711,7 +732,7 @@ public class ConsoleUtilityItself {
                 }
                 case "--symlink","--sl" -> {
                     appendHistory((index) + " | " + arg);
-                    String symlink, directory;
+                    String symlink;
                     System.out.println("Write the directory for which you want to create the symbolic link: ");
                     directory = operation.nextLine();
                     Path path = Path.of("Directory.txt");
@@ -756,7 +777,7 @@ public class ConsoleUtilityItself {
                     System.out.println("Write your file: ");
                     String file_ = operation.nextLine();
                     System.out.println("Write your directory: ");
-                    String directory = operation.nextLine();
+                    directory = operation.nextLine();
                     String fullPath = String.format("%s/%s",directory,file_);
                     List<String> allCatalogies = Files.readAllLines(Path.of(fullPath));
                     Collections.sort(allCatalogies);
@@ -786,7 +807,7 @@ public class ConsoleUtilityItself {
                 case "--remall","--ra" -> {
                     appendHistory((index) + " | " + arg);
                     System.out.println("Write your directory: ");
-                    String directory = operation.nextLine();
+                    directory = operation.nextLine();
                     if(!directory.startsWith("C:\\") && !directory.startsWith("/")) {
                         System.err.println(RED + "Directories must be started with C:\\ (for Windows) or / (Linux)" + RESET);
                     } else {
@@ -810,7 +831,7 @@ public class ConsoleUtilityItself {
                     System.out.println("Write name of the file: ");
                     String fileName = operation.nextLine();
                     System.out.println("Write your directory: ");
-                    String directory = operation.nextLine();
+                    directory = operation.nextLine();
                     if(!directory.startsWith("C:\\") && !directory.startsWith("/")) {
                         System.err.println(RED + "Directories must be started with C:\\ (for Windows) or / (Linux)" + RESET);
                     } else {
@@ -824,12 +845,60 @@ public class ConsoleUtilityItself {
                     System.out.println("Write your file: ");
                     String newFile = operation.nextLine();
                     System.out.println("Write your directory: ");
-                    String directory = operation.nextLine();
-                    String fullPath = String.format("%s/%s",directory,newFile);
-                    Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxrwxrwx");
-                    FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-                    Files.createFile(Path.of(fullPath),attr);
-                    System.out.println(GREEN + "File '" + newFile + "' was added to directory '" + directory + "' successfully" + RESET);
+                    directory = operation.nextLine();
+                    if(!directory.startsWith("C:\\") && !directory.startsWith("/")) {
+                        System.err.println(RED + "Directories must be started with C:\\ (for Windows) or / (Linux)" + RESET);
+                    } else {
+                        String fullPath = String.format("%s/%s", directory, newFile);
+                        Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxrwxrwx");
+                        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
+                        Files.createFile(Path.of(fullPath), attr);
+                        System.out.println(GREEN + "File '" + newFile + "' was added to directory '" + directory + "' successfully" + RESET);
+                    }
+                }
+                case "--sizfls","--sf" -> {
+                    appendHistory((index) + " | " + arg);
+                    System.out.println("Write the directory (for analysis all files) or file: ");
+                    String allOrDefinite = operation.nextLine();
+                    if(new File(allOrDefinite).isDirectory()) {
+                        if(!allOrDefinite.startsWith("C:\\") && !allOrDefinite.startsWith("/")) {
+                            System.err.println(RED + "Directories must be started with C:\\ (for Windows) or / (Linux)" + RESET);
+                        } else {
+                            try(Stream<Path> paths = Files.walk(Path.of(allOrDefinite))) {
+                                paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (file_ -> System.out.println(file_ + " = " + YELLOW + file_.length() + RESET + " bytes"));
+                            }
+                        }
+                    } else {
+                        System.out.println("Write the path to your file: ");
+                        allOrDefinite = operation.nextLine();
+                        if(Files.exists(Path.of(allOrDefinite))) {
+                            System.out.println(allOrDefinite + " = " + YELLOW + new File(allOrDefinite).length() + RESET + " bytes");
+                        } else {
+                            System.err.println(RED + "This file doesn't exist" + RESET);
+                        }
+                    }
+                }
+                case "--edit","--et" -> {
+                    appendHistory((index) + " | " + arg);
+                    SwingUtilities.invokeLater(() -> new TextEditor().setVisible(true));
+                }
+                case "--symcnt","--wc" -> {
+                    appendHistory((index) + " | " + arg);
+                    System.out.println("Write name of the file: ");
+                    String fileName = operation.nextLine();
+                    if(Files.exists(Path.of(fileName))) {
+                        try(BufferedReader symbolsCount = new BufferedReader(new FileReader(fileName))) {
+                            String line = symbolsCount.readLine();
+                            if(line == null || line.isEmpty()) {
+                                System.out.println(GREEN + "Symbols: " + 0 + RESET);
+                            } else {
+                                System.out.println(GREEN + "Symbols: " + line.length() + RESET);
+                            }
+                        }
+                    } else {
+                        System.err.println(RED + "This file doesn't exist" + RESET);
+                    }
                 }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
@@ -844,7 +913,6 @@ public class ConsoleUtilityItself {
                         "--copy         /       --cp = copy the data from one file to other file",
                         "--move         /       --mv = move the file from one disk to other disk",
                         "--newname      /       --nn = rename the file",
-                        "--taskmgr      /       --tm = include the Taskmgr.exe from the system files in Windows",
                         "--stopgap      /       --sg = create the stopgap (temporary) file",
                         "--GUI          /       --gi = GUI's version of the Console Utility",
                         "--jar          /       --jr = creation of the jar files",
@@ -867,10 +935,12 @@ public class ConsoleUtilityItself {
                         "--reverse      /       --rv = read the data from end to begin",
                         "--remall       /       --ra = remove all catalogies in the directory",
                         "--remove       /       --rm = remove the definite catalog in the directory",
-                        "--integrate    /       --ig = integrate the catalog to the directory"
+                        "--integrate    /       --ig = integrate the catalog to the directory",
+                        "--sizfls       /       --sf = analysis all files in the directory or definite file with size in bytes",
+                        "--edit         /       --et = edit the file in GUI view when user wants to write all text data in file.",
+                        "--symcnt       /       --sc = count all symbols from text of your file"
                 )).forEach(System.out::println);
     }
-
     private static class ConsoleUtilitysGUI extends JFrame {
         private final JLabel selectedLabel;
         public ConsoleUtilitysGUI() {
@@ -916,13 +986,66 @@ public class ConsoleUtilityItself {
                 }
             }
         }
-
         private void actionPerformed(ActionEvent chooser) {
             saveTheFileChooser();
         }
-
         private void actionPerformed2(ActionEvent choose) {
             openDirectoryChooser();
+        }
+    }
+
+    private static class TextEditor extends JFrame {
+        private final JTextArea textArea;
+        private final JFileChooser fileChooser;
+        public TextEditor() {
+            setTitle("File editor");
+            setSize(800, 600);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            textArea = new JTextArea();
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            add(scrollPane, BorderLayout.CENTER);
+            fileChooser = new JFileChooser();
+            initMenu();
+        }
+        private void initMenu() {
+            JMenuBar menuBar = new JMenuBar();
+            JMenu fileMenu = new JMenu("File");
+            fileMenu.setSize(300,300);
+            JMenuItem open = new JMenuItem("Open");
+            open.addActionListener(e -> openFile());
+            JMenuItem save = new JMenuItem("Save");
+            save.addActionListener(e -> saveFile());
+            fileMenu.add(open);
+            fileMenu.add(save);
+            menuBar.add(fileMenu);
+            setJMenuBar(menuBar);
+        }
+        private void openFile() {
+            int returnVal = fileChooser.showOpenDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                    String line;
+                    StringBuilder content = new StringBuilder();
+                    while ((line = reader.readLine()) != null) {
+                        content.append(line).append("\n");
+                    }
+                    textArea.setText(content.toString());
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(this, RED + "Read file error" + RESET);
+                }
+            }
+        }
+        private void saveFile() {
+            int returnVal = fileChooser.showSaveDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    writer.write(textArea.getText());
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(this, RED + "Save file error" + RESET);
+                }
+            }
         }
     }
 }
