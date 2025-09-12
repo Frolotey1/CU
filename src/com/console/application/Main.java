@@ -8,16 +8,17 @@ public class Main {
             GREEN = ESC + "[32m",
             YELLOW = ESC + "[33m",
             RED = ESC + "[31m",
+            PURPLE = "[35m",
             RESET = ESC + "[0m";
     public static void main(String[] args) throws IOException {
         Console console = System.console();
         Scanner loginOrRegister = new Scanner(System.in);
-        System.out.println("1. Login");
-        System.out.println("2. Register");
-        System.out.println("Select for enter to system. Write 1 or 2: ");
+        System.out.println(PURPLE + "Select for enter to system. Write 1 or 2: " + RESET);
+        System.out.println(PURPLE + "1. Login" + RESET);
+        System.out.println(PURPLE + "2. Register" + RESET);
         int choose = loginOrRegister.nextInt();
         if(choose == 1) {
-            char[] password = console.readPassword("Write the password: ");
+            char[] password = console.readPassword(PURPLE + "Write the password: " + RESET);
             try(BufferedReader read = new BufferedReader(new FileReader("PasswordManager.txt"))) {
                 if(Arrays.equals(password, read.readLine().toCharArray())) {
                     System.out.println(GREEN + "You completed the system. Welcome to Console Utility" + RESET);
@@ -29,10 +30,11 @@ public class Main {
         } else if(choose == 2) {
             File saveThePassword = new File("PasswordManager.txt");
             if(console != null) {
-                System.out.println("Write the password: ");
+                System.out.println(PURPLE + "Write the password: " + RESET);
                 char[]password = console.readPassword();
                 try(BufferedWriter write = new BufferedWriter(new FileWriter(saveThePassword))) {
                     write.write(password);
+                    System.out.println(GREEN + "Your password is created and saved. Welcome to Console Utility" + RESET);
                 } catch (IOException e) {
                     System.err.println(RED + "This is error for writing the password." + RESET);
                 }
@@ -44,16 +46,16 @@ public class Main {
             System.exit(0);
         }
         Scanner includeLanguage = new Scanner(System.in);
-        System.out.println("Which language do you want to use for working with ConsoleUtility. Write number 1 or 2: ");
-        System.out.println("1. Deutsch | 2. English");
+        System.out.println(PURPLE + "Which language do you want to use for working with ConsoleUtility. Write number 1 or 2: " + RESET);
+        System.out.println(YELLOW + "1. Deutsch | 2. English" + RESET);
         int chooseLanguage = includeLanguage.nextInt();
         switch(chooseLanguage) {
-            case 1 -> System.out.println("Ein weg zu Console Utility's deutsch version: "
-                    + GREEN + "src\\KonsoleDienstProgramm.java" + RESET + // deutsch version fur konsole dienstprogramm
-                    YELLOW + "\nFur eines einfuhrung mit deutsches befehlen - schreiben --helfen oder --hel / fur befehlens syntax: --tldr oder --tld\n" + RESET);
-            case 2 -> System.out.println("The path to Console Utility's english version: "
+            case 1 -> System.out.println(PURPLE + "Ein weg zu Console Utility's deutsch version: " + RESET +
+                    GREEN + "src\\KonsoleDienstProgramm.java" + RESET + // deutsch version fur konsole dienstprogramm
+                    YELLOW + "\nFur eines einfuhrung mit deutsches befehlen - schreiben --helfen oder --hel / fur syntax: --tldr oder --tld\n" + RESET);
+            case 2 -> System.out.println(PURPLE + "The path to Console Utility's english version: " + RESET
                     + GREEN + "src\\ConsoleUtilityItself.java" + RESET +  // english version for console utility
-                    YELLOW + "\nFor familiarization with english commands - write --help or --h / for syntax of commands: --tldr or --tl" + RESET);
+                    YELLOW + "\nFor familiarization with english commands - write --help or --h / for syntax: --tldr or --tl" + RESET);
             default -> System.err.println(RED + "This language is not supported in the console utility" + RESET);
         }
     }
