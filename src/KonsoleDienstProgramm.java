@@ -640,7 +640,6 @@ public class KonsoleDienstProgramm {
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--editieren / --edt -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> (will zahlen alle symbole in deinem daten vom deinem datei)");
-                                );
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -878,7 +877,6 @@ public class KonsoleDienstProgramm {
                    SwingUtilities.invokeLater(() -> new KonsoleDienstProgrammsGBS.TextEditor().setVisible(true));
                 }
                 case "--symzln","--szn" -> {
-                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie ein name fur deinem datei: ");
                     String dateiName = operation.nextLine();
                     if(Files.exists(Path.of(dateiName))) {
@@ -1042,4 +1040,3 @@ public class KonsoleDienstProgramm {
         }
     }
 }
-
