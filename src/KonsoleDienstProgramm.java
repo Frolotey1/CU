@@ -878,6 +878,7 @@ public class KonsoleDienstProgramm {
                    SwingUtilities.invokeLater(() -> new KonsoleDienstProgrammsGBS.TextEditor().setVisible(true));
                 }
                 case "--symzln","--szn" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie ein name fur deinem datei: ");
                     String dateiName = operation.nextLine();
                     if(Files.exists(Path.of(dateiName))) {
@@ -1041,3 +1042,4 @@ public class KonsoleDienstProgramm {
         }
     }
 }
+
