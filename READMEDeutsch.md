@@ -14,7 +14,7 @@ Laden Sie die Datei CU-ConsoleUtility aus diesem Repository herunter und platzie
 Und der Pfad ändert sich zu `C:\CU-ConsoleUtility` (unter Windows). Im Linux-System in der Bash-Zeile: `/home/CU-ConsoleUtility`. Nach `C:\CU-ConsoleUtility` müssen Sie schreiben: **java src/com/console/application/Main.java**. In der Bash-Zeile unter Linux nach `/home/CU-ConsoleUtility`: **java src\com\console\application\Main.java**. Dieser Befehl startet das ConsoleUtility und Sie müssen sich beim ConsoleUtility registrieren (WARNUNG: Die Passwortverwaltung in diesem Projekt ist einfach und verwendet die TXT-Datei des Programms. Dies ist das Schulungshandbuch). Nach der Registrierung oder Anmeldung (falls Sie das Passwort bereits hatten) können Sie eine Arbeitssprache auswählen: Deutsch oder Englisch. Nach der Auswahl des Programms erhalten Sie den Pfad zur richtigen Version des ConsoleUtility: src/ConsoleUtilityItself.java (Englisch) oder src/KonsoleDienstProgramm.java (Deutsch). Außerdem werden Ratschläge zur Einarbeitung in die Befehle des konkreten Dienstprogramms gegeben: --help, --h (englisches ConsoleUtility) oder --helfen, --hel (deutsches ConsoleUtility) / fur kennenlernenung mit befehlens syntax sie konnen benutzen: --tldr oder --tld.
 
 # Montagesystem
-ConsoleUtility wie ein Projekt, das mit dem Mavens-System gesammelt wurde
+ConsoleUtility wie ein Projekt, das mit dem Mavens system gesammelt wurde
 # Ein Beispiel für die Arbeit mit diesem Projekt: 
 <img width="1153" height="294" alt="2025-08-30_00-02" src="https://github.com/user-attachments/assets/efd2713d-ae73-49f7-b11f-932b18dcd796" />
 
