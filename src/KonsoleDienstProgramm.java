@@ -1,4 +1,7 @@
 import javax.swing.*;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
@@ -40,7 +43,7 @@ public class KonsoleDienstProgramm {
             ROT = ESC + "[31m",
             GELB = ESC + "[33m",
             RESET = ESC + "[0m";
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, XMLStreamException {
         List<String> richten = new ArrayList<>(List.of(
                 "---","--x","-w-","-wx","r--","r-x","rw-","rwx"));
         List<Character> nummerRichten = new ArrayList<>();
@@ -638,8 +641,35 @@ public class KonsoleDienstProgramm {
                         case 31 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "--editieren / --edt -> [ENTER] -> " +
+                                "--symzln / --szn -> [ENTER] -> " +
                                 "{WENN ERFOLG} -> (will zahlen alle symbole in deinem daten vom deinem datei)");
+                        case 32 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--andegrose / --agr -> [ENTER] -> " +
+                                "Schreiben Sie eine name fur deinem datei: (name fur deinem datei) -> [ENTER] -> " +
+                                "Schreiben Sie eine neue grose fur deinem datei: (neue grose fur deinem datei) -> [ENTER] -> " +
+                                "{WENN ERFOLG} -> <NACHRICHT> Dateis grose war erfolgreich erstellt"
+                                );
+                        case 33 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--version / --vrs -> [ENTER] -> " +
+                                "(Die aktuelle version fur deinem Utility)");
+                        case 34 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--sicherung / --scr -> [ENTER] -> " +
+                                "Schreiben Sie deine datei welche hat eine daten: " +
+                                "{WENN ERFOLG} <NACHRICHT> Fur spreicherung daten vom datei war ReserveCopieren.bin file erstellt"
+                                );
+                        case 35 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--xexport / --exp -> [ENTER] -> " +
+                                "Schreiben Sie eine daten: (deine daten) -> [ENTER] -> " +
+                                "{WENN ERFOLG} <NACHRICHT> XML Datei mit daten war erfolgreich erstellt"
+                                );
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -892,6 +922,72 @@ public class KonsoleDienstProgramm {
                         System.err.println(ROT + "Dieser datei existiert nicht" + RESET);
                     }
                 }
+                case "--andegrose","--agr" -> {
+                    System.out.println("Schreiben Sie eine name fur deinem datei: ");
+                    String dateiname = operation.nextLine();
+                    if(Files.exists(Path.of(dateiname))) {
+                        System.out.println("Schreiben Sie eine neue grose fur deinem datei: ");
+                        long neueGrose = operation.nextLong();
+                        String []dateiDaten = new String[2];
+                        try(BufferedReader lesenVom = new BufferedReader(new FileReader(dateiname))) {
+                            String linie = lesenVom.readLine();
+                            if(linie == null || linie.isEmpty()) {
+                                linie = "";
+                                dateiDaten[0] = linie;
+                            } else {
+                                dateiDaten[0] = linie;
+                            }
+                        }
+                        dateiDaten[1] = dateiname;
+                        Files.deleteIfExists(Path.of(dateiname));
+                        try(RandomAccessFile erstellenWiederUndGroseAndern = new RandomAccessFile(dateiDaten[1],"rw")) {
+                            erstellenWiederUndGroseAndern.setLength(neueGrose);
+                        }
+                        try(BufferedWriter schreibenWiederZuruck = new BufferedWriter(new FileWriter(dateiDaten[1]))) {
+                            schreibenWiederZuruck.write(dateiDaten[0]);
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        System.out.println(GRUN + "Dateis grose war erfolgreich erstellt" + RESET);
+                    } else {
+                        System.err.println(ROT + "Diese datei existiert nicht" + RESET);
+                    }
+                }
+                case "--version","--vrs" -> System.out.println("3.3.0");
+                case "--sicherung","--scr" -> {
+                    System.out.println("Schreiben Sie deine datei welche hat eine daten: ");
+                    String dateiname = operation.nextLine();
+                    if(Files.exists(Path.of(dateiname))) {
+                        try(BufferedReader prufenDatenInDatei = new BufferedReader(new FileReader(dateiname))) {
+                            String data = prufenDatenInDatei.readLine();
+                            if(data == null || data.isEmpty()) {
+                                System.err.println(ROT + "Daten in datei ist leer" + RESET);
+                            }
+                        }
+                        Path reserveCopieren = Path.of("ReserveCopieren.bin");
+                        try {
+                            Files.copy(Path.of(dateiname),reserveCopieren,StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        System.out.println(GRUN + "Fur spreicherung daten vom datei war ReserveCopieren.bin file erstellt" + RESET);
+                    } else {
+                        System.err.println(ROT + "Diese datei existiert nicht" + RESET);
+                    }
+                }
+                case "--xexport","--exp" -> {
+                    System.out.println("Schreiben Sie eine daten: ");
+                    String daten = operation.nextLine();
+                    XMLOutputFactory factory = XMLOutputFactory.newInstance();
+                    XMLStreamWriter schreibenZuXML = factory.createXMLStreamWriter(new FileWriter("XMLFormat.xml"));
+                    schreibenZuXML.writeStartDocument("UTF-8","1.0");
+                    schreibenZuXML.writeStartElement("Nachricht");
+                    schreibenZuXML.writeCData(daten);
+                    schreibenZuXML.writeEndElement();
+                    schreibenZuXML.writeEndDocument();
+                    schreibenZuXML.close();
+                    System.out.println(GRUN + "XML Datei mit daten war erfolgreich erstellt" + RESET);
+                }
                 case null, default -> System.err.println(ROT + "Diese befehle existiert nicht" + RESET);
             }
         }
@@ -931,7 +1027,11 @@ public class KonsoleDienstProgramm {
                         "--integrieren    / --ing = integrieren deine katalogie zur direktorei",
                         "--grsdti         / --grs = analysieren alle datei oder ein datei mit grose in bytes",
                         "--editieren      / --edt = editieren datei mit GUI version wann will benutzer schreiben all texten in datei",
-                        "--symzln         / --szn = symbole zahlen in deinem datei"
+                        "--symzln         / --szn = symbole zahlen in deinem datei",
+                        "--andegrose      / --agr = andern eine grose fur datei",
+                        "--version        / --vrs = zeigen eine version fur deinem Konsole Dienst Programm",
+                        "--sicherung      / --scr = spreichern sicherung mit daten in ReserveCopieren.bin",
+                        "--xexport        / --exp = exportieren eine daten zu XML datei"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
@@ -1040,3 +1140,4 @@ public class KonsoleDienstProgramm {
         }
     }
 }
+
