@@ -1,5 +1,6 @@
 package com.console.application;
 import java.io.*;
+import java.time.LocalTime;
 import java.util.*;
 
 public class Main {
@@ -11,6 +12,9 @@ public class Main {
             PURPLE = ESC + "[35m",
             RESET = ESC + "[0m";
     public static void main(String[] args) throws IOException {
+        try(BufferedWriter writeTheTime = new BufferedWriter(new FileWriter("UtilityStatistic.txt"))) {
+            writeTheTime.write(LocalTime.now().getHour() + " " + LocalTime.now().getMinute() + " " + LocalTime.now().getSecond());
+        }
         Console console = System.console();
         Scanner loginOrRegister = new Scanner(System.in);
         System.out.println(PURPLE + "Select for enter to system. Write 1 or 2: " + RESET);
