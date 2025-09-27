@@ -1,13 +1,12 @@
 import javax.swing.*;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 import java.util.jar.*;
@@ -68,8 +67,10 @@ public class KonsoleDienstProgramm {
                     "--adverungen oder --adv","--symlink oder --sym",
                     "--leer oder --lee","--sortieren oder --sor",
                     "--umkehren oder --umk","--entAlle oder --ena",
-                    "--entfernen oder --ent","--integrieren or ing",
-                    "--grsdti,--grs","--editieren,--edt","--symzln,--szn"
+                    "--entfernen oder --ent","--integrieren oder ing",
+                    "--grsdti oder --grs","--editieren oder --edt","--symzln oder --szn",
+                    "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport dder --xp","--ximport oder --xm",
+                    "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -670,6 +671,30 @@ public class KonsoleDienstProgramm {
                                 "Schreiben Sie eine daten: (deine daten) -> [ENTER] -> " +
                                 "{WENN ERFOLG} <NACHRICHT> XML Datei mit daten war erfolgreich erstellt"
                                 );
+                        case 36 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--ximport / --xim -> [ENTER] -> " +
+                                "<NACHRICHT> (Nachricht uber deinem daten in datei)"
+                                );
+                        case 37 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--herstellen / --hen -> [ENTER] -> " +
+                                "<NACHRICHT> (Daten vom reserv datei waren kopieren erfolgreich)"
+                                );
+                        case 38 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--stats / --sts -> [ENTER] -> " +
+                                "<NACHRICHT> (Deine zeit fur benutzerung dieser projekt)"
+                                );
+                        case 39 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--suchen / --sun -> [ENTER] -> " +
+                                "Schreiben welche befehle wollen Sie finden: -> (schreiben Sie eine befehle) " +
+                                "-> [ENTER] -> {WENN ERFOLG} -> (Wollen zeigen alle befehle, welche wollen Sie finden)");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -988,7 +1013,76 @@ public class KonsoleDienstProgramm {
                     schreibenZuXML.close();
                     System.out.println(GRUN + "XML Datei mit daten war erfolgreich erstellt" + RESET);
                 }
-                case null, default -> System.err.println(ROT + "Diese befehle existiert nicht" + RESET);
+                case "--ximport","--xm" -> {
+                    XMLInputFactory fabrik = XMLInputFactory.newInstance();
+                    XMLStreamReader lesenVomXML = fabrik.createXMLStreamReader(new FileReader("XMLFormat.xml"));
+                    if(lesenVomXML.hasNext()) {
+                        lesenVomXML.next();
+                    }
+                    String []datenVomXML = new String[4];
+                    datenVomXML[0] = "Name: " + lesenVomXML.getName();
+                    datenVomXML[1] = "Codierung: " + lesenVomXML.getEncoding();
+                    datenVomXML[2] = "Version: " + lesenVomXML.getVersion();
+                    datenVomXML[3] = "Text " + lesenVomXML.getElementText();
+                    for(String info : datenVomXML) {
+                        System.out.println(info);
+                    }
+                    lesenVomXML.close();
+                }
+                case "--herstellen","--hen" -> {
+                    try {
+                        Files.copy(Path.of("KopierenReserv.bin"),Path.of("VomReserv.txt"),StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOError exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    try(BufferedReader datenVomReserv = new BufferedReader(new FileReader("VomReserv.txt"))) {
+                        System.out.println( datenVomReserv.readLine());
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    System.out.println(GRUN + "Daten vom reserv datei waren kopieren erfolgreich" + RESET);
+                }
+                case "--stats","--sts" -> {
+                    String zeitBekommen;
+                    try(BufferedReader lesenZeit = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
+                        zeitBekommen = lesenZeit.readLine();
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    List<Integer> StundeMinuteSekunde = new ArrayList<>();
+                    StringTokenizer dividierenZeit = new StringTokenizer(zeitBekommen);
+                    while(dividierenZeit.hasMoreTokens()) {
+                        StundeMinuteSekunde.add(Integer.parseInt(dividierenZeit.nextToken()));
+                    }
+                    System.out.println((LocalTime.now().getHour() - StundeMinuteSekunde.getFirst())
+                            + ":" + (LocalTime.now().getMinute() - StundeMinuteSekunde.get(1))
+                            + ":" + (LocalTime.now().getSecond() - StundeMinuteSekunde.getLast()));
+                }
+                case "--suchen","--sun" -> {
+                    List<String> suchen = new ArrayList<>(List.of(
+                            "--hilfen oder --hil","--hinzufugen oder --hin",
+                            "--lesen oder --les", "--loschen oder --los","--kopieren oder --kop",
+                            "--bewegen oder --bew","--umbenennen oder --umb",
+                            "--zeitweiligen oder --zei", "--GBS oder --gbs","--jarchiv oder --jar",
+                            "--pfeifen oder -pfe (Windows) / --tar.gz oder -tr (Linux)",
+                            "--schreiben oder --sch","--grep oder --gre",
+                            "--geschichte oder --ges","--finden oder --fin",
+                            "--lstkat oder --lst","--ersetzen oder --ers","--ertdir oder --ert",
+                            "--lshdir oder --lsh","--exstdirs oder --exs",
+                            "--tldr oder --tld","--andriten oder --and",
+                            "--adverungen oder --adv","--symlink oder --sym",
+                            "--leer oder --lee","--sortieren oder --sor",
+                            "--umkehren oder --umk","--entAlle oder --ena",
+                            "--entfernen oder --ent","--integrieren oder ing",
+                            "--grsdti oder --grs","--editieren oder --edt","--symzln oder --szn",
+                            "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport or --xp","--ximport or --xm",
+                            "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun"
+                    ));
+                    System.out.println("Schreiben welche befehle wollen Sie finden: ");
+                    String befehle = operation.nextLine();
+                    suchen.stream().filter(findenBefehle -> findenBefehle.startsWith(befehle)).forEach(System.out::println);
+                }
+                case null, default -> System.err.println(ROT + "This operation doesn't exist" + RESET);
             }
         }
     }
@@ -1031,7 +1125,11 @@ public class KonsoleDienstProgramm {
                         "--andegrose      / --agr = andern eine grose fur datei",
                         "--version        / --vrs = zeigen eine version fur deinem Konsole Dienst Programm",
                         "--sicherung      / --scr = spreichern sicherung mit daten in ReserveCopieren.bin",
-                        "--xexport        / --exp = exportieren eine daten zu XML datei"
+                        "--xexport        / --exp = exportieren eine daten zu XML datei",
+                        "--ximport        / --exm = importieren daten vom XML datei",
+                        "--herstellen     / --hen = zuruckgeben daten vom vom sicherung datei",
+                        "--stats          / --sts = zeit fur benutzerung dieser projekt",
+                        "--suchen         / --sun = suchen eine befehle fur shablone"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
@@ -1140,4 +1238,3 @@ public class KonsoleDienstProgramm {
         }
     }
 }
-
