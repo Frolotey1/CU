@@ -1,4 +1,3 @@
-import javax.sql.rowset.spi.XmlWriter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,14 +5,13 @@ import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 import java.util.jar.*;
 import java.util.logging.*;
 import java.util.stream.Stream;
 import java.util.zip.*;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParser;
 import javax.xml.stream.*;
 
 public class ConsoleUtilityItself {
@@ -71,7 +69,10 @@ public class ConsoleUtilityItself {
                     "--empty or --em","--sort or --st",
                     "--reverse or --rv","--remall or --ra",
                     "--remove or --rm","--integrate or --ig",
-                    "--sizfls,--sf","--edit,--et","--symcnt,--sc"
+                    "--sizfls or --sf","--edit or --et","--symcnt or --sc",
+                    "--resize or --rs", "--version or --vs",
+                    "--backup,--bp","--xexport,--xp","--ximport or --xm",
+                    "--restore or --rt","--stats or --ss","--search, --sh"
             ));
             for(String all : prompt) {
                 System.out.println(all);
@@ -647,29 +648,50 @@ public class ConsoleUtilityItself {
                                 "--wrdcnt / --wc -> [ENTER] -> " +
                                 "{IF SUCCESS} -> (will counted all symbols in rou date from your file)");
                         case 32 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
-                        "java src\\ConsoleUtilityItself.java (Windows) " +
-                        "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                        "--resize / --rs -> [ENTER] -> " +
-                        "Write a name for your file: (name for your file) -> [ENTER] -> " +
-                         "Write a new size for your file: (new size for your file) -> [ENTER] -> " +
-                         "{IF SUCCESS} -> <MESSAGE> File size was created successfully");
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--resize / --rs -> [ENTER] -> " +
+                                "Write a name for your file: (name for your file) -> [ENTER] -> " +
+                                 "Write a new size for your file: (new size for your file) -> [ENTER] -> " +
+                                 "{IF SUCCESS} -> <MESSAGE> File size was created successfully");
                         case 33 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
-                        "java src\\ConsoleUtilityItself.java (Windows) " +
-                        "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                        "--version / --vs -> [ENTER] -> " +
-                        "(The current version for your utility)");
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--version / --vs -> [ENTER] -> " +
+                                "(The current version for your utility)");
                         case 34 -> System.out.println("your path (C:\\CU-ConsoleUtility " +
-                        "java src\\ConsoleUtilityItself.java (Windows) " +
-                        "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                        "--backup / --bp -> [ENTER] -> " +
-                        "Write your file which contains a data: " +
-                        "{IF SUCCESS} <MESSAGE> To save data from the file ReserveCopy.bin file was created");
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--backup / --bp -> [ENTER] -> " +
+                                "Write your file which contains a data: " +
+                                "{IF SUCCESS} <MESSAGE> To save data from the file ReserveCopy.bin file was created");
                         case 35 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
-                        "java src\\ConsoleUtilityItself.java (Windows) " +
-                        "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                        "--xexport / --xp -> [ENTER] -> " +
-                        "Write a data: (your data) -> [ENTER] -> " +
-                        "{IF SUCCESS} <MESSAGE> XML file with data was successfully created");
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--xexport / --xp -> [ENTER] -> " +
+                                "Write a data: (your data) -> [ENTER] -> " +
+                                "{IF SUCCESS} <MESSAGE> XML file with data was successfully created");
+                        case 36 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--ximport / --xm -> [ENTER] -> " +
+                                "(Will showed your data from XML file)");
+                        case 37 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--restore / --rt -> [ENTER] -> " +
+                                "<MESSAGE> (Data from XML to simple file were shared successfully)");
+                        case 38 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--stats / --ss -> [ENTER] -> " +
+                                "(Will showed your time of using this project)");
+                        case 39 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--search / --sh -> [ENTER] -> " +
+                                "Write which command you find: -> (command which you want to find) -> [ENTER] ->" +
+                                "(Will showed the list of commands under your filtration");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -996,6 +1018,76 @@ public class ConsoleUtilityItself {
                     writeToXML.close();
                     System.out.println(GREEN + "XML File with date was created successfully" + RESET);
                 }
+                case "--ximport","--xm" -> {
+                    XMLInputFactory factory = XMLInputFactory.newInstance();
+                    XMLStreamReader readFromXML = factory.createXMLStreamReader(new FileReader("XMLFormat.xml"));
+                    if(readFromXML.hasNext()) {
+                        readFromXML.next();
+                    }
+                    String []dataFromXML = new String[4];
+                    dataFromXML[0] = "Name: " + readFromXML.getName();
+                    dataFromXML[1] = "Encoding: " + readFromXML.getEncoding();
+                    dataFromXML[2] = "Version: " + readFromXML.getVersion();
+                    dataFromXML[3] = "Text " + readFromXML.getElementText();
+                    for(String info : dataFromXML) {
+                        System.out.println(info);
+                    }
+                    readFromXML.close();
+                }
+                case "--restore","--rt" -> {
+                    try {
+                        Files.copy(Path.of("ReserveCopy.bin"),Path.of("FromReserve.txt"),StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOError exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    try(BufferedReader dataFromReserve = new BufferedReader(new FileReader("FromReserve.txt"))) {
+                        System.out.println(dataFromReserve.readLine());
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    System.out.println(GREEN + "Data from XML to simple file were shared successfully" + RESET);
+                }
+                case "--stats","--ss" -> {
+                    String getTime;
+                    try(BufferedReader readTheTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
+                        getTime = readTheTime.readLine();
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    List<Integer> HourMinuteSecond = new ArrayList<>();
+                    StringTokenizer divideTime = new StringTokenizer(getTime);
+                    while(divideTime.hasMoreTokens()) {
+                        HourMinuteSecond.add(Integer.parseInt(divideTime.nextToken()));
+                    }
+                    System.out.println((LocalTime.now().getHour() - HourMinuteSecond.getFirst())
+                            + ":" + (LocalTime.now().getMinute() - HourMinuteSecond.get(1))
+                            + ":" + (LocalTime.now().getSecond() - HourMinuteSecond.getLast()));
+                }
+                case "--search","--sh" -> {
+                    List<String> search = new ArrayList<>(List.of(
+                            "--help or --hp","--add or --ad",
+                            "--read or --rd", "--delete or --dt","--copy or --cp",
+                            "--move or --mv","--newname or --nn",
+                            "--taskmgr or --tm","--stopgap or --sg",
+                            "--GUI or --gi","--jar or --jr",
+                            "--zip or -zp (Windows)","--tar.gz or -tr (Linux)",
+                            "--write or --wt","--grep or --gp",
+                            "--history or --hi","--find or --fd",
+                            "--lstcat or --ls","--replace or --re","--crtdir or --cr",
+                            "--candir or --ca","--exstdirs or --ex",
+                            "--tldr or --tl","--chgrits or --cs",
+                            "--chgextn or --cx","--symlink or --sl",
+                            "--empty or --em","--sort or --st",
+                            "--reverse or --rv","--remall or --ra",
+                            "--remove or --rm","--integrate or --ig",
+                            "--sizfls or -sf","--edit or --et","--symcnt or --sc","--resize or --rs",
+                            "--version or --vs","--backup or --bp","--xexport or --xp","--ximport or --xm",
+                            "--restore or --rt","--stats or --ss","--search or --sh"
+                    ));
+                    System.out.println("Write which command you find: ");
+                    String command = operation.nextLine();
+                    search.stream().filter(foundCommand -> foundCommand.startsWith(command)).forEach(System.out::println);
+                }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
         }
@@ -1038,7 +1130,11 @@ public class ConsoleUtilityItself {
                         "--resize       /       --rs = change the size of the file",
                         "--version      /       --vs = show the version of your ConsoleUtility",
                         "--backup       /       --bp = create the reserve copy for saving data of your file",
-                        "--xexport      /       --xp = export the data in XML file"
+                        "--xexport      /       --xp = export the data in XML file",
+                        "--ximport      /       --xm = import the data from XML file",
+                        "--restore      /       --rt = return the data from backup file",
+                        "--stats        /       --ss = time of using this utility",
+                        "--search       /       --sh = search the definite command"
                 )).forEach(System.out::println);
     }
     private static class ConsoleUtilitysGUI extends JFrame {
@@ -1153,4 +1249,3 @@ public class ConsoleUtilityItself {
         }
     }
 }
-
