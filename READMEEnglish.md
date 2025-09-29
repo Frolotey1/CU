@@ -15,7 +15,7 @@ And path will changing on ``C:\CU-ConsoleUtility`` (in Windows). In the Linux Sy
 1. `--help, --hp.` (English ConsoleUtility) or `--helfen, --hel` (Deutsch ConsoleUtility)
 2. `--search, --sh.` (English Consoleutility) or `--suchen, --sun` (Deutsch ConsoleUtility)
 3. when you don't write not any command utility will show you the list of commands for working with utility. This is the prompt. 
-for familiarization with syntax of tthe commands you can use --tldr or --tl commands. 
+And for familiarization with syntax of tthe commands you can use --tldr or --tl commands. 
 # Assembly's system 
 ConsoleUtility like project was collected by Maven's system.
 # Example of working with the project: 
