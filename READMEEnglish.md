@@ -3,7 +3,7 @@ The simple version of the console utility with simple commands. Written on Java 
 # Java 
 Java like language was used for creation of this project. The Java's version is 23. ConsoleUtility supports all Java's versions after Java 10/11 and newer. 
 # Command Lines 
-ConsoleUtility can work in Windows PowerShell in Windows and the bash-line in Linux system. 
+ConsoleUtility can work in Windows PowerShell in Windows and the bash-line in Linux. 
 # Compiler for Java 
 For starting of this project you must have java compiler or javac. In Windows this compiler added automatically when you use the Intellig Idea IDE. In Linux System if you don't have the default-jdk packet, so you need to import it in your bash-line and your distrib which you use. You can easy install default-jdk packet using: `sudo apt install default-jdk` (example for Ubuntu distrib in Linux)
 # How start the project? 
