@@ -932,6 +932,7 @@ public class KonsoleDienstProgramm {
                    SwingUtilities.invokeLater(() -> new KonsoleDienstProgrammsGBS.TextEditor().setVisible(true));
                 }
                 case "--symzln","--szn" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie ein name fur deinem datei: ");
                     String dateiName = operation.nextLine();
                     if(Files.exists(Path.of(dateiName))) {
@@ -948,6 +949,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--andegrose","--agr" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie eine name fur deinem datei: ");
                     String dateiname = operation.nextLine();
                     if(Files.exists(Path.of(dateiname))) {
@@ -978,8 +980,12 @@ public class KonsoleDienstProgramm {
                         System.err.println(ROT + "Diese datei existiert nicht" + RESET);
                     }
                 }
-                case "--version","--vrs" -> System.out.println("3.3.0");
+                case "--version","--vrs" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("3.3.0");
+                }
                 case "--sicherung","--scr" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie deine datei welche hat eine daten: ");
                     String dateiname = operation.nextLine();
                     if(Files.exists(Path.of(dateiname))) {
@@ -1001,6 +1007,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--xexport","--exp" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie eine daten: ");
                     String daten = operation.nextLine();
                     XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -1014,6 +1021,7 @@ public class KonsoleDienstProgramm {
                     System.out.println(GRUN + "XML Datei mit daten war erfolgreich erstellt" + RESET);
                 }
                 case "--ximport","--xm" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     XMLInputFactory fabrik = XMLInputFactory.newInstance();
                     XMLStreamReader lesenVomXML = fabrik.createXMLStreamReader(new FileReader("XMLFormat.xml"));
                     if(lesenVomXML.hasNext()) {
@@ -1030,6 +1038,7 @@ public class KonsoleDienstProgramm {
                     lesenVomXML.close();
                 }
                 case "--herstellen","--hen" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     try {
                         Files.copy(Path.of("KopierenReserv.bin"),Path.of("VomReserv.txt"),StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOError exc) {
@@ -1043,6 +1052,7 @@ public class KonsoleDienstProgramm {
                     System.out.println(GRUN + "Daten vom reserv datei waren kopieren erfolgreich" + RESET);
                 }
                 case "--stats","--sts" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     String zeitBekommen;
                     try(BufferedReader lesenZeit = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
                         zeitBekommen = lesenZeit.readLine();
@@ -1059,6 +1069,7 @@ public class KonsoleDienstProgramm {
                             + ":" + (LocalTime.now().getSecond() - StundeMinuteSekunde.getLast()));
                 }
                 case "--suchen","--sun" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
                     List<String> suchen = new ArrayList<>(List.of(
                             "--hilfen oder --hil","--hinzufugen oder --hin",
                             "--lesen oder --les", "--loschen oder --los","--kopieren oder --kop",
