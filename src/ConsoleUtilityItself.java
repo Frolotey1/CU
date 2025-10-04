@@ -430,7 +430,9 @@ public class ConsoleUtilityItself {
                                     "replace", "crtdir", "candir", "exstdirs",
                                     "chgrits", "chgextn", "symlink", "empty",
                                     "sort", "reverse", "remall", "remove",
-                                    "integrate", "--sizfls", "--edit"
+                                    "integrate", "sizfls", "edit","symcnt",
+                                    "resize","version","backup","xexport",
+                                    "ximport","restore","stats","search"
                             };
                     for (int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
