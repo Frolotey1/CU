@@ -1,8 +1,11 @@
+import javax.management.RuntimeOperationsException;
 import javax.swing.*;
 import javax.xml.stream.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
 import java.time.LocalDateTime;
@@ -70,7 +73,9 @@ public class KonsoleDienstProgramm {
                     "--entfernen oder --ent","--integrieren oder ing",
                     "--grsdti oder --grs","--editieren oder --edt","--symzln oder --szn",
                     "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport dder --xp","--ximport oder --xm",
-                    "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun"
+                    "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun",
+                    "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
+                    "--sauber oder --sab"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -425,7 +430,8 @@ public class KonsoleDienstProgramm {
                                     "ersetzen","ertdir","lshdir","exstdirs","andriten",
                                     "adverungen","symlink","symzln","andegrose",
                                     "sicherung","ximport","xexport","herstellen",
-                                    "stats","suchen"
+                                    "stats","suchen","hostinfo","abshalten",
+                                    "neustarten","fspr","sauber"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -697,6 +703,31 @@ public class KonsoleDienstProgramm {
                                 "--suchen / --sun -> [ENTER] -> " +
                                 "Schreiben welche befehle wollen Sie finden: -> (schreiben Sie eine befehle) " +
                                 "-> [ENTER] -> {WENN ERFOLG} -> (Wollen zeigen alle befehle, welche wollen Sie finden)");
+                        case 40 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--hostinfo / --hos -> [ENTER] -> " +
+                                "(dienstprogramm will zeigen dir information uber deinem host daten)");
+                        case 41 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--abshalten / --abs -> [ENTER] -> " +
+                                "(dein komputer will abshalten seine arbeit und prozesse)");
+                        case 42 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--neustarten / --nsn -> [ENTER] -> " +
+                                "(dein komputer will neu starten seine arbeit)");
+                        case 43 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--fspr / --fsp -> [ENTER] -> " +
+                                "(dein komputer will zeigen dir eine information uber frei spreicher in bytes)");
+                        case 44 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility " +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--sauber / --sab -> [ENTER] -> " +
+                                "(Datei welche spreichert deine befehlen, will sauber ihnen)");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1058,17 +1089,21 @@ public class KonsoleDienstProgramm {
                     String zeitBekommen;
                     try(BufferedReader lesenZeit = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
                         zeitBekommen = lesenZeit.readLine();
+                        if(zeitBekommen == null || zeitBekommen.isEmpty()) {
+                            zeitBekommen = "";
+                        }
                     } catch (IOException exc) {
                         throw new RuntimeException(exc.getLocalizedMessage());
                     }
                     List<Integer> StundeMinuteSekunde = new ArrayList<>();
+                    ArrayList<String> zahlenBenutzBefehlen = new ArrayList<>(Files.readAllLines(HistorischDatei));
                     StringTokenizer dividierenZeit = new StringTokenizer(zeitBekommen);
                     while(dividierenZeit.hasMoreTokens()) {
                         StundeMinuteSekunde.add(Integer.parseInt(dividierenZeit.nextToken()));
                     }
-                    System.out.println((LocalTime.now().getHour() - StundeMinuteSekunde.getFirst())
+                    System.out.println("Benutzen befehlen: " + zahlenBenutzBefehlen.size() + " | BenZeit: " + (LocalTime.now().getHour() - StundeMinuteSekunde.getFirst())
                             + ":" + (LocalTime.now().getMinute() - StundeMinuteSekunde.get(1))
-                            + ":" + (LocalTime.now().getSecond() - StundeMinuteSekunde.getLast()));
+                            + ":" + (Math.abs(LocalTime.now().getSecond() - StundeMinuteSekunde.getLast())));
                 }
                 case "--suchen","--sun" -> {
                     hinzufugenGeschichte((index) + " | " + arg);
@@ -1089,11 +1124,64 @@ public class KonsoleDienstProgramm {
                             "--entfernen oder --ent","--integrieren oder ing",
                             "--grsdti oder --grs","--editieren oder --edt","--symzln oder --szn",
                             "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport or --xp","--ximport or --xm",
-                            "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun"
+                            "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun",
+                            "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
+                            "--sauber oder --sab"
                     ));
                     System.out.println("Schreiben welche befehle wollen Sie finden: ");
                     String befehle = operation.nextLine();
                     suchen.stream().filter(findenBefehle -> findenBefehle.startsWith(befehle)).forEach(System.out::println);
+                }
+                case "--hostinfo","--hos" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    String[] hostInfo = new String[]
+                            {
+                                    "Host name: " + Inet4Address.getLocalHost().getHostName(),
+                                    "Host addresse: " + InetAddress.getLocalHost().getHostAddress(),
+                                    "Kanonisch host name: " + InetAddress.getLocalHost().getCanonicalHostName()
+                            };
+                    for(String info : hostInfo) {
+                        System.out.println(info);
+                    }
+                }
+                case "--abshalten","--abs" -> {
+                    String bekommenOsName = System.getProperty("os.name");
+                    if(Objects.equals(bekommenOsName,"Linux") || Objects.equals(bekommenOsName,"Windows")) {
+                        String[]abshalten = new String[]{"shutdown -h now"};
+                        try {
+                            Process abshaltenProzess = Runtime.getRuntime().exec(abshalten);
+                            System.out.println(abshaltenProzess);
+                            System.exit(0);
+                        } catch (RuntimeOperationsException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                    } else {
+                        System.out.println(ROT + "Console Utility doesn't support this OS" + RESET);
+                    }
+                }
+                case "--neustarten","--nsn" -> {
+                    String []OSCBefehle = new String[1];
+                    String bekommenOsName = System.getProperty("os.name");
+                    if(Objects.equals(bekommenOsName,"Linux")) {
+                        OSCBefehle[0] = "reboot";
+                    } else if(Objects.equals(bekommenOsName,"Windows")){
+                        OSCBefehle[0] = "restart-computer";
+                    }
+                    try {
+                        Process neustartProzess = Runtime.getRuntime().exec(OSCBefehle);
+                        System.out.println(neustartProzess);
+                        System.exit(0);
+                    } catch (RuntimeOperationsException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--fspr","--fsp" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println(Runtime.getRuntime().freeMemory());
+                }
+                case "--sauber","--sab" -> {
+                    Files.deleteIfExists(HistorischDatei);
+                    System.out.println(GRUN + "History of commands was deleted successfully" + RESET);
                 }
                 case null, default -> System.err.println(ROT + "This operation doesn't exist" + RESET);
             }
@@ -1142,7 +1230,12 @@ public class KonsoleDienstProgramm {
                         "--ximport        / --exm = importieren daten vom XML datei",
                         "--herstellen     / --hen = zuruckgeben daten vom vom sicherung datei",
                         "--stats          / --sts = zeit fur benutzerung dieser projekt",
-                        "--suchen         / --sun = suchen eine befehle fur shablone"
+                        "--suchen         / --sun = suchen eine befehle fur shablone",
+                        "--hostinfo       / --hos = dienstprogramm will zeigen dir information uber deinem host daten",
+                        "--abshalten      / --abs = dein komputer will abshalten seine arbeit und prozesse",
+                        "--neustarten     / --nsn = dein komputer will neustarten seine arbeit",
+                        "--fspr           / --fsp = dein komputer will zeigen dir einme information uber frei spreicher in bytes",
+                        "--sauber         / --sab = datei welche spreichert deine befehlen, will sauber ihnen"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
