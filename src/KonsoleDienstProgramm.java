@@ -423,7 +423,9 @@ public class KonsoleDienstProgramm {
                                     "GBS","jar","pfeifen / tar.gz","schreiben",
                                     "grep","geschichte","finden","lstkat",
                                     "ersetzen","ertdir","lshdir","exstdirs","andriten",
-                                    "adverungen","symlink"
+                                    "adverungen","symlink","symzln","andegrose",
+                                    "sicherung","ximport","xexport","herstellen",
+                                    "stats","suchen"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
