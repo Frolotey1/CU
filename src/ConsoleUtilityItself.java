@@ -1,7 +1,10 @@
+import javax.management.RuntimeOperationsException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
 import java.time.LocalDateTime;
@@ -72,13 +75,13 @@ public class ConsoleUtilityItself {
                     "--sizfls or --sf","--edit or --et","--symcnt or --sc",
                     "--resize or --rs", "--version or --vs",
                     "--backup,--bp","--xexport,--xp","--ximport or --xm",
-                    "--restore or --rt","--stats or --ss","--search, --sh"
+                    "--restore or --rt","--stats or --ss","--search or --sh",
+                    "--hostinfo or --ho","--shutdown or sd","--restart or --rr","--fmem or --fm",
+                    "--clean or --cn"
             ));
             for(String all : prompt) {
                 System.out.println(all);
             }
-        } else {
-
         }
         for (String arg : args) {
             switch (arg) {
@@ -430,9 +433,11 @@ public class ConsoleUtilityItself {
                                     "replace", "crtdir", "candir", "exstdirs",
                                     "chgrits", "chgextn", "symlink", "empty",
                                     "sort", "reverse", "remall", "remove",
-                                    "integrate", "sizfls", "edit","symcnt",
-                                    "resize","version","backup","xexport",
-                                    "ximport","restore","stats","search"
+                                    "integrate", "--sizfls", "--edit","--symcnt",
+                                    "--resize","version","backup","xexport",
+                                    "ximport","restore","stats","search",
+                                    "hostinfo","shutdown","restart","fmem",
+                                    "clean"
                             };
                     for (int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -694,6 +699,31 @@ public class ConsoleUtilityItself {
                                 "--search / --sh -> [ENTER] -> " +
                                 "Write which command you find: -> (command which you want to find) -> [ENTER] ->" +
                                 "(Will showed the list of commands under your filtration");
+                        case 40 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--hostinfo / --ho -> [ENTER] -> " +
+                                "(data about your host settings)");
+                        case 41 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--shutdown / --sd -> [ENTER] -> " +
+                                "(your computer'll turn off and stop working)");
+                        case 42 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--restart / --rr -> [ENTER] -> " +
+                                "(your computer'll restart and update his working)");
+                        case 43 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--fmem / --fm -> [ENTER] -> " +
+                                "(utility'll show you the info about your free memory in bytes)");
+                        case 44 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--clean / --cn -> [ENTER] -> " +
+                                "(utility'll clean the history of commands which you used)");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -1059,9 +1089,13 @@ public class ConsoleUtilityItself {
                     System.out.println(GREEN + "Data from XML to simple file were shared successfully" + RESET);
                 }
                 case "--stats","--ss" -> {
+                    appendHistory((index) + " | " + arg);
                     String getTime;
                     try(BufferedReader readTheTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
                         getTime = readTheTime.readLine();
+                        if(getTime == null || getTime.isEmpty()) {
+                            getTime = "";
+                        }
                     } catch (IOException exc) {
                         throw new RuntimeException(exc.getLocalizedMessage());
                     }
@@ -1070,9 +1104,10 @@ public class ConsoleUtilityItself {
                     while(divideTime.hasMoreTokens()) {
                         HourMinuteSecond.add(Integer.parseInt(divideTime.nextToken()));
                     }
-                    System.out.println((LocalTime.now().getHour() - HourMinuteSecond.getFirst())
+                    ArrayList<String> countUsedCommands = new ArrayList<>(Files.readAllLines(HistoricalFile));
+                    System.out.println("Used commands: " + countUsedCommands.size() + " | Uptime: " + (LocalTime.now().getHour() - HourMinuteSecond.getFirst())
                             + ":" + (LocalTime.now().getMinute() - HourMinuteSecond.get(1))
-                            + ":" + (LocalTime.now().getSecond() - HourMinuteSecond.getLast()));
+                            + ":" + (Math.abs(LocalTime.now().getSecond() - HourMinuteSecond.getLast())));
                 }
                 case "--search","--sh" -> {
                     appendHistory((index) + " | " + arg);
@@ -1080,9 +1115,8 @@ public class ConsoleUtilityItself {
                             "--help or --hp","--add or --ad",
                             "--read or --rd", "--delete or --dt","--copy or --cp",
                             "--move or --mv","--newname or --nn",
-                            "--taskmgr or --tm","--stopgap or --sg",
-                            "--GUI or --gi","--jar or --jr",
-                            "--zip or -zp (Windows)","--tar.gz or -tr (Linux)",
+                            "--stopgap or --sg", "--GUI or --gi","--jar or --jr",
+                            "--zip or --zp (Windows)","--tar.gz or -tr (Linux)",
                             "--write or --wt","--grep or --gp",
                             "--history or --hi","--find or --fd",
                             "--lstcat or --ls","--replace or --re","--crtdir or --cr",
@@ -1094,11 +1128,63 @@ public class ConsoleUtilityItself {
                             "--remove or --rm","--integrate or --ig",
                             "--sizfls or -sf","--edit or --et","--symcnt or --sc","--resize or --rs",
                             "--version or --vs","--backup or --bp","--xexport or --xp","--ximport or --xm",
-                            "--restore or --rt","--stats or --ss","--search or --sh"
+                            "--restore or --rt","--stats or --ss","--search or --sh","--hostinfo or --ho",
+                            "--shutdown or --sd","--restart or --rr","--fmem or --fm","--clean or --cn"
                     ));
                     System.out.println("Write which command you find: ");
                     String command = operation.nextLine();
                     search.stream().filter(foundCommand -> foundCommand.startsWith(command)).forEach(System.out::println);
+                }
+                case "--hostinfo","--ho" -> {
+                    appendHistory((index) + " | " + arg);
+                    String[] hostInfo = new String[]
+                            {
+                                    "Host name: " + Inet4Address.getLocalHost().getHostName(),
+                                   "Host address: " + InetAddress.getLocalHost().getHostAddress(),
+                                    "Canonical host name: " + InetAddress.getLocalHost().getCanonicalHostName()
+                            };
+                    for(String info : hostInfo) {
+                        System.out.println(info);
+                    }
+                }
+                case "--shutdown","--sd" -> {
+                    String getOsName = System.getProperty("os.name");
+                    if(Objects.equals(getOsName,"Linux") || Objects.equals(getOsName,"Windows")) {
+                        String[]shutdown = new String[]{"shutdown -h now"};
+                        try {
+                            Process offProcess = Runtime.getRuntime().exec(shutdown);
+                            System.out.println(offProcess);
+                            System.exit(0);
+                        } catch (RuntimeOperationsException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                    } else {
+                        System.out.println(RED + "Console Utility doesn't support this OS" + RESET);
+                    }
+                }
+                case "--restart","--rr" -> {
+                    String []OSCommands = new String[1];
+                    String getOsName = System.getProperty("os.name");
+                    if(Objects.equals(getOsName,"Linux")) {
+                        OSCommands[0] = "reboot";
+                    } else if(Objects.equals(getOsName,"Windows")){
+                        OSCommands[0] = "restart-computer";
+                    }
+                    try {
+                        Process restartProcess = Runtime.getRuntime().exec(OSCommands);
+                        System.out.println(restartProcess);
+                        System.exit(0);
+                    } catch (RuntimeOperationsException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--fmem","--fm" -> {
+                    appendHistory((index) + " | " + arg);
+                    System.out.println(Runtime.getRuntime().freeMemory());
+                }
+                case "--clean","--cn" -> {
+                    Files.deleteIfExists(HistoricalFile);
+                    System.out.println(GREEN + "History of commands was deleted successfully" + RESET);
                 }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
@@ -1146,7 +1232,12 @@ public class ConsoleUtilityItself {
                         "--ximport      /       --xm = import the data from XML file",
                         "--restore      /       --rt = return the data from backup file",
                         "--stats        /       --ss = time of using this utility",
-                        "--search       /       --sh = search the definite command"
+                        "--search       /       --sh = search the definite command",
+                        "--hostinfo     /       --ho = information about your host settings",
+                        "--shutdown     /       --sd = stop the working of your computer",
+                        "--restart      /       --rr = restart your computer",
+                        "--fmem         /       --fm = check the information about your free memory in bytes",
+                        "--clean        /       --cn = clean the history of the commands "
                 )).forEach(System.out::println);
     }
     private static class ConsoleUtilitysGUI extends JFrame {
