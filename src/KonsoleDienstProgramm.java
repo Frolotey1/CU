@@ -75,7 +75,8 @@ public class KonsoleDienstProgramm {
                     "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport dder --xp","--ximport oder --xm",
                     "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun",
                     "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
-                    "--sauber oder --sab"
+                    "--sauber oder --sab","--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
+                    "--filterieren oder --fir"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -728,6 +729,29 @@ public class KonsoleDienstProgramm {
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--sauber / --sab -> [ENTER] -> " +
                                 "(Datei welche spreichert deine befehlen, will sauber ihnen)");
+                        case 45 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--pingen / --png -> [ENTER] ->" +
+                                "Geben Sie die IP-Adresse oder den DNS-Namen ein, die/den Sie anpingen möchten: (Ihre IP-Adresse oder Ihr DNS) ->" +
+                                "Geben Sie die Anzahl der Ping-Anfragen ein: (Anzahl der Ping-Anfragen) ->" +
+                                "{IF SUCCESS} -> (Sie erhalten Informationen zum Pingen Ihrer IP-Adresse oder Ihres DNS)");
+                        case 46 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--intprok / --ipk -> [ENTER] ->" + "(Sie erhalten die Informationen zu Ihrer IP)");
+                        case 47 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--unterbrechen / --ubr -> [ENTER] ->" + "Schreiben Sie die ID Ihres Prozesses: (ID Ihres Prozesses) ->" +
+                                "(ID des bestimmten Prozesses, der unterbrochen wird und seine Arbeit beendet)");
+                        case 48 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--filterieren / --fir -> [ENTER] ->" + "Schreiben Sie das Verzeichnis: (Ihr Verzeichnis) ->" +
+                                "Schreiben Sie die Größe zum Filtern der Dateien im Verzeichnis: (Größe der Dateien im Verzeichnis) ->" +
+                                "Schreiben Sie den Vergleichsoperator zum Suchen von Dateien mit einem bestimmten Muster: (Operator > < = !) ->" +
+                                "{IF SUCCESS} -> (Sie können die Dateien mit Ihrem bestimmten Muster sehen)");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1126,7 +1150,8 @@ public class KonsoleDienstProgramm {
                             "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport or --xp","--ximport or --xm",
                             "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun",
                             "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
-                            "--sauber oder --sab"
+                            "--sauber oder --sab", "--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
+                            "--filterieren oder --fir"
                     ));
                     System.out.println("Schreiben welche befehle wollen Sie finden: ");
                     String befehle = operation.nextLine();
@@ -1147,16 +1172,16 @@ public class KonsoleDienstProgramm {
                 case "--abshalten","--abs" -> {
                     String bekommenOsName = System.getProperty("os.name");
                     if(Objects.equals(bekommenOsName,"Linux") || Objects.equals(bekommenOsName,"Windows")) {
-                        String[]abshalten = new String[]{"shutdown -h now"};
+                        String[]shutdown = new String[]{"shutdown -h now"};
                         try {
-                            Process abshaltenProzess = Runtime.getRuntime().exec(abshalten);
+                            Process abshaltenProzess = Runtime.getRuntime().exec(shutdown);
                             System.out.println(abshaltenProzess);
                             System.exit(0);
                         } catch (RuntimeOperationsException exc) {
                             throw new RuntimeException(exc.getLocalizedMessage());
                         }
                     } else {
-                        System.out.println(ROT + "Utility unterstutzt diese OS nicht" + RESET);
+                        System.out.println(ROT + "Utility interstutzt diese OS nicht" + RESET);
                     }
                 }
                 case "--neustarten","--nsn" -> {
@@ -1183,7 +1208,127 @@ public class KonsoleDienstProgramm {
                     Files.deleteIfExists(HistorischDatei);
                     System.out.println(GRUN + "Geshichte fur befehlen war loscht erfolgreich" + RESET);
                 }
-                case null, default -> System.err.println(ROT + "Diese operation unterstutzt nicht" + RESET);
+                case "--pingen","--png" -> {
+                    String IPoderDNS; int pingen_mals;
+                    System.out.println("Schreiben Sie eine IP oder DNS welche wollen Sie pingen: ");
+                    IPoderDNS = operation.nextLine();
+                    System.out.println("Schreiben wie viele mals wollen Sie pingen: ");
+                    pingen_mals = operation.nextInt();
+                    String[] befehle = new String[0];
+                    String OSName = System.getProperty("os.name");
+                    if (Objects.equals(OSName,"Windows")) {
+                        befehle = new String[]{"ping", "-n", String.valueOf(pingen_mals),IPoderDNS};
+                    } else if(Objects.equals(OSName,"Linux")) {
+                        befehle = new String[]{"ping", "-c", String.valueOf(pingen_mals), IPoderDNS};
+                    } else {
+                        System.err.println("DienstProgramm unterstutzt diese OS nicht");
+                    }
+                    try {
+                        Process prozess = Runtime.getRuntime().exec(befehle);
+                        BufferedReader lesen = new BufferedReader(new InputStreamReader(prozess.getInputStream()));
+                        String linie;
+                        while((linie = lesen.readLine()) != null) {
+                            System.out.println(linie);
+                        }
+                        int exitCode = prozess.waitFor();
+                        System.out.println(exitCode);
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                case "--intprok","--ipk" -> {
+                    String OSName = System.getProperty("os.name");
+                    String[]befehle = new String[0];
+                    if(Objects.equals(OSName,"Linux")) {
+                        befehle = new String[]{"ip","a"};
+                    } else if(Objects.equals(OSName,"Windows")) {
+                        befehle = new String[]{"ipconfig"};
+                    } else {
+                        System.err.println("DienstProgramm unterstutzt diese OS nicht");
+                    }
+                    try {
+                        Process zeigenIP = Runtime.getRuntime().exec(befehle);
+                        BufferedReader lesenInText = new BufferedReader(new InputStreamReader(zeigenIP.getInputStream()));
+                        String linie;
+                        while((linie = lesenInText.readLine()) != null) {
+                            System.out.println(linie);
+                        }
+                        System.out.println(zeigenIP);
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--unterbrechen","--ubr" -> {
+                    long prozess_id;
+                    System.out.println("Write the id of your process: ");
+                    prozess_id = operation.nextLong();
+                    String[]befehle = new String[0];
+                    String OSName = System.getProperty("os.name");
+                    if(Objects.equals(OSName,"Linux")) {
+                        befehle = new String[]{"kill",String.valueOf(prozess_id)};
+                    } else if(Objects.equals(OSName,"Windows")) {
+                        befehle = new String[]{"taskkill","/PID",String.valueOf(prozess_id),"/F"};
+                    } else {
+                        System.err.println("DienstProgramm unterstutzt diese OS nicht");
+                    }
+                    try {
+                        Process unterbrechenProzess = Runtime.getRuntime().exec(befehle);
+                        System.out.println(unterbrechenProzess);
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--filterieren","--fir" -> {
+                    System.out.println("Schreiben eine direktorei: ");
+                    String direktorei = operation.nextLine();
+                    System.out.println("Schreiben die grose fur dateis vom direktorei:");
+                    int grose = operation.nextInt();
+                    operation.nextLine();
+                    System.out.println("Schreiben einen operator fur vergleichenung und suchenung dateis in direktorei: ");
+                    String compare = operation.nextLine();
+                    if (!direktorei.startsWith("C:\\") && !direktorei.startsWith("/")) {
+                        System.err.println(ROT + "Directoreis mussen starten mit C:\\ (for Windows) oder / (Linux) sein" + RESET);
+                    } else {
+                        try (Stream<Path> wegs = Files.walk(Path.of(direktorei))) {
+                            Stream<Path> nurDateis = wegs.filter(Files::isRegularFile);
+                            switch (compare.charAt(0)) {
+                                case '<' -> nurDateis.filter(groseDatei -> {
+                                    try {
+                                        return Files.size(groseDatei) < grose;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (datei_ -> System.out.println(datei_ + " = " + GELB + datei_.length() + RESET + " bytes"));
+                                case '>' -> nurDateis.filter(groseDatei -> {
+                                    try {
+                                        return Files.size(groseDatei) > grose;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (datei_ -> System.out.println(datei_ + " = " + GELB + datei_.length() + RESET + " bytes"));
+                                case '=' -> nurDateis.filter(groseDatei -> {
+                                    try {
+                                        return Files.size(groseDatei) == grose;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (datei_-> System.out.println(datei_ + " = " + GELB + datei_.length() + RESET + " bytes"));
+                                case '!' -> nurDateis.filter(groseDatei -> {
+                                    try {
+                                        return Files.size(groseDatei) != grose;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (datei_ -> System.out.println(datei_  + " = " + GELB + datei_ .length() + RESET + " bytes"));
+                            }
+                        }
+                    }
+                }
+                case null, default -> System.err.println(ROT + "Diese operation existiert nicht" + RESET);
             }
         }
     }
@@ -1234,8 +1379,12 @@ public class KonsoleDienstProgramm {
                         "--hostinfo       / --hos = dienstprogramm will zeigen dir information uber deinem host daten",
                         "--abshalten      / --abs = dein komputer will abshalten seine arbeit und prozesse",
                         "--neustarten     / --nsn = dein komputer will neustarten seine arbeit",
-                        "--fspr           / --fsp = dein komputer will zeigen dir einme information uber frei spreicher in bytes",
-                        "--sauber         / --sab = datei welche spreichert deine befehlen, will sauber ihnen"
+                        "--fspr           / --fsp = dein komputer will zeigen dir eine information uber frei spreicher in bytes",
+                        "--sauber         / --sab = datei welche spreichert deine befehlen, will sauber ihnen",
+                        "--pingen         / --png = pingen eine IP oder DNS in benutzers komputer",
+                        "--intprok        / --ipk = zeigen eine benutzers IP",
+                        "--unterbrechen   / --ubr = unterbrechen eine ID fur prozess in benutzers komputer",
+                        "--filterieren    / --fir = filterieren eine dateis in direktorei mit grose"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
@@ -1344,5 +1493,3 @@ public class KonsoleDienstProgramm {
         }
     }
 }
-
-
