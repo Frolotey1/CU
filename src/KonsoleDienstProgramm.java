@@ -1156,7 +1156,7 @@ public class KonsoleDienstProgramm {
                             throw new RuntimeException(exc.getLocalizedMessage());
                         }
                     } else {
-                        System.out.println(ROT + "Console Utility doesn't support this OS" + RESET);
+                        System.out.println(ROT + "Utility unterstutzt diese OS nicht" + RESET);
                     }
                 }
                 case "--neustarten","--nsn" -> {
@@ -1181,9 +1181,9 @@ public class KonsoleDienstProgramm {
                 }
                 case "--sauber","--sab" -> {
                     Files.deleteIfExists(HistorischDatei);
-                    System.out.println(GRUN + "History of commands was deleted successfully" + RESET);
+                    System.out.println(GRUN + "Geshichte fur befehlen war loscht erfolgreich" + RESET);
                 }
-                case null, default -> System.err.println(ROT + "This operation doesn't exist" + RESET);
+                case null, default -> System.err.println(ROT + "Diese operation unterstutzt nicht" + RESET);
             }
         }
     }
@@ -1344,3 +1344,4 @@ public class KonsoleDienstProgramm {
         }
     }
 }
+
