@@ -12,7 +12,6 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 import java.util.jar.*;
-import java.util.logging.*;
 import java.util.stream.Stream;
 import java.util.zip.*;
 import javax.xml.stream.*;
@@ -77,7 +76,8 @@ public class ConsoleUtilityItself {
                     "--backup,--bp","--xexport,--xp","--ximport or --xm",
                     "--restore or --rt","--stats or --ss","--search or --sh",
                     "--hostinfo or --ho","--shutdown or sd","--restart or --rr","--fmem or --fm",
-                    "--clean or --cn"
+                    "--clean or --cn","--ping or --pg","--intproc or --ip","--interrupt or --ir",
+                    "--filter or --fr"
             ));
             for(String all : prompt) {
                 System.out.println(all);
@@ -724,6 +724,29 @@ public class ConsoleUtilityItself {
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--clean / --cn -> [ENTER] -> " +
                                 "(utility'll clean the history of commands which you used)");
+                        case 45 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--ping / --pg -> [ENTER] -> " +
+                                "Write the IP or DNS which you want to ping: (your IP or DNS) -> " +
+                                "Write how many time you want to ping: (count times for pinging IP or DNS) -> " +
+                                "{IF SUCCESS} -> (you'll get the information about pinging your IP or DNS)");
+                        case 46 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--intproc / --ip -> [ENTER] -> " + "(you'll get the information about your IP)");
+                        case 47 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--interrupt / --ir -> [ENTER] -> " + "Write the id of your process: (id of your process) -> " + 
+                                "(id of the definite process will interrupt and process will end his work)");
+                        case 48 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--interrupt / --ir -> [ENTER] -> " + "Write the directory: (your directory) -> " +
+                                "Write the size for filtering files in directory: (size of files in directory) -> " +
+                                "Write the compare operator for searching files with definite pattern: (operator > < = !) -> " +
+                                "{IF SUCCESS} -> (you can see the files with your definite pattern)");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -1186,6 +1209,126 @@ public class ConsoleUtilityItself {
                     Files.deleteIfExists(HistoricalFile);
                     System.out.println(GREEN + "History of commands was deleted successfully" + RESET);
                 }
+                case "--ping","--pg" -> {
+                    String IPorDNS; int ping_times;
+                    System.out.println("Write the IP or DNS which you want to ping: ");
+                    IPorDNS = operation.nextLine();
+                    System.out.println("Write how many time you want to ping: ");
+                    ping_times = operation.nextInt();
+                    String[] command = new String[0];
+                    String OSName = System.getProperty("os.name");
+                    if (Objects.equals(OSName,"Windows")) {
+                        command = new String[]{"ping", "-n", String.valueOf(ping_times),IPorDNS};
+                    } else if(Objects.equals(OSName,"Linux")) {
+                        command = new String[]{"ping", "-c", String.valueOf(ping_times), IPorDNS};
+                    } else {
+                        System.err.println("Utility doesn't support this OS");
+                    }
+                    try {
+                        Process process = Runtime.getRuntime().exec(command);
+                        BufferedReader readInputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        String line;
+                        while((line = readInputStream.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                        int exitCode = process.waitFor();
+                        System.out.println(exitCode);
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                case "--intproc","--ip" -> {
+                    String OSName = System.getProperty("os.name");
+                    String[]command = new String[0];
+                    if(Objects.equals(OSName,"Linux")) {
+                        command = new String[]{"ip","a"};
+                    } else if(Objects.equals(OSName,"Windows")) {
+                        command = new String[]{"ipconfig"};
+                    } else {
+                        System.err.println("Utility doesn't support this OS");
+                    }
+                    try {
+                        Process showIP = Runtime.getRuntime().exec(command);
+                        BufferedReader readIPInText = new BufferedReader(new InputStreamReader(showIP.getInputStream()));
+                        String line;
+                        while((line = readIPInText.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                        System.out.println(showIP);
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--interrupt","--ir" -> {
+                    long process_id;
+                    System.out.println("Write the id of your process: ");
+                    process_id = operation.nextLong();
+                    String []command = new String[0];
+                    String OSName = System.getProperty("os.name");
+                    if(Objects.equals(OSName,"Linux")) {
+                        command = new String[]{"kill",String.valueOf(process_id)};
+                    } else if(Objects.equals(OSName,"Windows")) {
+                        command = new String[]{"taskkill","/PID",String.valueOf(process_id),"/F"};
+                    } else {
+                        System.err.println("Utility doesn't support this OS");
+                    }
+                    try {
+                        Process interruptProcess = Runtime.getRuntime().exec(command);
+                        System.out.println(interruptProcess);
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--filter","--fr" -> {
+                    System.out.println("Write the directory: ");
+                    String directory_ = operation.nextLine();
+                    System.out.println("Write the size for filtering files in directory:");
+                    int size = operation.nextInt();
+                    operation.nextLine();
+                    System.out.println("Write the compare operator for searching files with definite pattern: ");
+                    String compare = operation.nextLine();
+                    if (!directory_ .startsWith("C:\\") && !directory_.startsWith("/")) {
+                        System.err.println(RED + "Directories must be started with C:\\ (for Windows) or / (Linux)" + RESET);
+                    } else {
+                        try (Stream<Path> paths = Files.walk(Path.of(directory_))) {
+                            Stream<Path> onlyFiles = paths.filter(Files::isRegularFile);
+                            switch (compare.charAt(0)) {
+                                case '<' -> onlyFiles.filter(sizeFile -> {
+                                    try {
+                                        return Files.size(sizeFile) < size;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (file_ -> System.out.println(file_ + " = " + YELLOW + file_.length() + RESET + " bytes"));
+                                case '>' -> onlyFiles.filter(sizeFile -> {
+                                    try {
+                                        return Files.size(sizeFile) > size;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (file_ -> System.out.println(file_ + " = " + YELLOW + file_.length() + RESET + " bytes"));
+                                case '=' -> onlyFiles.filter(sizeFile -> {
+                                    try {
+                                        return Files.size(sizeFile) == size;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (file_ -> System.out.println(file_ + " = " + YELLOW + file_.length() + RESET + " bytes"));
+                                case '!' -> onlyFiles.filter(sizeFile -> {
+                                    try {
+                                        return Files.size(sizeFile) != size;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach
+                                        (file_ -> System.out.println(file_ + " = " + YELLOW + file_.length() + RESET + " bytes"));
+                            }
+                        }
+                    }
+                }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
         }
@@ -1237,7 +1380,11 @@ public class ConsoleUtilityItself {
                         "--shutdown     /       --sd = stop the working of your computer",
                         "--restart      /       --rr = restart your computer",
                         "--fmem         /       --fm = check the information about your free memory in bytes",
-                        "--clean        /       --cn = clean the history of the commands "
+                        "--clean        /       --cn = clean the history of the commands",
+                        "--ping         /       --pg = ping the IP, DNS in your computer",
+                        "--intproc      /       --ip = show the user's own IP in his computer or another device",
+                        "--interrupt    /       --ir = interrupt thw working of the definite process in your computer",
+                        "--filter       /       --fr = filter the files in directory with definite size"
                 )).forEach(System.out::println);
     }
     private static class ConsoleUtilitysGUI extends JFrame {
