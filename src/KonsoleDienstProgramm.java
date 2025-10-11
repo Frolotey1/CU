@@ -1043,8 +1043,8 @@ public class KonsoleDienstProgramm {
                     hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie eine daten: ");
                     String daten = operation.nextLine();
-                    XMLOutputFactory factory = XMLOutputFactory.newInstance();
-                    XMLStreamWriter schreibenZuXML = factory.createXMLStreamWriter(new FileWriter("XMLFormat.xml"));
+                    XMLOutputFactory fabrik = XMLOutputFactory.newInstance();
+                    XMLStreamWriter schreibenZuXML = fabrik.createXMLStreamWriter(new FileWriter("XMLFormat.xml"));
                     schreibenZuXML.writeStartDocument("UTF-8","1.0");
                     schreibenZuXML.writeStartElement("Nachricht");
                     schreibenZuXML.writeCData(daten);
@@ -1344,4 +1344,5 @@ public class KonsoleDienstProgramm {
         }
     }
 }
+
 
