@@ -738,7 +738,7 @@ public class ConsoleUtilityItself {
                         case 47 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "--interrupt / --ir -> [ENTER] -> " + "Write the id of your process: (id of your process) -> " + 
+                                "--interrupt / --ir -> [ENTER] -> " + "Write the id of your process: (id of your process) -> " +
                                 "(id of the definite process will interrupt and process will end his work)");
                         case 48 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
@@ -1152,7 +1152,9 @@ public class ConsoleUtilityItself {
                             "--sizfls or -sf","--edit or --et","--symcnt or --sc","--resize or --rs",
                             "--version or --vs","--backup or --bp","--xexport or --xp","--ximport or --xm",
                             "--restore or --rt","--stats or --ss","--search or --sh","--hostinfo or --ho",
-                            "--shutdown or --sd","--restart or --rr","--fmem or --fm","--clean or --cn"
+                            "--shutdown or --sd","--restart or --rr","--fmem or --fm","--clean or --cn",
+                            "--ping or --pg","--intproc or --ip","--interrupt or --ir",
+                            "--filter or --fr"
                     ));
                     System.out.println("Write which command you find: ");
                     String command = operation.nextLine();
