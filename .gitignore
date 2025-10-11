@@ -4,6 +4,9 @@
 # BlueJ files
 *.ctxt
 
+# Ini files
+*.ini
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
