@@ -1,4 +1,4 @@
-# KonsoleDienstProgramm (ConsoleUtility)
+# KonsoleDienstProgramm
 Die einfache Version des KonsoleDienstprogramm mit einfachen Befehlen. Es wurde in Java geschrieben und unterstützt die beiden Sprachen Deutsch und Englisch.
 # Java
 Dieses Projekt wurde in einer Java Sprache erstellt. Die Java-Version ist 23. ConsoleUtility unterstützt alle Java-Versionen ab Java 10/11.
