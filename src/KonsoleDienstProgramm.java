@@ -6,8 +6,11 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -76,7 +79,8 @@ public class KonsoleDienstProgramm {
                     "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun",
                     "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
                     "--sauber oder --sab","--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
-                    "--filterieren oder --fir"
+                    "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
+                    "--frieren oder --frn","--einzigartig oder --ezn"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -752,6 +756,28 @@ public class KonsoleDienstProgramm {
                                 "Schreiben Sie die Größe zum Filtern der Dateien im Verzeichnis: (Größe der Dateien im Verzeichnis) ->" +
                                 "Schreiben Sie den Vergleichsoperator zum Suchen von Dateien mit einem bestimmten Muster: (Operator > < = !) ->" +
                                 "{IF SUCCESS} -> (Sie können die Dateien mit Ihrem bestimmten Muster sehen)");
+                        case 49 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--md5gen / --mgn -> [ENTER] ->" + "Schreiben deine datei fur analysierung daten mit md5 algorithmus:  ->" +
+                                "(will zeigen daten vom datei in byte-hex mit md5 algorithmus");
+                        case 50 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--sha256gen / --sgn -> [ENTER] ->" + "Schreiben deine datei fur analysierung daten mit sha256 algorithmus:  ->" +
+                                "(will zeigen daten vom datei in byte-hex mit sha256 algorithmus");
+                        case 51 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--frieren / --frn -> [ENTER] ->" + "Schreiben dein id fur prozess: (id fur deinen prozess) -> [ENTER] ->" +
+                                "(will zeigen daten vom datei in byte-hex mit sha256 algorithmus"
+                                );
+                        case 52 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--einzigartig / --ezn -> [ENTER] -> " +
+                                "Schreiben deine datei: (dein datei) -> [ENTER] -> " +
+                                "(wollen zeigen alle einzartige und sortige stringen vom datei)");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1151,7 +1177,8 @@ public class KonsoleDienstProgramm {
                             "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun",
                             "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
                             "--sauber oder --sab", "--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
-                            "--filterieren oder --fir"
+                            "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
+                            "--frieren oder --frn","--einzigartig oder --ezn"
                     ));
                     System.out.println("Schreiben welche befehle wollen Sie finden: ");
                     String befehle = operation.nextLine();
@@ -1328,6 +1355,87 @@ public class KonsoleDienstProgramm {
                         }
                     }
                 }
+                case "--md5gen","--mgn" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("Schreiben deine datei fur analysierung daten mit md5 algorithmus: ");
+                    String bekDateiFurMd5 = operation.nextLine();
+                    Path weg = Path.of(bekDateiFurMd5);
+                    if(Files.exists(weg)) {
+                        String getEingangDaten = Files.readString(weg, StandardCharsets.UTF_8);
+                        if(getEingangDaten == null || getEingangDaten.isEmpty()) {
+                            getEingangDaten = "0";
+                        }
+                        MessageDigest md5;
+                        try {
+                            md5 = MessageDigest.getInstance("MD5");
+                        } catch (NoSuchAlgorithmException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        byte[] byteHex = md5.digest(getEingangDaten.getBytes(StandardCharsets.UTF_8));
+                        for(byte bekByteInHex : byteHex) {
+                            System.out.printf("%s",Integer.toHexString(0xFF & bekByteInHex));
+                        }
+                        System.out.println("\n");
+                    }
+                }
+                case "--sha256gen","--sgn" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("Schreiben deine datei fur analysierung daten mit sha256 algorithmus: ");
+                    String bekDateiFurSha256 = operation.nextLine();
+                    if (Files.exists(Path.of(bekDateiFurSha256))) {
+                        String getEingangDaten = Files.readString(Path.of(bekDateiFurSha256), StandardCharsets.UTF_8);
+                        if (getEingangDaten == null || getEingangDaten.isEmpty()) {
+                            getEingangDaten = "0";
+                        }
+                        MessageDigest sha256;
+                        try {
+                            sha256 = MessageDigest.getInstance("SHA-256");
+                        } catch (NoSuchAlgorithmException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        byte[] byteHex = sha256.digest(getEingangDaten.getBytes(StandardCharsets.UTF_8));
+                        for (byte bekByteInHex : byteHex) {
+                            System.out.printf("%s", Integer.toHexString(0xFF & bekByteInHex));
+                        }
+                        System.out.println("\n");
+                    }
+                }
+                case "--frieren","--frn" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    long prozess_id;
+                    System.out.println("Schreiben dein id fur prozess: ");
+                    prozess_id = operation.nextLong();
+                    String []befehle= new String[0];
+                    String OSName = System.getProperty("os.name");
+                    if(Objects.equals(OSName,"Linux")) {
+                        befehle = new String[]{"kill","-STOP",String.valueOf(prozess_id)};
+                    } else if(Objects.equals(OSName,"Windows")) {
+                        befehle = new String[]{"taskkill","/PID",String.valueOf(prozess_id),"/F"};
+                    } else {
+                        System.err.println("Utility unterstutzt diese OS nicht");
+                    }
+                    try {
+                        Process freezeProcess = Runtime.getRuntime().exec(befehle);
+                        System.out.println(freezeProcess);
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--einzigartig","--ezg" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    System.out.println("Schreiben deine datei: ");
+                    String bekDatei = operation.nextLine();
+                    Path weg = Path.of(bekDatei);
+                    if (Files.exists(weg)) {
+                        List<String> bekAlleStringen = new ArrayList<>(Files.readAllLines(weg));
+                        Set<String> einzigartigStringen = new LinkedHashSet<>(bekAlleStringen);
+                        bekAlleStringen.clear();
+                        einzigartigStringen.forEach(System.out::println);
+                        einzigartigStringen.clear();
+                    } else {
+                            System.err.println(ROT + "Diese datei existiert nicht" + RESET);
+                    }
+                }
                 case null, default -> System.err.println(ROT + "Diese operation existiert nicht" + RESET);
             }
         }
@@ -1384,7 +1492,11 @@ public class KonsoleDienstProgramm {
                         "--pingen         / --png = pingen eine IP oder DNS in benutzers komputer",
                         "--intprok        / --ipk = zeigen eine benutzers IP",
                         "--unterbrechen   / --ubr = unterbrechen eine ID fur prozess in benutzers komputer",
-                        "--filterieren    / --fir = filterieren eine dateis in direktorei mit grose"
+                        "--filterieren    / --fir = filterieren eine dateis in direktorei mit grose",
+                        "--md5gen         / --mgn = bekommen eine daten vom datei in byte-hex mit sha256 algorithmus",
+                        "--sha256gen      / --sgn = bekommen eine daten vom datei in byte-hex mit md5 algorithmus",
+                        "--frieren        / --frn = frieren mit id einen prozess",
+                        "--einzigartig    / --ezn = bekommen eine einzigartige und sortiere daten"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
