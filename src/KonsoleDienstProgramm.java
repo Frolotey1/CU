@@ -436,7 +436,9 @@ public class KonsoleDienstProgramm {
                                     "adverungen","symlink","symzln","andegrose",
                                     "sicherung","ximport","xexport","herstellen",
                                     "stats","suchen","hostinfo","abshalten",
-                                    "neustarten","fspr","sauber"
+                                    "neustarten","fspr","sauber","pingen",
+                                    "intprok","unterbrechen","filterieren", "md5gen",
+                                    "sha256gen","frieren","einzartig"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
