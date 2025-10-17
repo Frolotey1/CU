@@ -5,8 +5,11 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -77,7 +80,8 @@ public class ConsoleUtilityItself {
                     "--restore or --rt","--stats or --ss","--search or --sh",
                     "--hostinfo or --ho","--shutdown or sd","--restart or --rr","--fmem or --fm",
                     "--clean or --cn","--ping or --pg","--intproc or --ip","--interrupt or --ir",
-                    "--filter or --fr"
+                    "--filter or --fr","--md5gen or --mg","--sha256gen or --sn","--freeze or --fe",
+                    "--unique or --uq"
             ));
             for(String all : prompt) {
                 System.out.println(all);
@@ -103,16 +107,9 @@ public class ConsoleUtilityItself {
                     System.out.println("Write the filename for checking his existence: ");
                     String nameFile = operation.nextLine();
                     if (Files.exists(Path.of(nameFile))) {
-                        try (BufferedReader get = new BufferedReader(new FileReader(nameFile))) {
-                            String line = get.readLine();
-                            if (line == null || line.isEmpty()) {
-                                System.out.println(RED + "Data of the file is null" + RESET);
-                            } else {
-                                System.out.println(get.readLine());
-                            }
-                        } catch (IOException e) {
-                            throw new RuntimeException(RED + "This is error for writing a text in file" + RESET);
-                        }
+                        List<String> readStrings = new ArrayList<>(Files.readAllLines(Path.of(nameFile)));
+                        readStrings.forEach(System.out::println);
+                        readStrings.clear();
                     } else {
                         System.err.println(RED + "This file doesn't exist" + RESET);
                     }
@@ -255,11 +252,8 @@ public class ConsoleUtilityItself {
                         System.out.println("This file doesn't exist. Create the new: ");
                         name = operation.nextLine();
                     }
-                    try (FileOutputStream fos = new FileOutputStream(name)) {
-                        fos.write(data.getBytes());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex.getLocalizedMessage());
-                    }
+                    Files.writeString(Path.of(name), data + System.lineSeparator(),
+                            StandardOpenOption.CREATE, StandardOpenOption.APPEND);
                 }
                 case "--grep", "--gp" -> {
                     appendHistory((index++) + " | " + arg);
@@ -743,10 +737,34 @@ public class ConsoleUtilityItself {
                         case 48 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "--interrupt / --ir -> [ENTER] -> " + "Write the directory: (your directory) -> " +
+                                "--filter / --fr -> [ENTER] -> " + "Write the directory: (your directory) -> " +
                                 "Write the size for filtering files in directory: (size of files in directory) -> " +
                                 "Write the compare operator for searching files with definite pattern: (operator > < = !) -> " +
                                 "{IF SUCCESS} -> (you can see the files with your definite pattern)");
+                        case 50 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--md5gen / --mg -> [ENTER] -> " +
+                                "Write your file for analysing data in md5 algorithm: (your file) -> [ENTER] -> " +
+                                "(will show data from file in byte-hex with md5 algorithm");
+                        case 51 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--sha256gen / --sn -> [ENTER] -> " +
+                                "Write your file for analysing data in sha256 algorithm: (your file) -> [ENTER] -> " +
+                                "(will show data from file in byte-hex with sha256 algorithm");
+                        case 52 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--freeze / --fe -> [ENTER] -> " +
+                                "Write the id of your process: (your id for process) -> [ENTER] -> " +
+                                "(will freezed on time your process with definite id)");
+                        case 53 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "----unique / --uq -> [ENTER] -> " +
+                                "Write your file: (your file) -> [ENTER] -> " +
+                                "(will showed unique and sorted strings)");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -1154,7 +1172,8 @@ public class ConsoleUtilityItself {
                             "--restore or --rt","--stats or --ss","--search or --sh","--hostinfo or --ho",
                             "--shutdown or --sd","--restart or --rr","--fmem or --fm","--clean or --cn",
                             "--ping or --pg","--intproc or --ip","--interrupt or --ir",
-                            "--filter or --fr"
+                            "--filter or --fr","--md5gen or --mg","--sha256gen or --sn","--freeze or --fe",
+                            "--unique or --uq"
                     ));
                     System.out.println("Write which command you find: ");
                     String command = operation.nextLine();
@@ -1212,6 +1231,7 @@ public class ConsoleUtilityItself {
                     System.out.println(GREEN + "History of commands was deleted successfully" + RESET);
                 }
                 case "--ping","--pg" -> {
+                    appendHistory((index) + " | " + arg);
                     String IPorDNS; int ping_times;
                     System.out.println("Write the IP or DNS which you want to ping: ");
                     IPorDNS = operation.nextLine();
@@ -1240,6 +1260,7 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--intproc","--ip" -> {
+                    appendHistory((index) + " | " + arg);
                     String OSName = System.getProperty("os.name");
                     String[]command = new String[0];
                     if(Objects.equals(OSName,"Linux")) {
@@ -1262,6 +1283,7 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--interrupt","--ir" -> {
+                    appendHistory((index) + " | " + arg);
                     long process_id;
                     System.out.println("Write the id of your process: ");
                     process_id = operation.nextLong();
@@ -1282,6 +1304,7 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--filter","--fr" -> {
+                    appendHistory((index) + " | " + arg);
                     System.out.println("Write the directory: ");
                     String directory_ = operation.nextLine();
                     System.out.println("Write the size for filtering files in directory:");
@@ -1329,6 +1352,86 @@ public class ConsoleUtilityItself {
                                         (file_ -> System.out.println(file_ + " = " + YELLOW + file_.length() + RESET + " bytes"));
                             }
                         }
+                    }
+                }
+                case "--md5gen","--mg" -> {
+                    appendHistory((index) + " | " + arg);
+                    System.out.println("Write your file for analysing data in md5 algorithm: ");
+                    String getFileForMd5 = operation.nextLine();
+                    Path path = Path.of(getFileForMd5);
+                    if(Files.exists(path)) {
+                        String getInputData = Files.readString(path,StandardCharsets.UTF_8);
+                        if(getInputData == null || getInputData.isEmpty()) {
+                            getInputData = "0";
+                        }
+                        MessageDigest md5;
+                        try {
+                            md5 = MessageDigest.getInstance("MD5");
+                        } catch (NoSuchAlgorithmException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        byte[] byteHex = md5.digest(getInputData.getBytes(StandardCharsets.UTF_8));
+                        for(byte getByteInHex : byteHex) {
+                            System.out.printf("%s",Integer.toHexString(0xFF & getByteInHex));
+                        }
+                        System.out.println("\n");
+                    }
+                }
+                case "--sha256gen","--sn" -> {
+                    appendHistory((index) + " | " + arg);
+                    System.out.println("Write your file for analysing data in sha256 algorithm: ");
+                    String getFileForSha256 = operation.nextLine();
+                    if (Files.exists(Path.of(getFileForSha256))) {
+                        String getInputData = Files.readString(Path.of(getFileForSha256), StandardCharsets.UTF_8);
+                        if (getInputData == null || getInputData.isEmpty()) {
+                            getInputData = "0";
+                        }
+                        MessageDigest sha256;
+                        try {
+                            sha256 = MessageDigest.getInstance("SHA-256");
+                        } catch (NoSuchAlgorithmException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        byte[] byteHex = sha256.digest(getInputData.getBytes(StandardCharsets.UTF_8));
+                        for (byte getByteInHex : byteHex) {
+                            System.out.printf("%s", Integer.toHexString(0xFF & getByteInHex));
+                        }
+                        System.out.println("\n");
+                    }
+                }
+                case "--freeze","--fe" -> {
+                    appendHistory((index) + " | " + arg);
+                    long process_id;
+                    System.out.println("Write the id of your process: ");
+                    process_id = operation.nextLong();
+                    String []command = new String[0];
+                    String OSName = System.getProperty("os.name");
+                    if(Objects.equals(OSName,"Linux")) {
+                        command = new String[]{"kill","-STOP",String.valueOf(process_id)};
+                    } else if(Objects.equals(OSName,"Windows")) {
+                        command = new String[]{"taskkill","/PID",String.valueOf(process_id),"/F"};
+                    } else {
+                        System.err.println("Utility doesn't support this OS");
+                    }
+                    try {
+                        Process freezeProcess = Runtime.getRuntime().exec(command);
+                        System.out.println(freezeProcess);
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--unique","--uq" -> {
+                    System.out.println("Write your file: ");
+                    String getFile = operation.nextLine();
+                    Path path = Path.of(getFile);
+                    if (Files.exists(path)) {
+                        List<String> getAllStrings = new ArrayList<>(Files.readAllLines(path));
+                        Set<String> uniqueStrings = new LinkedHashSet<>(getAllStrings);
+                        getAllStrings.clear();
+                        uniqueStrings.forEach(System.out::println);
+                        uniqueStrings.clear();
+                    } else {
+                        System.err.println(RED + "This file doesn't exist" + RESET);
                     }
                 }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
@@ -1386,7 +1489,11 @@ public class ConsoleUtilityItself {
                         "--ping         /       --pg = ping the IP, DNS in your computer",
                         "--intproc      /       --ip = show the user's own IP in his computer or another device",
                         "--interrupt    /       --ir = interrupt thw working of the definite process in your computer",
-                        "--filter       /       --fr = filter the files in directory with definite size"
+                        "--filter       /       --fr = filter the files in directory with definite size",
+                        "--sha256gen    /       --sn = get data from file in hex-byte system with sha256 algorithm",
+                        "--md5gen       /       --mg = get data from file in hex-byte system with md5 algorithm",
+                        "--freeze       /       --fe = freeze the process with id",
+                        "--unique       /       --uq = get the unique and sorted data from files"
                 )).forEach(System.out::println);
     }
     private static class ConsoleUtilitysGUI extends JFrame {
