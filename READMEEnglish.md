@@ -16,7 +16,7 @@ And path will changing on ``C:\CU-ConsoleUtility`` (in Windows). In the Linux Sy
 2. `--search, --sh.` (English Consoleutility) or `--suchen, --sun` (Deutsch Konsole Dienst Programm)
 3. when you don't write not any command utility will show you the list of commands for working with utility. This is the prompt.
  
-And for familiarization with syntax of tthe commands you can use --tldr or --tl commands. 
+And for familiarization with syntax of tthe commands you can use `--tldr` or `--tl` commands. 
 # Assembly's system 
 ConsoleUtility like project was collected by Maven's system.
 # Example of working with the project: 
@@ -24,7 +24,7 @@ ConsoleUtility like project was collected by Maven's system.
 
 
 # Integration with different IDE
-You can integrate this project with your. This project includes the pom.xml file which has the system of the project's collection.
+You can integrate this project with your. This project includes the `pom.xml` file which has the system of the project's collection.
 # Another ways how install the project
 So, you can install this project like download file with zip extension in the GitHub repository for `<> Code` button. Another way: install with command line and use the command: 
 `git clone https://github.com/Frolotey1/CU.git` 
