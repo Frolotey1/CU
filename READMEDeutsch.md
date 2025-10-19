@@ -16,7 +16,7 @@ Und der Pfad ändert sich zu `C:\CU-ConsoleUtility` (unter Windows). Im Linux-Sy
 2. `--search, --sh` (Englisch KonsoleDienstProgramm) oder `--suchen, --sun` (Deutsch KonsoleDienstProgramm)
 3. wann schreiben Sie keine befehle in KonsoleDienstProgramm und dieser projekt will zeigt Ihnen alle befehle in KonsoleDienstprogramm fur benutzerung.
 
-Und Fur kennenlernenung mit befehlens syntax sie konnen benutzen: --tldr oder --tld.
+Und Fur kennenlernenung mit befehlens syntax sie konnen benutzen: `--tldr` oder `--tld`.
 
 # Montagesystem
 ConsoleUtility wie ein Projekt, das mit dem Mavens system gesammelt wurde
@@ -25,6 +25,6 @@ ConsoleUtility wie ein Projekt, das mit dem Mavens system gesammelt wurde
 
 
 # Integration mit anderer IDE
-Sie können dieses Projekt für Ihre IDE integrieren. Diese Repositorei enthält die pom.xml-Datei, die ein Erstellungssystem für ein Projekt hat. 
+Sie können dieses Projekt für Ihre IDE integrieren. Diese Repositorei enthält die `pom.xml` Datei, die ein Erstellungssystem für ein Projekt hat. 
 # Andere Wege wie dieses Projekt erstellen
 Sie können dieses Projekt mit `<> Code` Taste im GitHub erstellen. Anderer Weg: mit diesen Befehlen: `git clone https://github.com/Frolotey1/CU.git` Diese Befehle werden das Projekt dort erstellen, wo sie die Befehle gestartet haben.
