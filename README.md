@@ -9,6 +9,6 @@ You can check the full description for the project in / Sie konnen prufen eine v
 - 🇬🇧 **English** → [READMEEnglish.md](./READMEEnglish.md)
 
 # Contacts 
-IF you want to offer the improvements for this project, you can find me in: 
+If you want to offer the improvements for this project, you can find me in: 
 - [Telegram](@fr1zb3e)
 - [Habr](https://habr.com/ru/users/fr1zb3e/)
