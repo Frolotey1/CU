@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
@@ -12,12 +14,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.jar.*;
 import java.util.stream.Stream;
 import java.util.zip.*;
 import javax.xml.stream.*;
+import javax.xml.transform.Source;
 
 public class ConsoleUtilityItself {
     private static final
@@ -81,7 +86,8 @@ public class ConsoleUtilityItself {
                     "--hostinfo or --ho","--shutdown or sd","--restart or --rr","--fmem or --fm",
                     "--clean or --cn","--ping or --pg","--intproc or --ip","--interrupt or --ir",
                     "--filter or --fr","--md5gen or --mg","--sha256gen or --sn","--freeze or --fe",
-                    "--unique or --uq"
+                    "--unique or --uq","--stat or --sa","--split or --sp","--rsync or --rc",
+                    "----cmp or --cp","--sysinfo or --si"
             ));
             for(String all : prompt) {
                 System.out.println(all);
@@ -427,11 +433,14 @@ public class ConsoleUtilityItself {
                                     "replace", "crtdir", "candir", "exstdirs",
                                     "chgrits", "chgextn", "symlink", "empty",
                                     "sort", "reverse", "remall", "remove",
-                                    "integrate", "--sizfls", "--edit","--symcnt",
-                                    "--resize","version","backup","xexport",
+                                    "integrate", "sizfls", "edit","--symcnt",
+                                    "resize","version","backup","xexport",
                                     "ximport","restore","stats","search",
                                     "hostinfo","shutdown","restart","fmem",
-                                    "clean"
+                                    "clean","ping","intproc",
+                                    "interrupt", "filter","md5gen","sha256gen",
+                                    "freeze", "unique","stat","split","rsync",
+                                    "cmp","sysinfo"
                             };
                     for (int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -762,9 +771,39 @@ public class ConsoleUtilityItself {
                         case 53 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "----unique / --uq -> [ENTER] -> " +
+                                "--unique / --uq -> [ENTER] -> " +
                                 "Write your file: (your file) -> [ENTER] -> " +
                                 "(will showed unique and sorted strings)");
+                        case 54 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--stat / --sa -> [ENTER] -> " +
+                                "Write the name for your file: (your file) -> [ENTER] -> " +
+                                "(will show description about your file)");
+                        case 55 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--split / --sp -> [ENTER] -> " +
+                                "Write the name for your file: (your file) -> [ENTER] -> {IF SUCCESS} <MESSAGE> " +
+                                "Spliting of the file (your file) is successful"
+                                );
+                        case 56 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--rsync / --rc -> [ENTER] -> " +
+                                "Write your source file: (your source file) -> [ENTER] -> Write your destination file: (your destination file) -> [ENTER] -> " +
+                                "{WENN SUCCESS} <MESSAGE> Byte data with size: (size for your file)  were synchronized to new file successfully");
+                        case 57 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--cmp / --cm -> [ENTER] -> " +
+                                "Write your first File: (your first file) -> [ENTER] -> Write your5 second file: (your second file) -> [ENTER] -> " +
+                                "(will analyse the strings of data from your two files)"
+                                );
+                        case 58 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--sysinfo / --si -> [ENTER] -> " + "will show the information about system on user's computer");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -1173,7 +1212,8 @@ public class ConsoleUtilityItself {
                             "--shutdown or --sd","--restart or --rr","--fmem or --fm","--clean or --cn",
                             "--ping or --pg","--intproc or --ip","--interrupt or --ir",
                             "--filter or --fr","--md5gen or --mg","--sha256gen or --sn","--freeze or --fe",
-                            "--unique or --uq"
+                            "--unique or --uq","--stat or --sa","--split or --sp","--rsync or --rc",
+                            "----cmp or --cp","--sysinfo or --si"
                     ));
                     System.out.println("Write which command you find: ");
                     String command = operation.nextLine();
@@ -1434,10 +1474,152 @@ public class ConsoleUtilityItself {
                         System.err.println(RED + "This file doesn't exist" + RESET);
                     }
                 }
+                case "--stat","--sa" -> {
+                    System.out.println("Write the name for your file: ");
+                    String fileName = operation.nextLine();
+                    if(Files.exists(Path.of(fileName))) {
+                        System.out.println("File's name: " + new File(fileName).getName());
+                        System.out.println("File's size: " + new File((fileName)).length());
+                        BasicFileAttributes attributes = Files.readAttributes(Path.of(fileName),BasicFileAttributes.class);
+                        FileTime creationTime = attributes.creationTime();
+                        FileTime modifiedTime = attributes.lastModifiedTime();
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
+                        LocalDateTime creationDateTime = LocalDateTime.ofInstant(creationTime.toInstant(), ZoneId.systemDefault());
+                        LocalDateTime creationModifiedDateTime = LocalDateTime.ofInstant(modifiedTime.toInstant(), ZoneId.systemDefault());
+                        System.out.println("Creation file's time: " + creationDateTime.format(formatter));
+                        System.out.println("Last Modified file's time: " + creationModifiedDateTime.format(formatter));
+                    } else {
+                        System.err.println(RED + "This file doesn't exist" + RESET);
+                    }
+                }
+                case "--split","--sp" -> {
+                    System.out.println("Write the name for your file: ");
+                    String fileName = operation.nextLine();
+                    if(Files.exists(Path.of(fileName))) {
+                        String dataFromFile;
+                        try(BufferedReader readData = new BufferedReader(new FileReader(fileName))) {
+                            dataFromFile = readData.readLine();
+                            if(dataFromFile == null || dataFromFile.isEmpty()) {
+                                dataFromFile = " ";
+                            }
+                        }
+                        byte[]byteData = Files.readAllBytes(Path.of(fileName));
+                        byte[]firstHalfBytes = new byte[byteData.length / 2];
+                        byte[]secondHalfBytes = new byte[byteData.length];
+                        for(int i = 0; i < byteData.length; ++i) {
+                            secondHalfBytes[i] = byteData[i];
+                        }
+                        if (byteData.length / 2 >= 0)
+                            System.arraycopy(byteData, 0, firstHalfBytes, 0, byteData.length / 2);
+                        Files.deleteIfExists(Path.of(fileName));
+                        String new_ = "New";
+                        String file_ = fileName.substring(0,fileName.indexOf('.'));
+                        String extension = fileName.substring(fileName.indexOf('.'),fileName.length());
+                        File newFile = new File(new_ + file_ + extension);
+                        File newFile2 = new File(new_ + file_ + "2" + extension);
+                        try {
+                            Files.write(newFile.toPath(),firstHalfBytes,StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        try {
+                            Files.write(newFile2.toPath(),secondHalfBytes,StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        System.out.println(GREEN + "Spliting of the file " + fileName + " is successful" + RESET);
+                    } else {
+                        System.err.println(RED + "This file for spliting doesn't exist" + RESET);
+                    }
+                }
+                case "--rsync","--rc" -> {
+                    System.out.println("Write your source file: ");
+                    String SourceFile = operation.nextLine();
+                    System.out.println("Write your destination file: ");
+                    String DestinationFile = operation.nextLine();
+                    if(Files.exists(Path.of(SourceFile))) {
+                        if(Files.exists(Path.of(DestinationFile))) {
+                            byte[] byteData = Files.readAllBytes(Path.of(SourceFile));
+                           try {
+                               Files.write(Path.of(DestinationFile), byteData,StandardOpenOption.APPEND);
+                           } catch(IOException exc) {
+                               throw new RuntimeException(exc.getLocalizedMessage());
+                           }
+                            System.out.println(GREEN +"Byte data with size: " + byteData.length + " were synchronized to new file successfully" + RESET);
+                            System.out.println(GREEN + "Operation was completed in " + LocalDateTime.now() + RESET);
+                        } else {
+                            System.err.println(RED + "Error. It's impossible to write data from source file to unknown destination. Create the destination file" + RESET);
+                        }
+                    } else {
+                        System.err.println(RED + "Error. It's impossible to write data from unknown source file to destination file. Create the new source file and write data in this file" + RESET);
+                    }
+                }
+                case "--cmp","--cm" -> {
+                    String firstFile, secondFile, firstData = "", secondData = "";
+                    System.out.println("Write the first file: ");
+                    firstFile = operation.nextLine();
+                    System.out.println("Write the second file : ");
+                    secondFile = operation.nextLine();
+                    if(!Files.exists(Path.of(firstFile)) || !Files.exists(Path.of(secondFile))) {
+                        System.err.println(RED + "One of two is not detected" + RESET);
+                    } else {
+                        List<String> checkSorted1 = new ArrayList<>(Files.readAllLines(Path.of(firstFile)));
+                        List<String> CheckSorted2 = new ArrayList<>(Files.readAllLines(Path.of(secondFile)));
+                        if(checkSorted1.stream().sorted().isParallel() || CheckSorted2.stream().sorted().isParallel()) {
+                            firstData = String.valueOf(Files.readAllLines(Path.of(firstFile)));
+                            secondData = String.valueOf(Files.readAllLines(Path.of(secondFile)));
+                        }
+                        if(Objects.equals(firstData, secondData)) {
+                           System.out.println(firstData);
+                        } else {
+                            System.out.println(firstData + " | " + secondData);
+                        }
+                    }
+                }
+                case "--sysinfo","--si" -> {
+                    System.out.println("System Information: ");
+                    System.out.println(GREEN + "CPU >> " + RESET);
+                    for(String partInfo : getCpuInfo()) {
+                        System.out.println(partInfo);
+                    }
+                    System.out.println(GREEN + "Disk >> " + RESET);
+                    File[] roots = File.listRoots();
+                    for(File diskInfo : roots) {
+                        System.out.println(YELLOW + "Disk > " + RESET + diskInfo.getAbsolutePath());
+                        System.out.println(YELLOW + "Total Memory > " + RESET + diskInfo.getTotalSpace());
+                        System.out.println(YELLOW + "Usable Memory > " + RESET + diskInfo.getUsableSpace());
+                        System.out.println(YELLOW  + "Free Memory > " + RESET + diskInfo.getFreeSpace());
+                    }
+                    System.out.println(YELLOW + "Heap >> " + RESET);
+                    for(String heapInfo : getHeapInfo()) {
+                        System.out.println(heapInfo);
+                    }
+                }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
         }
     }
+
+    private static String[] getCpuInfo() {
+        OperatingSystemMXBean sysinfo = ManagementFactory.getOperatingSystemMXBean();
+        return new String[]{
+                YELLOW + "Name > " + RESET + sysinfo.getName(),
+                YELLOW + "Architecture > "  + RESET + sysinfo.getArch(),
+                YELLOW + "System's version > " + RESET + sysinfo.getVersion(),
+                YELLOW + "CPU Threads > " + RESET + sysinfo.getAvailableProcessors(),
+                YELLOW + "Load Average > " + RESET + sysinfo.getSystemLoadAverage()
+        };
+    }
+    private static String[] getHeapInfo() {
+        Runtime getHeapInfo = Runtime.getRuntime();
+        return new String[]{
+                YELLOW + "Total Heap > " + RESET + getHeapInfo.totalMemory(),
+                YELLOW + "Max Heap > " + RESET + getHeapInfo.maxMemory(),
+                YELLOW + "Free Heap > " + RESET + getHeapInfo.freeMemory(),
+                YELLOW + "Usable Heap > " + RESET + (getHeapInfo.maxMemory() - getHeapInfo.freeMemory())
+        };
+    }
+
     public static void allCommands() {
         new LinkedList<>(
                 List.of("--help      / --hp = familiarization with commands of the programm",
@@ -1493,7 +1675,12 @@ public class ConsoleUtilityItself {
                         "--sha256gen    /       --sn = get data from file in hex-byte system with sha256 algorithm",
                         "--md5gen       /       --mg = get data from file in hex-byte system with md5 algorithm",
                         "--freeze       /       --fe = freeze the process with id",
-                        "--unique       /       --uq = get the unique and sorted data from files"
+                        "--unique       /       --uq = get the unique and sorted data from files",
+                        "--stat         /       --sa = description for file",
+                        "--split        /       --sp = split one file on two files",
+                        "--rsync        /       --rc = synchronize data from one file to other file",
+                        "--cmp          /       --cm = compare data between two sorted files",
+                        "--sysinfo      /       --si = system information about user's computer"
                 )).forEach(System.out::println);
     }
     private static class ConsoleUtilitysGUI extends JFrame {
