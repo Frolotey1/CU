@@ -443,7 +443,8 @@ public class KonsoleDienstProgramm {
                                     "stats","suchen","hostinfo","abshalten",
                                     "neustarten","fspr","sauber","pingen",
                                     "intprok","unterbrechen","filterieren", "md5gen",
-                                    "sha256gen","frieren","einzartig"
+                                    "sha256gen","frieren","einzartig","stat",
+                                    "teilen","rsync","verglen","sysinfo"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
