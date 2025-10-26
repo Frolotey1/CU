@@ -4,6 +4,8 @@ import javax.xml.stream.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +15,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.jar.*;
@@ -80,7 +84,8 @@ public class KonsoleDienstProgramm {
                     "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
                     "--sauber oder --sab","--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
                     "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
-                    "--frieren oder --frn","--einzigartig oder --ezn"
+                    "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
+                    "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -780,6 +785,35 @@ public class KonsoleDienstProgramm {
                                 "--einzigartig / --ezn -> [ENTER] -> " +
                                 "Schreiben deine datei: (dein datei) -> [ENTER] -> " +
                                 "(wollen zeigen alle einzartige und sortige stringen vom datei)");
+                        case 53 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--stat / --sat -> [ENTER] -> " +
+                                "Schreiben name for deinem datei: " + "(deine datei) -> [ENTER] -> " + "(Will zeigen eine information uber deinem datei)");
+                        case 54 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--teilen / --ten -> [ENTER] -> " +
+                                "Schreiben eine name fur deinem datei: " + "(deine datei) -> [ENTER] -> " + "(Will teilen deine datei zu zwei unterdatei");
+                        case 55 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--rsync / --rnc -> [ENTER] -> " +
+                                "Schreiben deine quelle datei: " + "(deine quelle datei) -> [ENTER] -> " + "Schreiben deine ziele datei: " +
+                                "(deine zweite datei) -> [ENTER] -> " + "{WENN ERFOLG} -> <NACHRICHT> Byte daten mit grose: (deine datei) waren synchroniziert zu neue datei erfolgreich"
+                                );
+                        case 56 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--verglen / --ven -> [ENTER] -> " +
+                                "Schreiben die erste datei: " + "(deine erste datei) -> [ENTER] -> " + "Schreiben die zweite datei: " +
+                                "(deine zweite datei) -> [ENTER] -> " + "(Wollen zeigen alle stringen vom zwei sortische datei)"
+                                );
+                        case 57 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
+                                "--sysinfo / --sin -> [ENTER] -> " +
+                                "(Will zeigen eine information uber deinem system)");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1180,7 +1214,8 @@ public class KonsoleDienstProgramm {
                             "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
                             "--sauber oder --sab", "--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
                             "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
-                            "--frieren oder --frn","--einzigartig oder --ezn"
+                            "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
+                            "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin"
                     ));
                     System.out.println("Schreiben welche befehle wollen Sie finden: ");
                     String befehle = operation.nextLine();
@@ -1438,9 +1473,149 @@ public class KonsoleDienstProgramm {
                             System.err.println(ROT + "Diese datei existiert nicht" + RESET);
                     }
                 }
+                case "--stat","--sat" -> {
+                    System.out.println("Schreiben name for deinem datei: ");
+                    String dateiName = operation.nextLine();
+                    if(Files.exists(Path.of(dateiName))) {
+                        System.out.println("Groses name: " + new File(dateiName).getName());
+                        System.out.println("Groses size: " + new File((dateiName)).length());
+                        BasicFileAttributes attributes = Files.readAttributes(Path.of(dateiName),BasicFileAttributes.class);
+                        FileTime erstellungZeit = attributes.creationTime();
+                        FileTime letzteEinstellungZeit = attributes.lastModifiedTime();
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
+                        LocalDateTime erstellungDatumZeit = LocalDateTime.ofInstant(erstellungZeit.toInstant(), ZoneId.systemDefault());
+                        LocalDateTime erstellungEinstellungZeit = LocalDateTime.ofInstant(letzteEinstellungZeit.toInstant(), ZoneId.systemDefault());
+                        System.out.println("Erstellung dateis zeit: " + erstellungDatumZeit.format(formatter));
+                        System.out.println("Letzte einstellungs zeit: " + erstellungEinstellungZeit.format(formatter));
+                    } else {
+                        System.err.println(ROT + "Diese datei existiert nicht" + RESET);
+                    }
+                }
+                case "--teilen","--ten" -> {
+                    System.out.println("Schreiben eine name fur deinem datei: ");
+                    String dateiName = operation.nextLine();
+                    if(Files.exists(Path.of(dateiName ))) {
+                        String datenVomDatei;
+                        try(BufferedReader readData = new BufferedReader(new FileReader(dateiName))) {
+                            datenVomDatei = readData.readLine();
+                            if(datenVomDatei == null || datenVomDatei.isEmpty()) {
+                                datenVomDatei = " ";
+                            }
+                        }
+                        byte[]byteDaten = Files.readAllBytes(Path.of(dateiName));
+                        byte[]ersteHalbbyten = new byte[byteDaten.length / 2];
+                        byte[]zweiteHalbbyten = new byte[byteDaten.length];
+                        for(int i = 0; i < byteDaten.length; ++i) {
+                            zweiteHalbbyten[i] = byteDaten[i];
+                        }
+                        if (byteDaten.length / 2 >= 0)
+                            System.arraycopy(byteDaten, 0, ersteHalbbyten, 0, byteDaten.length / 2);
+                        Files.deleteIfExists(Path.of(dateiName));
+                        String new_ = "Neue";
+                        String datei_ = dateiName.substring(0,dateiName .indexOf('.'));
+                        String veranderungen = dateiName .substring(dateiName.indexOf('.'),dateiName.length());
+                        File neueDatei = new File(new_ + datei_ + veranderungen);
+                        File neueDatei2 = new File(new_ + datei_ + "2" + veranderungen);
+                        try {
+                            Files.write(neueDatei.toPath(),ersteHalbbyten,StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        try {
+                            Files.write(neueDatei2.toPath(),zweiteHalbbyten,StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        System.out.println(GRUN + "Teilenung datei " + dateiName  + " ist erfolgreich" + RESET);
+                    } else {
+                        System.err.println(ROT + "Diese datei fur teilenung existiert nicht" + RESET);
+                    }
+                }
+                case "--rsync","--rnc" -> {
+                    System.out.println("Schreiben deine quelle datei: ");
+                    String QuelleDatei = operation.nextLine();
+                    System.out.println("Schreiben deine ziele datei: ");
+                    String ZieleDatei = operation.nextLine();
+                    if(Files.exists(Path.of(QuelleDatei))) {
+                        if(Files.exists(Path.of(ZieleDatei))) {
+                            byte[] byteDaten = Files.readAllBytes(Path.of(QuelleDatei));
+                            try {
+                                Files.write(Path.of(ZieleDatei), byteDaten,StandardOpenOption.APPEND);
+                            } catch(IOException exc) {
+                                throw new RuntimeException(exc.getLocalizedMessage());
+                            }
+                            System.out.println(GRUN +"Byte daten mit grose: " + byteDaten.length + " waren synchroniziert zu neue datei erfolgreich" + RESET);
+                            System.out.println(GRUN + "Die operation war endet zu " + LocalDateTime.now() + RESET);
+                        } else {
+                            System.err.println(ROT + "Fehler. Das ist unmoglich fur schreibenung daten vom quelle datei zu unbekannt ziele. Erstellen Sie bitte eine neue ziele datei" + RESET);
+                        }
+                    } else {
+                        System.err.println(ROT + "Fehler. Das ist unmoglich fur schreibenung daten vom unbekannt ziele datei zu ziele datei. Erstellen Sie bitte eine neue quelle datei und schreiben daten zu diesem datei" + RESET);
+                    }
+                }
+                case "--verglen","--ven" -> {
+                    String ersteDatei, zweiteDatei, ersteDaten, zweiteDaten;
+                    System.out.println("Schreiben die erste datei: ");
+                    ersteDatei = operation.nextLine();
+                    System.out.println("Schreiben die zweite datei: ");
+                    zweiteDatei = operation.nextLine();
+                    if(!Files.exists(Path.of(ersteDatei)) || !Files.exists(Path.of(zweiteDatei))) {
+                        System.err.println(ROT + "Ein von zwelen dateis ist keine erkannt" + RESET);
+                    } else {
+                        List<String> prufenSorten1 = new ArrayList<>(Files.readAllLines(Path.of(ersteDatei)));
+                        List<String> prufenSorten2 = new ArrayList<>(Files.readAllLines(Path.of(zweiteDatei)));
+                        if(prufenSorten1.stream().sorted().isParallel() || prufenSorten2.stream().sorted().isParallel()) {
+                            ersteDaten = String.valueOf(Files.readAllLines(Path.of(ersteDatei)));
+                            zweiteDaten = String.valueOf(Files.readAllLines(Path.of(zweiteDatei)));
+                        }
+                        if(Objects.equals(ersteDaten, zweiteDaten)) {
+                            System.out.println(ersteDaten);
+                        } else {
+                            System.out.println(ersteDaten + " | " + zweiteDaten);
+                        }
+                    }
+                }
+                case "--sysinfo","--sin" -> {
+                    System.out.println("System Information: ");
+                    System.out.println(GRUN + "CPU >> " + RESET);
+                    for(String partInfo : bekommCpuInfo()) {
+                        System.out.println(partInfo);
+                    }
+                    System.out.println(GRUN + "Platte >> " + RESET);
+                    File[] roots = File.listRoots();
+                    for(File diskInfo : roots) {
+                        System.out.println(GELB + "Platte > " + RESET + diskInfo.getAbsolutePath());
+                        System.out.println(GELB + "Total spreicher > " + RESET + diskInfo.getTotalSpace());
+                        System.out.println(GELB + "Nutzbar spreicher > " + RESET + diskInfo.getUsableSpace());
+                        System.out.println(GELB + "Frei spreicher > " + RESET + diskInfo.getFreeSpace());
+                    }
+                    System.out.println(GELB + "Heap >> " + RESET);
+                    for(String heapInfo : bekommHeapInfo()) {
+                        System.out.println(heapInfo);
+                    }
+                }
                 case null, default -> System.err.println(ROT + "Diese operation existiert nicht" + RESET);
             }
         }
+    }
+    private static String[] bekommCpuInfo() {
+        OperatingSystemMXBean sysinfo = ManagementFactory.getOperatingSystemMXBean();
+        return new String[]{
+                GELB + "Name > " + RESET + sysinfo.getName(),
+                GELB + "Architektur > "  + RESET + sysinfo.getArch(),
+                GELB  + "Systems version > " + RESET + sysinfo.getVersion(),
+                GELB  + "CPUs faden > " + RESET + sysinfo.getAvailableProcessors(),
+                GELB + "Lastdurchschnitt > " + RESET + sysinfo.getSystemLoadAverage()
+        };
+    }
+    private static String[] bekommHeapInfo() {
+        Runtime getHeapInfo = Runtime.getRuntime();
+        return new String[]{
+                GELB  + "Total Heap > " + RESET + getHeapInfo.totalMemory(),
+                GELB  + "Max Heap > " + RESET + getHeapInfo.maxMemory(),
+                GELB  + "Frei Heap > " + RESET + getHeapInfo.freeMemory(),
+                GELB  + "Usable Heap > " + RESET + (getHeapInfo.maxMemory() - getHeapInfo.freeMemory())
+        };
     }
     public static void alleBefehlen() {
         new LinkedList<>(
@@ -1498,7 +1673,12 @@ public class KonsoleDienstProgramm {
                         "--md5gen         / --mgn = bekommen eine daten vom datei in byte-hex mit sha256 algorithmus",
                         "--sha256gen      / --sgn = bekommen eine daten vom datei in byte-hex mit md5 algorithmus",
                         "--frieren        / --frn = frieren mit id einen prozess",
-                        "--einzigartig    / --ezn = bekommen eine einzigartige und sortiere daten"
+                        "--einzigartig    / --ezn = bekommen eine einzigartige und sortiere daten",
+                        "--stat           / --sat = dateis beschreibenung",
+                        "--teilen         / --ten = teilen eine datei zu zwei datei",
+                        "--rsync          / --rnc = synchronizieren daten vom einem datei zu anderem datei",
+                        "--verglen        / --ven = vergleichen zwei sortische datei mit daten",
+                        "--sysinfo        / --sin = zeigen eine information uber system benutzers"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
