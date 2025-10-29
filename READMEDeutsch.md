@@ -1,6 +1,6 @@
-# CU
-**CU : (English) Console Utility / (Deutsch) Konsole Dienst Programm** ist die einfache Version des KonsoleDienstprogramm mit einfachen Befehlen. Es wurde in Java geschrieben und unterstützt die beiden Sprachen Deutsch und Englisch.
-# Java
+# Deutsch KonsoleDienstProgramm 
+Das ist die einfache Version des KonsoleDienstprogramm mit einfachen Befehlen. Es wurde in Java geschrieben und unterstützt die beiden Sprachen Deutsch und Englisch.
+# Java 
 Dieses Projekt wurde in einer Java Sprache erstellt. Die Java-Version ist 23. ConsoleUtility unterstützt alle Java-Versionen ab Java 10/11.
 # Befehlszeilen
 ConsoleUtility funktioniert in Windows PowerShell in Windows und der Bash-Zeile unter Linux.
