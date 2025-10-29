@@ -1,4 +1,4 @@
-# CU | Console Utility / Deutsch Konsole Dienst Programm 
+# CU | ConsoleUtility / Deutsch KonsoleDienstProgramm 
 
 ![License](https://img.shields.io/github/license/Frolotey1/CU-ConsoleUtility) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Frolotey1/CU-ConsoleUtility)
 
