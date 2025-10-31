@@ -16,7 +16,7 @@ Und der Pfad ändert sich zu `C:\CU-ConsoleUtility` (unter Windows). Im Linux-Sy
 2. `--search, --sh` (Englisch KonsoleDienstProgramm) oder `--suchen, --sun` (Deutsch KonsoleDienstProgramm)
 3. wann schreiben Sie keine befehle in KonsoleDienstProgramm und dieser projekt will zeigt Ihnen alle befehle in KonsoleDienstprogramm fur benutzerung.
 
-Und Fur kennenlernenung mit befehlens syntax sie konnen benutzen: `--tldr` oder `--tld`.
+Und fur kennenlernenung mit befehlens syntax sie konnen benutzen: `--tldr` oder `--tld`.
 
 # Montagesystem
 ConsoleUtility wie ein Projekt, das mit dem Mavens system gesammelt wurde
