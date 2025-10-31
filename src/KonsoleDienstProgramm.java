@@ -80,12 +80,13 @@ public class KonsoleDienstProgramm {
                     "--entfernen oder --ent","--integrieren oder ing",
                     "--grsdti oder --grs","--editieren oder --edt","--symzln oder --szn",
                     "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport dder --xp","--ximport oder --xm",
-                    "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun",
+                    "--herstellen oder --hen","--stats oder --sts","--suchen oder --sun",
                     "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
                     "--sauber oder --sab","--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
                     "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
                     "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
-                    "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin"
+                    "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
+                    "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -815,6 +816,22 @@ public class KonsoleDienstProgramm {
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
                                 "--sysinfo / --sin -> [ENTER] -> " +
                                 "(Will zeigen eine information uber deinem system)");
+                        case 58 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder/home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--jungste / --jng -> [ENTER] -> " + "zeigt die Informationen zur letzten Eingabe durch Anmeldung oder Registrierung im Dienstprogramm an");
+                        case 59 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder/home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--aktiv / --akt -> [ENTER] -> " + "zeigt die Informationen über den Benutzer im System und seine Aktivität ab dem Zeitpunkt der Anmeldung oder Registrierung im Dienstprogramm an");
+                        case 60 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder/home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--benutzername / --btn -> [ENTER] -> " + "zeigt den eindeutigen zufälligen Spitznamen für den Benutzer im System an");
+                        case 61 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "oder/home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--vorschau / --vsc -> [ENTER] -> " + "zeigt die Liste der zukünftigen Befehle an, die in das Dienstprogramm integriert werden");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1211,12 +1228,13 @@ public class KonsoleDienstProgramm {
                             "--entfernen oder --ent","--integrieren oder ing",
                             "--grsdti oder --grs","--editieren oder --edt","--symzln oder --szn",
                             "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport or --xp","--ximport or --xm",
-                            "--herstellen oder --hen","--stats oder --ss","--suchen oder --sun",
+                            "--herstellen oder --hen","--stats oder --sts","--suchen oder --sun",
                             "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
                             "--sauber oder --sab", "--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
                             "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
                             "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
-                            "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin"
+                            "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
+                            "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc"
                     ));
                     System.out.println("Schreiben welche befehle wollen Sie finden: ");
                     String befehle = operation.nextLine();
@@ -1506,9 +1524,7 @@ public class KonsoleDienstProgramm {
                         byte[]byteDaten = Files.readAllBytes(Path.of(dateiName));
                         byte[]ersteHalbbyten = new byte[byteDaten.length / 2];
                         byte[]zweiteHalbbyten = new byte[byteDaten.length];
-                        for(int i = 0; i < byteDaten.length; ++i) {
-                            zweiteHalbbyten[i] = byteDaten[i];
-                        }
+                        if (byteDaten.length >= 0) System.arraycopy(byteDaten, 0, zweiteHalbbyten, 0, byteDaten.length);
                         if (byteDaten.length / 2 >= 0)
                             System.arraycopy(byteDaten, 0, ersteHalbbyten, 0, byteDaten.length / 2);
                         Files.deleteIfExists(Path.of(dateiName));
@@ -1555,7 +1571,7 @@ public class KonsoleDienstProgramm {
                     }
                 }
                 case "--verglen","--ven" -> {
-                    String ersteDatei, zweiteDatei, ersteDaten, zweiteDaten;
+                    String ersteDatei, zweiteDatei, ersteDaten = "", zweiteDaten = "";
                     System.out.println("Schreiben die erste datei: ");
                     ersteDatei = operation.nextLine();
                     System.out.println("Schreiben die zweite datei: ");
@@ -1593,6 +1609,53 @@ public class KonsoleDienstProgramm {
                     System.out.println(GELB + "Heap >> " + RESET);
                     for(String heapInfo : bekommHeapInfo()) {
                         System.out.println(heapInfo);
+                    }
+                }
+                case "--jungste","--jng" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    Path alleJungsteAktiv = Path.of("Recent.txt");
+                    new ArrayList<>(Files.readAllLines(alleJungsteAktiv)).forEach(System.out::println);
+                }
+                case "--aktiv","--akt" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    String benutzerName, aktivVom;
+                    try(BufferedReader lesenBenutzerName = new BufferedReader(new FileReader("Username.txt"))) {
+                        benutzerName = lesenBenutzerName.readLine();
+                        if(benutzerName == null || benutzerName.isEmpty()) {
+                            benutzerName = "";
+                        }
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    try(BufferedReader readTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
+                        aktivVom = readTime.readLine();
+                        if(aktivVom == null || aktivVom.isEmpty()) {
+                            aktivVom = "";
+                        }
+                    } catch (IOException aus) {
+                        throw new RuntimeException(aus.getLocalizedMessage());
+                    }
+                    System.out.println("BENUTZERNAME: " + benutzerName + " | AKTIV VOM: " + aktivVom + " | ZEIT JETZT: " + LocalDateTime.now());
+                }
+                case "--benutzername","--btn" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    String benutzerName;
+                    try(BufferedReader lesenBenutzerName = new BufferedReader(new FileReader("Username.txt"))) {
+                        benutzerName = lesenBenutzerName.readLine();
+                        if(benutzerName == null || benutzerName.isEmpty()) {
+                            benutzerName = "";
+                        }
+                    } catch (IOException aus) {
+                        throw new RuntimeException(aus.getLocalizedMessage());
+                    }
+                    System.out.println(GRUN + benutzerName + RESET);
+                }
+                case "--vorschau","--vsc" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    Vorschau zeigen = new Vorschau();
+                    List<String> zeigenAlleZukunfteBefehlen = zeigen.befehleListe();
+                    for(String zukunftBefehlen : zeigenAlleZukunfteBefehlen) {
+                        System.out.println(zeigenAlleZukunfteBefehlen.indexOf(zukunftBefehlen) + 1 + "> " + zukunftBefehlen);
                     }
                 }
                 case null, default -> System.err.println(ROT + "Diese operation existiert nicht" + RESET);
@@ -1679,7 +1742,11 @@ public class KonsoleDienstProgramm {
                         "--teilen         / --ten = teilen eine datei zu zwei datei",
                         "--rsync          / --rnc = synchronizieren daten vom einem datei zu anderem datei",
                         "--verglen        / --ven = vergleichen zwei sortische datei mit daten",
-                        "--sysinfo        / --sin = zeigen eine information uber system benutzers"
+                        "--sysinfo        / --sin = zeigen eine information uber system benutzers",
+                        "--jungste        / --jng = zeigt die Informationen zur letzten Eingabe durch Anmeldung oder Registrierung im Dienstprogramm an",
+                        "--aktiv          / --akt = zeigt die Informationen über den Benutzer im System und seine Aktivität ab dem Zeitpunkt der Anmeldung oder Registrierung im Dienstprogramm an",
+                        "--benutzername   / --btn = zeigt den eindeutigen zufälligen Spitznamen für den Benutzer im System an",
+                        "--vorschau       / --vsc = zeigt die Liste der zukünftigen Befehle an, die in das Dienstprogramm integriert werden"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
@@ -1785,6 +1852,11 @@ public class KonsoleDienstProgramm {
                     }
                 }
             }
+        }
+    }
+    public static class Vorschau {
+        public List<String> befehleListe() {
+            return new ArrayList<>(List.of("id (prufen id fur benutzer in DienstProgramm)","ausgang (ausgang vom DienstProgramm)","schneiden (cut stringen vom datei)","adratr (andern attributen fur datei)"));
         }
     }
 }
