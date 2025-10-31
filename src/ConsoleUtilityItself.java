@@ -3,18 +3,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.net.Inet4Address;
-import java.net.InetAddress;
+import java.lang.management.*;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.security.*;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
@@ -22,7 +17,6 @@ import java.util.jar.*;
 import java.util.stream.Stream;
 import java.util.zip.*;
 import javax.xml.stream.*;
-import javax.xml.transform.Source;
 
 public class ConsoleUtilityItself {
     private static final
@@ -67,8 +61,7 @@ public class ConsoleUtilityItself {
                     "--help or --hp","--add or --ad",
                     "--read or --rd", "--delete or --dt","--copy or --cp",
                     "--move or --mv","--newname or --nn",
-                    "--taskmgr or --tm","--stopgap or --sg",
-                    "--GUI or --gi","--jar or --jr",
+                    "--stopgap or --sg", "--GUI or --gi","--jar or --jr",
                     "--zip or -zp (Windows) / --tar.gz or -tr (Linux)",
                     "--write or --wt","--grep or --gp",
                     "--history or --hi","--find or --fd",
@@ -87,13 +80,16 @@ public class ConsoleUtilityItself {
                     "--clean or --cn","--ping or --pg","--intproc or --ip","--interrupt or --ir",
                     "--filter or --fr","--md5gen or --mg","--sha256gen or --sn","--freeze or --fe",
                     "--unique or --uq","--stat or --sa","--split or --sp","--rsync or --rc",
-                    "----cmp or --cp","--sysinfo or --si"
+                    "----cmp or --cp","--sysinfo or --si","--recent or --rn","--active or --ae",
+                    "--username or --un","--preview or --pw"
             ));
             for(String all : prompt) {
                 System.out.println(all);
             }
         }
         for (String arg : args) {
+            final Path fromFile = Path.of("Directory.txt");
+            final Path source = Path.of("ReserveCopy.bin"); 
             switch (arg) {
                 case "--help", "--hp" -> {
                     appendHistory((index++) + " | " + arg);
@@ -103,17 +99,18 @@ public class ConsoleUtilityItself {
                     appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name for file: ");
                     String nameFile = operation.nextLine();
-                    System.out.println("Write the text for file: ");
-                    String text = operation.nextLine();
+                    String text = "";
                     Files.writeString(Path.of(nameFile), text + System.lineSeparator(),
                             StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                    System.out.println(GREEN + "File was added successfully" + RESET);
                 }
                 case "--read", "--rd" -> {
                     appendHistory((index++) + " | " + arg);
                     System.out.println("Write the filename for checking his existence: ");
                     String nameFile = operation.nextLine();
-                    if (Files.exists(Path.of(nameFile))) {
-                        List<String> readStrings = new ArrayList<>(Files.readAllLines(Path.of(nameFile)));
+                    Path path = Path.of(nameFile); 
+                    if (Files.exists(path)) {
+                        List<String> readStrings = new ArrayList<>(Files.readAllLines(path));
                         readStrings.forEach(System.out::println);
                         readStrings.clear();
                     } else {
@@ -125,12 +122,8 @@ public class ConsoleUtilityItself {
                     System.out.println("Write the name of the file for checking existence: ");
                     String nameFile = operation.nextLine();
                     file = new File(nameFile);
-                    if (Files.exists(file.toPath())) {
-                        System.out.println(GREEN + "This file: " + file.toPath() + " was deleted successfully" + RESET);
-                        Files.delete(file.toPath());
-                    } else {
-                        System.err.println(RED + "This file doesn't exist" + RESET);
-                    }
+                    Files.deleteIfExists(file.toPath());
+                    System.out.println(GREEN + "This file: " + file.toPath() + " was deleted successfully" + RESET);
                 }
                 case "--copy", "--cp" -> {
                     appendHistory((index++) + " | " + arg);
@@ -154,10 +147,15 @@ public class ConsoleUtilityItself {
                     char newDisk = operation.nextLine().charAt(0);
                     file = new File(nameFile);
                     if (Files.exists(file.toPath())) {
+                        if(newDisk == 'C') {
+                            Files.move(file.toPath(), Path.of(newDisk + ":\\", file.getName()), StandardCopyOption.REPLACE_EXISTING);
+                        } else if(newDisk == '/') {
+                            Files.move(file.toPath(), Path.of(newDisk + "home/", file.getName()), StandardCopyOption.REPLACE_EXISTING);
+                        } else {
+                            System.err.println(RED + "This type of disk doesn't exist" + RESET);
+                            System.exit(0);
+                        }
                         System.out.println(GREEN + "This file was moved to other disk successfully" + RESET);
-                        Files.move(file.toPath(), Path.of(newDisk + ":\\", file.getName()), StandardCopyOption.REPLACE_EXISTING);
-                    } else {
-                        System.err.println(RED + "This file doesn't exist" + RESET);
                     }
                 }
                 case "--newname", "--nn" -> {
@@ -263,45 +261,70 @@ public class ConsoleUtilityItself {
                 }
                 case "--grep", "--gp" -> {
                     appendHistory((index++) + " | " + arg);
-                    System.out.println("Write the file where you want to become the text from: ");
-                    String filename = operation.nextLine();
-                    String name, data;
-                    if (Files.exists(Path.of(filename))) {
-                        name = filename;
-                    } else {
-                        System.out.println("This file doesn't exist. Create the new");
-                        name = operation.nextLine();
-                        System.out.println("Write the text in the file: ");
-                        data = operation.nextLine();
-                        try (BufferedWriter writeTo = new BufferedWriter(new FileWriter(name))) {
-                            writeTo.write(data);
+                    ArrayList<String> saveTheTokens = new ArrayList<>();
+                    int countTheWords;
+                    StringTokenizer token;
+                    System.out.println("Write the file or directory: ");
+                    String fileOrDirectory = operation.nextLine();
+                    String finalName, data;
+                    Path start = Path.of(fileOrDirectory); 
+                    if(new File(fileOrDirectory).isDirectory()) {
+                        System.out.println("Write the name of file or extension for him: ");
+                        finalName = operation.nextLine();
+                        List<Path> allFiles;
+                        try(Stream<Path> streamPath = Files.walk(start)) {
+                            allFiles = streamPath.filter(comparePath -> String.valueOf(comparePath).endsWith(finalName)).toList();
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        for(Path addAllPaths : allFiles) {
+                            saveTheTokens.add(addAllPaths.toString());
+                        }
+                        for(String findGrepElem : saveTheTokens) {
+                            if(Objects.equals(findGrepElem,finalName)) {
+                                saveTheTokens.set(saveTheTokens.indexOf(findGrepElem),RED + findGrepElem + RESET);
+                            }
+                        }
+                        saveTheTokens.forEach(System.out::println);
+                        saveTheTokens.clear();
+                    } else if(new File(fileOrDirectory).isFile()) {
+                        if (Files.exists(start)) {
+                            finalName = fileOrDirectory;
+                        } else {
+                            System.out.println("This file doesn't exist. Create the new");
+                            finalName = operation.nextLine();
+                            System.out.println("Write the text in the file: ");
+                            data = operation.nextLine();
+                            try (BufferedWriter writeTo = new BufferedWriter(new FileWriter(finalName))) {
+                                writeTo.write(data);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex.getLocalizedMessage());
+                            }
+                        }
+                        System.out.println("Write the word or text which you want to become from the file: ");
+                        String text = operation.nextLine();
+                        String textFrom;
+                        try (BufferedReader readFrom = new BufferedReader(new FileReader(finalName))) {
+                            textFrom = readFrom.readLine();
                         } catch (IOException ex) {
                             throw new RuntimeException(ex.getLocalizedMessage());
                         }
-                    }
-                    System.out.println("Write the word or text which you want to become from the file: ");
-                    String text = operation.nextLine();
-                    String textFrom;
-                    int countTheWords;
-                    try (BufferedReader readFrom = new BufferedReader(new FileReader(name))) {
-                        textFrom = readFrom.readLine();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex.getLocalizedMessage());
-                    }
-                    StringTokenizer token = new StringTokenizer(textFrom);
-                    List<String> saveTheTokens = new LinkedList<>();
-                    while (token.hasMoreTokens()) {
-                        saveTheTokens.add(token.nextToken());
-                    }
-                    countTheWords = (int) saveTheTokens.stream().filter(object -> Objects.equals(object, text)).count();
-                    for (int findText = 0; findText < saveTheTokens.size(); ++findText) {
-                        if (Objects.equals(saveTheTokens.get(findText), text)) {
-                            saveTheTokens.set(findText, RED + text + RESET);
+                        token = new StringTokenizer(textFrom);
+                        while (token.hasMoreTokens()) {
+                            saveTheTokens.add(token.nextToken());
                         }
+                        countTheWords = (int) saveTheTokens.stream().filter(object -> Objects.equals(object, text)).count();
+                        for (int findText = 0; findText < saveTheTokens.size(); ++findText) {
+                            if (Objects.equals(saveTheTokens.get(findText), text)) {
+                                saveTheTokens.set(findText, RED + text + RESET);
+                            }
+                        }
+                        saveTheTokens.add("| " + countTheWords);
+                        saveTheTokens.forEach(System.out::println);
+                        saveTheTokens.clear();
+                    } else {
+                        System.err.println(RED + "Error naming file or directory" + RESET);
                     }
-                    saveTheTokens.add("| " + countTheWords);
-                    saveTheTokens.forEach(System.out::println);
-                    saveTheTokens.clear();
                 }
                 case "--history", "--hi" -> {
                     appendHistory((index++) + " | " + arg);
@@ -409,7 +432,6 @@ public class ConsoleUtilityItself {
                         Path path = Path.of(findDirectory);
                         Files.deleteIfExists(path);
                         if (!Files.isDirectory(path)) {
-                            Path fromFile = Paths.get("Directory.txt");
                             List<String> removeTheDirectory = new ArrayList<>(Files.readAllLines(fromFile));
                             removeTheDirectory.remove(findDirectory);
                             Files.delete(fromFile);
@@ -433,14 +455,15 @@ public class ConsoleUtilityItself {
                                     "replace", "crtdir", "candir", "exstdirs",
                                     "chgrits", "chgextn", "symlink", "empty",
                                     "sort", "reverse", "remall", "remove",
-                                    "integrate", "sizfls", "edit","--symcnt",
+                                    "integrate", "sizfls", "edit","symcnt",
                                     "resize","version","backup","xexport",
                                     "ximport","restore","stats","search",
                                     "hostinfo","shutdown","restart","fmem",
                                     "clean","ping","intproc",
                                     "interrupt", "filter","md5gen","sha256gen",
                                     "freeze", "unique","stat","split","rsync",
-                                    "cmp","sysinfo"
+                                    "cmp","sysinfo","recent","active",
+                                    "username","preview"
                             };
                     for (int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -804,6 +827,22 @@ public class ConsoleUtilityItself {
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--sysinfo / --si -> [ENTER] -> " + "will show the information about system on user's computer");
+                        case 59 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                 "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--recent / --rn -> [ENTER] -> " + "will show the information about recent enter by login or register in utility");
+                        case 60 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--active / --ae -> [ENTER] -> " + "will show the information about user in system and his active from time of login or register in utility");
+                        case 61 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--username / --un -> [ENTER] -> " + "will show the unique random nickname for user in system");
+                        case 62 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--preview / --pw -> [ENTER] -> " + "will show the list of the future commands which will integrate in utility");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -846,13 +885,14 @@ public class ConsoleUtilityItself {
                             String allRights = resultRights.getFirst() + resultRights.get(1) + resultRights.getLast();
                             Set<PosixFilePermission> perms = PosixFilePermissions.fromString(allRights);
                             FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-                            Files.createFile(Path.of(saveFileName), attr);
+                            Files.createFile(path, attr);
                             try (BufferedWriter writeBackToFile = new BufferedWriter(new FileWriter(saveFileName))) {
                                 writeBackToFile.write(line);
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex.getLocalizedMessage());
                             }
                             System.out.println(GREEN + "The rights for the file: '" + saveFileName + "' were changed successfully" + RESET);
+                            numberRights.clear();
                         }
                     }
                 }
@@ -900,8 +940,7 @@ public class ConsoleUtilityItself {
                     String symlink;
                     System.out.println("Write the directory for which you want to create the symbolic link: ");
                     directory = operation.nextLine();
-                    Path path = Path.of("Directory.txt");
-                    List<String> findDirectory = new ArrayList<>(Files.readAllLines(path));
+                    List<String> findDirectory = new ArrayList<>(Files.readAllLines(fromFile));
                     String foundDirectory = findDirectory.get(findDirectory.indexOf(directory) + 2);
                     System.out.println(foundDirectory);
                     if (foundDirectory.isEmpty()) {
@@ -918,7 +957,7 @@ public class ConsoleUtilityItself {
                     appendHistory((index) + " | " + arg);
                     System.out.println("Write the file which you want to delete the text from: ");
                     String fileName = operation.nextLine();
-                    String name = "", newFile = "";
+                    String name = "", newFile;
                     if (Files.exists(Path.of(fileName))) {
                         name = fileName;
                     } else {
@@ -1069,7 +1108,8 @@ public class ConsoleUtilityItself {
                     appendHistory((index) + " | " + arg);
                     System.out.println("Write name of your file: ");
                     String filename = operation.nextLine();
-                    if(Files.exists(Path.of(filename))) {
+                    Path path = Path.of(filename); 
+                    if(Files.exists(path)) {
                         System.out.println("Write the new size for your file: ");
                         long newsize = operation.nextLong();
                         String []fileData = new String[2];
@@ -1077,13 +1117,11 @@ public class ConsoleUtilityItself {
                             String line = readFrom.readLine();
                             if(line == null || line.isEmpty()) {
                                 line = "";
-                                fileData[0] = line;
-                            } else {
-                                fileData[0] = line;
                             }
+                            fileData[0] = line;
                         }
                         fileData[1] = filename;
-                        Files.deleteIfExists(Path.of(filename));
+                        Files.deleteIfExists(path);
                         try(RandomAccessFile recreateAndResize = new RandomAccessFile(fileData[1],"rw")) {
                             recreateAndResize.setLength(newsize);
                         }
@@ -1105,16 +1143,16 @@ public class ConsoleUtilityItself {
                     appendHistory((index) + " | " + arg);
                     System.out.println("Write your file which saved your data: ");
                     String filename = operation.nextLine();
-                    if(Files.exists(Path.of(filename))) {
+                    Path path = Path.of(filename); 
+                    if(Files.exists(path)) {
                         try(BufferedReader checkDataInFIle = new BufferedReader(new FileReader(filename))) {
                             String data = checkDataInFIle.readLine();
                             if(data == null || data.isEmpty()) {
                                 System.err.println(RED + "Data in the file is empty" + RESET);
                             }
                         }
-                        Path reserveCopy = Path.of("ReserveCopy.bin");
                         try {
-                            Files.copy(Path.of(filename),reserveCopy,StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(path, source,StandardCopyOption.REPLACE_EXISTING);
                         } catch (IOException exc) {
                             throw new RuntimeException(exc.getLocalizedMessage());
                         }
@@ -1157,7 +1195,7 @@ public class ConsoleUtilityItself {
                 case "--restore","--rt" -> {
                     appendHistory((index) + " | " + arg);
                     try {
-                        Files.copy(Path.of("ReserveCopy.bin"),Path.of("FromReserve.txt"),StandardCopyOption.REPLACE_EXISTING);
+                        Files.copy(source,Path.of("FromReserve.txt"),StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOError exc) {
                         throw new RuntimeException(exc.getLocalizedMessage());
                     }
@@ -1170,20 +1208,7 @@ public class ConsoleUtilityItself {
                 }
                 case "--stats","--ss" -> {
                     appendHistory((index) + " | " + arg);
-                    String getTime;
-                    try(BufferedReader readTheTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
-                        getTime = readTheTime.readLine();
-                        if(getTime == null || getTime.isEmpty()) {
-                            getTime = "";
-                        }
-                    } catch (IOException exc) {
-                        throw new RuntimeException(exc.getLocalizedMessage());
-                    }
-                    List<Integer> HourMinuteSecond = new ArrayList<>();
-                    StringTokenizer divideTime = new StringTokenizer(getTime);
-                    while(divideTime.hasMoreTokens()) {
-                        HourMinuteSecond.add(Integer.parseInt(divideTime.nextToken()));
-                    }
+                    List<Integer> HourMinuteSecond = getIntegers();
                     ArrayList<String> countUsedCommands = new ArrayList<>(Files.readAllLines(HistoricalFile));
                     System.out.println("Used commands: " + countUsedCommands.size() + " | Uptime: " + (LocalTime.now().getHour() - HourMinuteSecond.getFirst())
                             + ":" + (LocalTime.now().getMinute() - HourMinuteSecond.get(1))
@@ -1213,7 +1238,8 @@ public class ConsoleUtilityItself {
                             "--ping or --pg","--intproc or --ip","--interrupt or --ir",
                             "--filter or --fr","--md5gen or --mg","--sha256gen or --sn","--freeze or --fe",
                             "--unique or --uq","--stat or --sa","--split or --sp","--rsync or --rc",
-                            "----cmp or --cp","--sysinfo or --si"
+                            "----cmp or --cp","--sysinfo or --si","--recent or --rn","--active or --ae",
+                            "--username or --un","--preview or --pw"
                     ));
                     System.out.println("Write which command you find: ");
                     String command = operation.nextLine();
@@ -1421,8 +1447,9 @@ public class ConsoleUtilityItself {
                     appendHistory((index) + " | " + arg);
                     System.out.println("Write your file for analysing data in sha256 algorithm: ");
                     String getFileForSha256 = operation.nextLine();
-                    if (Files.exists(Path.of(getFileForSha256))) {
-                        String getInputData = Files.readString(Path.of(getFileForSha256), StandardCharsets.UTF_8);
+                    Path path = Path.of(getFileForSha256); 
+                    if (Files.exists(path)) {
+                        String getInputData = Files.readString(path, StandardCharsets.UTF_8);
                         if (getInputData == null || getInputData.isEmpty()) {
                             getInputData = "0";
                         }
@@ -1477,10 +1504,11 @@ public class ConsoleUtilityItself {
                 case "--stat","--sa" -> {
                     System.out.println("Write the name for your file: ");
                     String fileName = operation.nextLine();
-                    if(Files.exists(Path.of(fileName))) {
+                    Path path = Path.of(fileName); 
+                    if(Files.exists(path)) {
                         System.out.println("File's name: " + new File(fileName).getName());
                         System.out.println("File's size: " + new File((fileName)).length());
-                        BasicFileAttributes attributes = Files.readAttributes(Path.of(fileName),BasicFileAttributes.class);
+                        BasicFileAttributes attributes = Files.readAttributes(path,BasicFileAttributes.class);
                         FileTime creationTime = attributes.creationTime();
                         FileTime modifiedTime = attributes.lastModifiedTime();
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
@@ -1493,9 +1521,11 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--split","--sp" -> {
+                    appendHistory((index) + " | " + arg);
                     System.out.println("Write the name for your file: ");
                     String fileName = operation.nextLine();
-                    if(Files.exists(Path.of(fileName))) {
+                    Path path1 = Path.of(fileName); 
+                    if(Files.exists(path1)) {
                         String dataFromFile;
                         try(BufferedReader readData = new BufferedReader(new FileReader(fileName))) {
                             dataFromFile = readData.readLine();
@@ -1503,18 +1533,16 @@ public class ConsoleUtilityItself {
                                 dataFromFile = " ";
                             }
                         }
-                        byte[]byteData = Files.readAllBytes(Path.of(fileName));
+                        byte[]byteData = Files.readAllBytes(path1);
                         byte[]firstHalfBytes = new byte[byteData.length / 2];
                         byte[]secondHalfBytes = new byte[byteData.length];
-                        for(int i = 0; i < byteData.length; ++i) {
-                            secondHalfBytes[i] = byteData[i];
-                        }
+                        if (byteData.length >= 0) System.arraycopy(byteData, 0, secondHalfBytes, 0, byteData.length);
                         if (byteData.length / 2 >= 0)
                             System.arraycopy(byteData, 0, firstHalfBytes, 0, byteData.length / 2);
-                        Files.deleteIfExists(Path.of(fileName));
+                        Files.deleteIfExists(path1);
                         String new_ = "New";
                         String file_ = fileName.substring(0,fileName.indexOf('.'));
-                        String extension = fileName.substring(fileName.indexOf('.'),fileName.length());
+                        String extension = fileName.substring(fileName.indexOf('.'));
                         File newFile = new File(new_ + file_ + extension);
                         File newFile2 = new File(new_ + file_ + "2" + extension);
                         try {
@@ -1533,15 +1561,18 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--rsync","--rc" -> {
+                    appendHistory((index) + " | " + arg);
                     System.out.println("Write your source file: ");
                     String SourceFile = operation.nextLine();
-                    System.out.println("Write your destination file: ");
-                    String DestinationFile = operation.nextLine();
-                    if(Files.exists(Path.of(SourceFile))) {
-                        if(Files.exists(Path.of(DestinationFile))) {
-                            byte[] byteData = Files.readAllBytes(Path.of(SourceFile));
+                    System.out.println("Write your destination file: "); 
+                    String DestinationFile = operation.nextLine(); 
+                    Path path = Path.of(SourceFile);
+                    if(Files.exists(path)) {
+                        Path path1 = Path.of(DestinationFile);
+                        if(Files.exists(path1)) {
+                            byte[] byteData = Files.readAllBytes(path);
                            try {
-                               Files.write(Path.of(DestinationFile), byteData,StandardOpenOption.APPEND);
+                               Files.write(path1, byteData,StandardOpenOption.APPEND);
                            } catch(IOException exc) {
                                throw new RuntimeException(exc.getLocalizedMessage());
                            }
@@ -1555,19 +1586,22 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--cmp","--cm" -> {
+                    appendHistory((index) + " | " + arg);
                     String firstFile, secondFile, firstData = "", secondData = "";
                     System.out.println("Write the first file: ");
                     firstFile = operation.nextLine();
                     System.out.println("Write the second file : ");
                     secondFile = operation.nextLine();
-                    if(!Files.exists(Path.of(firstFile)) || !Files.exists(Path.of(secondFile))) {
+                    Path path = Path.of(firstFile);
+                    Path path4 = Path.of(secondFile);
+                    if(!Files.exists(path) || !Files.exists(path4)) { 
                         System.err.println(RED + "One of two is not detected" + RESET);
                     } else {
-                        List<String> checkSorted1 = new ArrayList<>(Files.readAllLines(Path.of(firstFile)));
-                        List<String> CheckSorted2 = new ArrayList<>(Files.readAllLines(Path.of(secondFile)));
+                        List<String> checkSorted1 = new ArrayList<>(Files.readAllLines(path));
+                        List<String> CheckSorted2 = new ArrayList<>(Files.readAllLines(path4));
                         if(checkSorted1.stream().sorted().isParallel() || CheckSorted2.stream().sorted().isParallel()) {
-                            firstData = String.valueOf(Files.readAllLines(Path.of(firstFile)));
-                            secondData = String.valueOf(Files.readAllLines(Path.of(secondFile)));
+                            firstData = String.valueOf(Files.readAllLines(path));
+                            secondData = String.valueOf(Files.readAllLines(path4));
                         }
                         if(Objects.equals(firstData, secondData)) {
                            System.out.println(firstData);
@@ -1577,6 +1611,7 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--sysinfo","--si" -> {
+                    appendHistory((index) + " | " + arg);
                     System.out.println("System Information: ");
                     System.out.println(GREEN + "CPU >> " + RESET);
                     for(String partInfo : getCpuInfo()) {
@@ -1595,9 +1630,71 @@ public class ConsoleUtilityItself {
                         System.out.println(heapInfo);
                     }
                 }
+                case "--recent","--rn" -> {
+                    appendHistory((index) + " | " + arg);
+                    Path allRecentActive = Path.of("Recent.txt");
+                    new ArrayList<>(Files.readAllLines(allRecentActive)).forEach(System.out::println);
+                }
+                case "--active","--ae" -> {
+                    String username, activefrom;
+                    try(BufferedReader readUserName = new BufferedReader(new FileReader("Username.txt"))) {
+                        username = readUserName.readLine();
+                        if(username == null || username.isEmpty()) {
+                            username = "";
+                        }
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    try(BufferedReader readTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
+                        activefrom = readTime.readLine();
+                        if(activefrom == null || activefrom.isEmpty()) {
+                            activefrom = "";
+                        }
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    System.out.println("USERNAME: " + username + " | ACTIVE FROM: " + activefrom + " | TIME NOW: " + LocalDateTime.now());
+                }
+                case "--username","--un" -> {
+                    String username;
+                    try(BufferedReader readUserName = new BufferedReader(new FileReader("Username.txt"))) {
+                        username = readUserName.readLine();
+                        if(username == null || username.isEmpty()) {
+                            username = "";
+                        }
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                    System.out.println(GREEN + username + RESET);
+                }
+                case "--preview","--pw" -> {
+                    Preview show = new Preview();
+                    List<String> showAllFutureCommands = show.commandList();
+                    for(String futureCommand : showAllFutureCommands) {
+                        System.out.println(showAllFutureCommands.indexOf(futureCommand) + 1 + "> " + futureCommand);
+                    }
+                }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
         }
+    }
+
+    private static List<Integer> getIntegers() {
+        String getTime;
+        try(BufferedReader readTheTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
+            getTime = readTheTime.readLine();
+            if(getTime == null || getTime.isEmpty()) {
+                getTime = "";
+            }
+        } catch (IOException exc) {
+            throw new RuntimeException(exc.getLocalizedMessage());
+        }
+        List<Integer> HourMinuteSecond = new ArrayList<>();
+        StringTokenizer divideTime = new StringTokenizer(getTime);
+        while(divideTime.hasMoreTokens()) {
+            HourMinuteSecond.add(Integer.parseInt(divideTime.nextToken()));
+        }
+        return HourMinuteSecond;
     }
 
     private static String[] getCpuInfo() {
@@ -1680,7 +1777,11 @@ public class ConsoleUtilityItself {
                         "--split        /       --sp = split one file on two files",
                         "--rsync        /       --rc = synchronize data from one file to other file",
                         "--cmp          /       --cm = compare data between two sorted files",
-                        "--sysinfo      /       --si = system information about user's computer"
+                        "--sysinfo      /       --si = system information about user's computer",
+                        "--recent       /       --rn = show the information about recent enter for register or login in utility",
+                        "--active       /       --ae = show the information about username which actived in utility",
+                        "--username     /       --un = show the username for user",
+                        "--preview      /       --pw = show the list with future commands which will integrate in utility"
                 )).forEach(System.out::println);
     }
     private static class ConsoleUtilitysGUI extends JFrame {
@@ -1792,6 +1893,11 @@ public class ConsoleUtilityItself {
                     JOptionPane.showMessageDialog(this, RED + "Save file error" + RESET);
                 }
             }
+        }
+    }
+    public static class Preview {
+        public List<String> commandList() {
+            return new ArrayList<>(List.of("id (check id for user in utility)","exit (exit from Utility)","cut (cut strings from files)","chgatr (change attributes for files)"));
         }
     }
 }
