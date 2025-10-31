@@ -93,6 +93,7 @@ public class KonsoleDienstProgramm {
             }
         }
         for (String arg : args) {
+            final Path vomDatei = Paths.get("Directory.txt");
             switch (arg) {
                 case "--helfen", "--hel" -> alleBefehlen();
                 case "--hinzufugen", "--hin" -> {
@@ -413,7 +414,6 @@ public class KonsoleDienstProgramm {
                         Path weg = Path.of(findenDirektorei);
                         Files.deleteIfExists(weg);
                         if(!Files.isDirectory(weg)) {
-                            Path vomDatei = Paths.get("Directory.txt");
                             List<String> loschenDirektorei = new ArrayList<>(Files.readAllLines(vomDatei));
                             loschenDirektorei.remove(findenDirektorei);
                             Files.delete(vomDatei);
@@ -572,24 +572,24 @@ public class KonsoleDienstProgramm {
                                 {IF EXISTS} -> Schreiben Sie das erste Zeichen, das Sie ändern möchten: (erstes Zeichen. Beispiel: c) -> [ENTER] -> " +
                                 Schreiben Sie das zweite Zeichen, das Sie ändern möchten: -> (zweites Zeichen. Beispiel: i) -> [ENTER] -> (ersetzt das erste Zeichen durch das zweite)""");
                         case 17 -> System.out.println("""
-                                Ihr Pfad (C:\\CU-ConsoleUtility " 
-                                java srConsoleUtilityItself.java (Windows) " 
-                                oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " 
-                                --crtdir / --cr -> [EINGABE] -> " 
-                                Geben Sie den Namen des Verzeichnisses ein: -> (Ihr Verzeichnis) -> [EINGABE] -> " 
-                                Geben Sie das Hauptverzeichnis ein: (Ihr Hauptverzeichnis) (Beispiel: C:\\Users\\... oder /home/...) -> [EINGABE] -> " 
+                                Ihr Pfad (C:\\CU-ConsoleUtility "\s
+                                java srConsoleUtilityItself.java (Windows) "\s
+                                oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) "\s
+                                --crtdir / --cr -> [EINGABE] -> "\s
+                                Geben Sie den Namen des Verzeichnisses ein: -> (Ihr Verzeichnis) -> [EINGABE] -> "\s
+                                Geben Sie das Hauptverzeichnis ein: (Ihr Hauptverzeichnis) (Beispiel: C:\\Users\\... oder /home/...) -> [EINGABE] -> "\s
                                 <MELDUNG> 'Das Verzeichnis wurde erstellt: (Ihr erstelltes Verzeichnis)'""");
                         case 18 -> System.out.println("""
-                                Ihr Pfad (C:\\CU-ConsoleUtility " 
-                                java src\\ConsoleUtilityItself.java (Windows) " 
-                                oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux)) "                                 
-                                --candir / --ca -> [ENTER] -> " 
-                                Geben Sie das zu löschende Verzeichnis ein: (Ihr zu löschendes Verzeichnis) -> [ENTER] -> " 
+                                Ihr Pfad (C:\\CU-ConsoleUtility "\s
+                                java src\\ConsoleUtilityItself.java (Windows) "\s
+                                oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux)) "                                \s
+                                --candir / --ca -> [ENTER] -> "\s
+                                Geben Sie das zu löschende Verzeichnis ein: (Ihr zu löschendes Verzeichnis) -> [ENTER] -> "\s
                                 Das Verzeichnis (Ihr Verzeichnis) wurde erfolgreich gelöscht""");
                         case 19 -> System.out.println("""
-                                Ihr Pfad (C:\\CU-ConsoleUtility " 
-                                java src\\ConsoleUtilityItself.java (Windows) " 
-                                oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux)) " 
+                                Ihr Pfad (C:\\CU-ConsoleUtility "\s
+                                java src\\ConsoleUtilityItself.java (Windows) "\s
+                                oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux)) "\s
                                 --exstdirs / --ex -> [ENTER] -> "
                                 (zeigt alle mit crtdir erstellten Verzeichnisse an)""");
                         case 20 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility" +
@@ -796,7 +796,7 @@ public class KonsoleDienstProgramm {
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
                                 "--teilen / --ten -> [ENTER] -> " +
-                                "Schreiben eine name fur deinem datei: " + "(deine datei) -> [ENTER] -> " + "(Will teilen deine datei zu zwei unterdatei");
+                                "Schreiben eine name fur deinem datei: " + "(deine datei) -> [ENTER] -> " + "(Will teilen deine datei zu zwei unterminated");
                         case 55 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux))" +
@@ -839,9 +839,9 @@ public class KonsoleDienstProgramm {
                     hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben eine datei welche wollen Sie fur richten in datei andern: ");
                     String dateiName = operation.nextLine();
-                    Path weg = Path.of(dateiName);
-                    if(Files.exists(weg)) {
-                        String spreichernDateiName = dateiName, linie;
+                    Path path = Path.of(dateiName);
+                    if(Files.exists(path)) {
+                        String linie;
                         try(BufferedReader lesenDatenVonDatei = new BufferedReader(new FileReader(dateiName))) {
                             linie = lesenDatenVonDatei.readLine();
                             if(linie.isEmpty()) {
@@ -850,7 +850,7 @@ public class KonsoleDienstProgramm {
                         } catch (IOException ex) {
                             throw new RuntimeException(ex.getLocalizedMessage());
                         }
-                        Files.delete(weg);
+                        Files.delete(path);
                         System.out.println("Schreiben richten in octal system (Beispiel: 700): ");
                         String octalSystem = operation.nextLine();
                         if(octalSystem.length() > 3) {
@@ -870,19 +870,19 @@ public class KonsoleDienstProgramm {
                             String alleRichten = ergebnisRichten.getFirst() + ergebnisRichten.get(1) + ergebnisRichten.getLast();
                             Set<PosixFilePermission> perms = PosixFilePermissions.fromString(alleRichten);
                             FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-                            Files.createFile(Path.of(spreichernDateiName),attr);
-                            try(BufferedWriter schreibenZuruckZuDatei = new BufferedWriter(new FileWriter(spreichernDateiName))) {
+                            Files.createFile(path,attr);
+                            try(BufferedWriter schreibenZuruckZuDatei = new BufferedWriter(new FileWriter(dateiName))) {
                                 schreibenZuruckZuDatei.write(linie);
                             } catch (IOException aus) {
                                 throw new RuntimeException(aus.getLocalizedMessage());
                             }
-                            System.out.println(GRUN + "Richten fur datei: '" + spreichernDateiName + "' waren anderen erfolgreich" + RESET);
+                            System.out.println(GRUN + "Richten fur datei: '" + dateiName + "' waren anderen erfolgreich" + RESET);
                         }
                     }
                 }
                 case "--adverungen", "--adv" -> {
                     hinzufugenGeschichte((index) + " | " + arg);
-                    String dateiName,neueDateiName = "",verlanderung,neueVerlanderung = "",wennExistiert,daten = "";
+                    String dateiName,neueDateiName = "",verlanderung,neueVerlanderung,wennExistiert,daten = "";
                     System.out.println("Schreiben deine datei ohne verlanderung: ");
                     dateiName = operation.nextLine();
                     System.out.println("Schreiben eine verlanderung fur deine datei: ");
@@ -924,8 +924,7 @@ public class KonsoleDienstProgramm {
                     String symlink, direktorei;
                     System.out.println("Schreiben eine direktorei fur welche Sie wollen symbole link erstellen: ");
                     direktorei = operation.nextLine();
-                    Path weg = Path.of("Directory.txt");
-                    List<String> findenDirektorei = new ArrayList<>(Files.readAllLines(weg));
+                    List<String> findenDirektorei = new ArrayList<>(Files.readAllLines(vomDatei));
                     String findischDirektorei = findenDirektorei.get(findenDirektorei.indexOf(direktorei) + 2);
                     System.out.println(findischDirektorei);
                     if(findischDirektorei.isEmpty()) {
@@ -1000,7 +999,8 @@ public class KonsoleDienstProgramm {
                     if(!direktorei.startsWith("C:\\") && !direktorei.startsWith("/")) {
                         System.err.println(ROT + "Directoreis mussen mit C:\\ (fur Windows) oder / (Linux) starten sein" + RESET);
                     } else {
-                        try(Stream<Path> paths = Files.walk(Path.of(direktorei))) {
+                        Path start = Path.of(direktorei); 
+                        try(Stream<Path> paths = Files.walk(start)) {
                             paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(file_ -> {
                                 try {
                                     Files.delete(file_.toPath());
@@ -1011,7 +1011,7 @@ public class KonsoleDienstProgramm {
                         }
                         Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxrwxrwx");
                         FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-                        Files.createDirectory(Path.of(direktorei),attr);
+                        Files.createDirectory(start,attr);
                         System.out.println(GRUN + "Alle katalogien und dateis in " + direktorei + " waren loschen erfolgreich" + RESET);
                     }
                 }
@@ -1089,7 +1089,8 @@ public class KonsoleDienstProgramm {
                     hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie eine name fur deinem datei: ");
                     String dateiname = operation.nextLine();
-                    if(Files.exists(Path.of(dateiname))) {
+                    Path path = Path.of(dateiname);
+                    if(Files.exists(path)) {
                         System.out.println("Schreiben Sie eine neue grose fur deinem datei: ");
                         long neueGrose = operation.nextLong();
                         String []dateiDaten = new String[2];
@@ -1103,7 +1104,7 @@ public class KonsoleDienstProgramm {
                             }
                         }
                         dateiDaten[1] = dateiname;
-                        Files.deleteIfExists(Path.of(dateiname));
+                        Files.deleteIfExists(path);
                         try(RandomAccessFile erstellenWiederUndGroseAndern = new RandomAccessFile(dateiDaten[1],"rw")) {
                             erstellenWiederUndGroseAndern.setLength(neueGrose);
                         }
@@ -1125,7 +1126,8 @@ public class KonsoleDienstProgramm {
                     hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben Sie deine datei welche hat eine daten: ");
                     String dateiname = operation.nextLine();
-                    if(Files.exists(Path.of(dateiname))) {
+                    Path path = Path.of(dateiname);
+                    if(Files.exists(path)) {
                         try(BufferedReader prufenDatenInDatei = new BufferedReader(new FileReader(dateiname))) {
                             String data = prufenDatenInDatei.readLine();
                             if(data == null || data.isEmpty()) {
@@ -1134,7 +1136,7 @@ public class KonsoleDienstProgramm {
                         }
                         Path reserveCopieren = Path.of("ReserveCopieren.bin");
                         try {
-                            Files.copy(Path.of(dateiname),reserveCopieren,StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(path,reserveCopieren,StandardCopyOption.REPLACE_EXISTING);
                         } catch (IOException exc) {
                             throw new RuntimeException(exc.getLocalizedMessage());
                         }
@@ -1264,7 +1266,7 @@ public class KonsoleDienstProgramm {
                             throw new RuntimeException(exc.getLocalizedMessage());
                         }
                     } else {
-                        System.out.println(ROT + "Utility interstutzt diese OS nicht" + RESET);
+                        System.out.println(ROT + "Utility unterstutzt diese OS nicht" + RESET);
                     }
                 }
                 case "--neustarten","--nsn" -> {
@@ -1438,8 +1440,9 @@ public class KonsoleDienstProgramm {
                     hinzufugenGeschichte((index) + " | " + arg);
                     System.out.println("Schreiben deine datei fur analysierung daten mit sha256 algorithmus: ");
                     String bekDateiFurSha256 = operation.nextLine();
-                    if (Files.exists(Path.of(bekDateiFurSha256))) {
-                        String getEingangDaten = Files.readString(Path.of(bekDateiFurSha256), StandardCharsets.UTF_8);
+                    Path path = Path.of(bekDateiFurSha256);
+                    if (Files.exists(path)) {
+                        String getEingangDaten = Files.readString(path, StandardCharsets.UTF_8);
                         if (getEingangDaten == null || getEingangDaten.isEmpty()) {
                             getEingangDaten = "0";
                         }
@@ -1495,10 +1498,11 @@ public class KonsoleDienstProgramm {
                 case "--stat","--sat" -> {
                     System.out.println("Schreiben name for deinem datei: ");
                     String dateiName = operation.nextLine();
-                    if(Files.exists(Path.of(dateiName))) {
+                    Path path = Path.of(dateiName); 
+                    if(Files.exists(path)) {
                         System.out.println("Groses name: " + new File(dateiName).getName());
                         System.out.println("Groses size: " + new File((dateiName)).length());
-                        BasicFileAttributes attributes = Files.readAttributes(Path.of(dateiName),BasicFileAttributes.class);
+                        BasicFileAttributes attributes = Files.readAttributes(path,BasicFileAttributes.class);
                         FileTime erstellungZeit = attributes.creationTime();
                         FileTime letzteEinstellungZeit = attributes.lastModifiedTime();
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
@@ -1513,7 +1517,8 @@ public class KonsoleDienstProgramm {
                 case "--teilen","--ten" -> {
                     System.out.println("Schreiben eine name fur deinem datei: ");
                     String dateiName = operation.nextLine();
-                    if(Files.exists(Path.of(dateiName ))) {
+                    Path path = Path.of(dateiName);
+                    if(Files.exists(path)) {
                         String datenVomDatei;
                         try(BufferedReader readData = new BufferedReader(new FileReader(dateiName))) {
                             datenVomDatei = readData.readLine();
@@ -1521,13 +1526,13 @@ public class KonsoleDienstProgramm {
                                 datenVomDatei = " ";
                             }
                         }
-                        byte[]byteDaten = Files.readAllBytes(Path.of(dateiName));
+                        byte[]byteDaten = Files.readAllBytes(path);
                         byte[]ersteHalbbyten = new byte[byteDaten.length / 2];
                         byte[]zweiteHalbbyten = new byte[byteDaten.length];
                         if (byteDaten.length >= 0) System.arraycopy(byteDaten, 0, zweiteHalbbyten, 0, byteDaten.length);
                         if (byteDaten.length / 2 >= 0)
                             System.arraycopy(byteDaten, 0, ersteHalbbyten, 0, byteDaten.length / 2);
-                        Files.deleteIfExists(Path.of(dateiName));
+                        Files.deleteIfExists(path);
                         String new_ = "Neue";
                         String datei_ = dateiName.substring(0,dateiName .indexOf('.'));
                         String veranderungen = dateiName .substring(dateiName.indexOf('.'),dateiName.length());
@@ -1553,11 +1558,13 @@ public class KonsoleDienstProgramm {
                     String QuelleDatei = operation.nextLine();
                     System.out.println("Schreiben deine ziele datei: ");
                     String ZieleDatei = operation.nextLine();
-                    if(Files.exists(Path.of(QuelleDatei))) {
-                        if(Files.exists(Path.of(ZieleDatei))) {
-                            byte[] byteDaten = Files.readAllBytes(Path.of(QuelleDatei));
+                    Path path = Path.of(QuelleDatei);
+                    if(Files.exists(path)) {
+                        Path path1 = Path.of(ZieleDatei);
+                        if(Files.exists(path1)) {
+                            byte[] byteDaten = Files.readAllBytes(path);
                             try {
-                                Files.write(Path.of(ZieleDatei), byteDaten,StandardOpenOption.APPEND);
+                                Files.write(path1, byteDaten,StandardOpenOption.APPEND);
                             } catch(IOException exc) {
                                 throw new RuntimeException(exc.getLocalizedMessage());
                             }
@@ -1567,7 +1574,7 @@ public class KonsoleDienstProgramm {
                             System.err.println(ROT + "Fehler. Das ist unmoglich fur schreibenung daten vom quelle datei zu unbekannt ziele. Erstellen Sie bitte eine neue ziele datei" + RESET);
                         }
                     } else {
-                        System.err.println(ROT + "Fehler. Das ist unmoglich fur schreibenung daten vom unbekannt ziele datei zu ziele datei. Erstellen Sie bitte eine neue quelle datei und schreiben daten zu diesem datei" + RESET);
+                        System.err.println(ROT + "Fehler. Das ist unmoglich fur schreibenung daten vom unbekannt ziele datei zu ziele datei. Erstellen Sie bitte eine neue quelle datei und schreiben daten zu diesel datei" + RESET);
                     }
                 }
                 case "--verglen","--ven" -> {
@@ -1576,14 +1583,17 @@ public class KonsoleDienstProgramm {
                     ersteDatei = operation.nextLine();
                     System.out.println("Schreiben die zweite datei: ");
                     zweiteDatei = operation.nextLine();
-                    if(!Files.exists(Path.of(ersteDatei)) || !Files.exists(Path.of(zweiteDatei))) {
+                    Path path1 = Path.of(zweiteDatei);
+                    Path path2 = Path.of(ersteDatei);
+                    if(!Files.exists(path2) || !Files.exists(path1)) {
                         System.err.println(ROT + "Ein von zwelen dateis ist keine erkannt" + RESET);
                     } else {
-                        List<String> prufenSorten1 = new ArrayList<>(Files.readAllLines(Path.of(ersteDatei)));
-                        List<String> prufenSorten2 = new ArrayList<>(Files.readAllLines(Path.of(zweiteDatei)));
+                        Path path = path2;
+                        List<String> prufenSorten1 = new ArrayList<>(Files.readAllLines(path));
+                        List<String> prufenSorten2 = new ArrayList<>(Files.readAllLines(path1));
                         if(prufenSorten1.stream().sorted().isParallel() || prufenSorten2.stream().sorted().isParallel()) {
-                            ersteDaten = String.valueOf(Files.readAllLines(Path.of(ersteDatei)));
-                            zweiteDaten = String.valueOf(Files.readAllLines(Path.of(zweiteDatei)));
+                            ersteDaten = String.valueOf(Files.readAllLines(path));
+                            zweiteDaten = String.valueOf(Files.readAllLines(path1));
                         }
                         if(Objects.equals(ersteDaten, zweiteDaten)) {
                             System.out.println(ersteDaten);
