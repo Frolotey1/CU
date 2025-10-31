@@ -1854,7 +1854,7 @@ public class KonsoleDienstProgramm {
             }
         }
     }
-    public static class Vorschau {
+    private static class Vorschau {
         public List<String> befehleListe() {
             return new ArrayList<>(List.of("id (prufen id fur benutzer in DienstProgramm)","ausgang (ausgang vom DienstProgramm)","schneiden (cut stringen vom datei)","adratr (andern attributen fur datei)"));
         }
