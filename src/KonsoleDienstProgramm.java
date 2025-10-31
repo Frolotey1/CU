@@ -147,16 +147,21 @@ public class KonsoleDienstProgramm {
                 }
                 case "--bewegen", "--bew" -> {
                     hinzufugenGeschichte((index) + " | " + arg);
-                    System.out.println("Schreiben eine dateiName fur prufung es existieren: ");
+                    System.out.println("Schreiben eine name fur datei: ");
                     String dateiName = operation.nextLine();
-                    System.out.println("Schreiben eine neue laufwerk: ");
-                    String neueWerk = operation.nextLine();
+                    System.out.println("Schreiben eine neue platte: ");
+                    char neuePlatte = operation.nextLine().charAt(0);
                     datei = new File(dateiName);
                     if (Files.exists(datei.toPath())) {
-                        System.out.println("Diese datei was zu andere LaufWerk bewegt");
-                        Files.move(datei.toPath(), Path.of(neueWerk.charAt(0) + ":\\", datei.getName()), StandardCopyOption.REPLACE_EXISTING);
-                    } else {
-                        System.err.println(ROT + "Diese datei existiert nicht" + RESET);
+                        if(neuePlatte == 'C') {
+                            Files.move(datei.toPath(), Path.of(neuePlatte + ":\\", datei.getName()), StandardCopyOption.REPLACE_EXISTING);
+                        } else if(neuePlatte == '/') {
+                            Files.move(datei.toPath(), Path.of(neuePlatte + "home/", datei.getName()), StandardCopyOption.REPLACE_EXISTING);
+                        } else {
+                            System.err.println(ROT + "Diese typen fur platte existiert nicht" + RESET);
+                            System.exit(0);
+                        }
+                        System.out.println(GRUN + "Diese datei war bewegt zu andere platte erfolgreich" + RESET);
                     }
                 }
                 case "--umbenennen", "--umb" -> {
@@ -265,48 +270,70 @@ public class KonsoleDienstProgramm {
                 }
                 case "--grep","--gre" -> {
                     hinzufugenGeschichte((index++) + " | " + arg);
-                    System.out.println("Schreiben eine datei wo wollen Sie eine text bekommen: ");
-                    String dateiname = operation.nextLine();
-                    String name, daten;
-                    if(Files.exists(Path.of(dateiname))) {
-                        name = dateiname;
-                    } else {
-                        System.out.println("Diese datei existiert nicht. Erstellen Sie neue");
-                        name = operation.nextLine();
-                        System.out.println("Schreiben eine text in datei: ");
-                        daten = operation.nextLine();
-                        try(BufferedWriter schreibenZu = new BufferedWriter(new FileWriter(name))) {
-                            schreibenZu.write(daten);
+                    ArrayList<String> saveTheTokens = new ArrayList<>();
+                    int zahlenWorten;
+                    StringTokenizer token;
+                    System.out.println("Schreiben eine datei oder direktorei: ");
+                    String dateiOderDirektorei = operation.nextLine();
+                    String finalName, daten = "";
+                    Path start = Path.of(dateiOderDirektorei);
+                    if(new File(dateiOderDirektorei).isDirectory()) {
+                        System.out.println("Schreiben eine datei oder eine veranderungen fur es: ");
+                        finalName = operation.nextLine();
+                        List<Path> allFiles;
+                        try(Stream<Path> streamWeg = Files.walk(start)) {
+                            allFiles = streamWeg.filter(comparePath -> String.valueOf(comparePath).endsWith(finalName)).toList();
                         } catch (IOException aus) {
                             throw new RuntimeException(aus.getLocalizedMessage());
                         }
-                    }
-                    System.out.println("Schreiben ein wort oder text welche wollen Sie vom datei bekommen: ");
-                    String text = operation.nextLine();
-                    String textVom;
-                    int zahleWorten;
-                    try(BufferedReader lesenVom = new BufferedReader(new FileReader(name))) {
-                        textVom = lesenVom.readLine();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex.getLocalizedMessage());
-                    }
-                    StringTokenizer token = new StringTokenizer(textVom);
-                    List<String> spreichernTokens = new LinkedList<>();
-                    while(token.hasMoreTokens()) {
-                        spreichernTokens.add(token.nextToken());
-                    }
-                    zahleWorten = (int) spreichernTokens.stream().filter(object -> Objects.equals(object,text)).count();
-                    for(int findenText = 0; findenText < spreichernTokens.size(); ++findenText) {
-                        if(Objects.equals(spreichernTokens.get(findenText), text)) {
-                            spreichernTokens.set(findenText,ROT + text + RESET);
+                        for(Path hinAlleWegen : allFiles) {
+                            saveTheTokens.add(hinAlleWegen.toString());
                         }
+                        for(String findenGrepElem : saveTheTokens) {
+                            if(Objects.equals(findenGrepElem,finalName)) {
+                                saveTheTokens.set(saveTheTokens.indexOf(findenGrepElem),ROT + findenGrepElem + RESET);
+                            }
+                        }
+                        saveTheTokens.forEach(System.out::println);
+                        saveTheTokens.clear();
+                    } else if(new File(dateiOderDirektorei).isFile()) {
+                        if (Files.exists(start)) {
+                            finalName = dateiOderDirektorei;
+                        } else {
+                            System.out.println("This file doesn't exist. Create the new");
+                            finalName = operation.nextLine();
+                            System.out.println("Write the text in the file: ");
+                            daten = operation.nextLine();
+                            try (BufferedWriter writeTo = new BufferedWriter(new FileWriter(finalName))) {
+                                writeTo.write(daten);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex.getLocalizedMessage());
+                            }
+                        }
+                        System.out.println("Write the word or text which you want to become from the file: ");
+                        String text = operation.nextLine();
+                        String textFrom;
+                        try (BufferedReader readFrom = new BufferedReader(new FileReader(finalName))) {
+                            textFrom = readFrom.readLine();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex.getLocalizedMessage());
+                        }
+                        token = new StringTokenizer(textFrom);
+                        while (token.hasMoreTokens()) {
+                            saveTheTokens.add(token.nextToken());
+                        }
+                        zahlenWorten = (int) saveTheTokens.stream().filter(object -> Objects.equals(object, text)).count();
+                        for (int findText = 0; findText < saveTheTokens.size(); ++findText) {
+                            if (Objects.equals(saveTheTokens.get(findText), text)) {
+                                saveTheTokens.set(findText, ROT + text + RESET);
+                            }
+                        }
+                        saveTheTokens.add("| " + zahlenWorten);
+                        saveTheTokens.forEach(System.out::println);
+                        saveTheTokens.clear();
+                    } else {
+                        System.err.println(ROT + "Error naming file or directory" + RESET);
                     }
-                    spreichernTokens.add("| " + zahleWorten);
-                    for(String ergebnis : spreichernTokens) {
-                        System.out.printf("%s ",ergebnis);
-                    }
-                    System.out.println("\n");
-                    spreichernTokens.clear();
                 }
                 case "--geschichte","--ges" -> {
                     hinzufugenGeschichte((index++) + " | " + arg);
