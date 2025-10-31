@@ -1895,7 +1895,7 @@ public class ConsoleUtilityItself {
             }
         }
     }
-    public static class Preview {
+    private static class Preview {
         public List<String> commandList() {
             return new ArrayList<>(List.of("id (check id for user in utility)","exit (exit from Utility)","cut (cut strings from files)","chgatr (change attributes for files)"));
         }
