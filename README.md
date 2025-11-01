@@ -10,5 +10,5 @@ You can watch the full description for the project in / Sie konnen sehen eine vo
 
 # Contacts 
 If you want to offer the improvements for this project, you can find me in: 
-- [Telegram](@fr1zb3e)
+- [@fr1zb3e](@fr1zb3e) / Telegram nickname
 - [Habr](https://habr.com/ru/users/fr1zb3e/)
