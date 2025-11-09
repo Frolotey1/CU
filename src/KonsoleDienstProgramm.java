@@ -86,7 +86,8 @@ public class KonsoleDienstProgramm {
                     "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
                     "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
                     "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
-                    "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc"
+                    "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc","--schneiden oder --scn",
+                    "--andkent oder ank","--abmelden oder --abn"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -337,7 +338,15 @@ public class KonsoleDienstProgramm {
                 }
                 case "--geschichte","--ges" -> {
                     hinzufugenGeschichte((index++) + " | " + arg);
-                    loadenGeschichte().forEach(System.out::println);
+                    System.out.println("Schreiben Sie deine benutzername: ");
+                    String benutzername = operation.nextLine();
+                    if(Objects.equals(Files.readString(Path.of("Username.txt")),benutzername)) {
+                        for(int lesenAlleBefehlen = 1; lesenAlleBefehlen < loadenGeschichte().size(); ++lesenAlleBefehlen) {
+                            System.out.println(loadenGeschichte().get(lesenAlleBefehlen));
+                        }
+                    } else {
+                        System.err.println(ROT + "Diese benutzername existiert nicht" + RESET);
+                    }
                 }
                 case "--finden","--fin" -> {
                     hinzufugenGeschichte((index++) + " | " + arg);
@@ -472,7 +481,9 @@ public class KonsoleDienstProgramm {
                                     "neustarten","fspr","sauber","pingen",
                                     "intprok","unterbrechen","filterieren", "md5gen",
                                     "sha256gen","frieren","einzartig","stat",
-                                    "teilen","rsync","verglen","sysinfo"
+                                    "teilen","rsync","verglen","sysinfo",
+                                    "jungste","aktiv","benutzername","vorschau",
+                                    "schneiden","andkent","abmelden"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -859,6 +870,19 @@ public class KonsoleDienstProgramm {
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "oder/home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--vorschau / --vsc -> [ENTER] -> " + "zeigt die Liste der zukünftigen Befehle an, die in das Dienstprogramm integriert werden");
+                        case 62 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--schneiden / --scn -> [ENTER] -> " + "(Als Nächstes erhalten Sie die Varianten zum Arbeiten mit dem Aufteilen von Zeichenketten. Aufteilen von Zeichenketten mit Indizes oder mit Trennzeichen)");
+                        case 63 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--andkent / --ank -> [EINGABE] -> " + "Kennwort ändern: (Ihr aktuelles Kennwort) -> {WENN ERFOLG} -> Neues Kennwort eingeben (neues Kennwort) -> {WENN ERFOLG}" +
+                                "<NACHRICHT> Kennwort wurde erfolgreich geändert");
+                        case 64 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--abmelden / --abn -> [ENTER] -> " + "<NACHRICHT> Benutzername und Password wurden erfolgreich gelöscht");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1263,7 +1287,8 @@ public class KonsoleDienstProgramm {
                             "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
                             "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
                             "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
-                            "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc"
+                            "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc","--schneiden oder --scn",
+                            "--andkent oder ank","--abmelden oder --abn"
                     ));
                     System.out.println("Schreiben welche befehle wollen Sie finden: ");
                     String befehle = operation.nextLine();
@@ -1655,37 +1680,57 @@ public class KonsoleDienstProgramm {
                 }
                 case "--aktiv","--akt" -> {
                     hinzufugenGeschichte((index) + " | " + arg);
-                    String benutzerName, aktivVom;
-                    try(BufferedReader lesenBenutzerName = new BufferedReader(new FileReader("Username.txt"))) {
-                        benutzerName = lesenBenutzerName.readLine();
-                        if(benutzerName == null || benutzerName.isEmpty()) {
-                            benutzerName = "";
+                    String benutzername, aktivVom;
+                    if(Files.exists(Path.of("Username.txt"))) {
+                        try(BufferedReader readUserName = new BufferedReader(new FileReader("Username.txt"))) {
+                            benutzername = readUserName.readLine();
+                            if(benutzername == null || benutzername.isEmpty()) {
+                                benutzername= "";
+                            }
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        try(BufferedReader readTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
+                            aktivVom = readTime.readLine();
+                            if(aktivVom == null || aktivVom.isEmpty()) {
+                                aktivVom = "";
+                            }
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
+                        }
+                        StringTokenizer dividierenZeitDaten = new StringTokenizer(aktivVom);
+                        List<String> zeitIntervalen = new ArrayList<>();
+                        while(dividierenZeitDaten.hasMoreTokens()) {
+                            zeitIntervalen.add(dividierenZeitDaten.nextToken());
+                        }
+                        String formatZeit = zeitIntervalen.getFirst() + ":" + zeitIntervalen.get(1) + ":" + zeitIntervalen.getLast();
+                        zeitIntervalen.clear();
+                        System.out.println("BENUTZERNAME: " + benutzername + " | AKTIV VOM: " + formatZeit + " | ZEIT JETZT: " + LocalDateTime.now());
+                    } else {
+                        System.err.println(ROT + "Sie haben abmelden vom Utilitys system." + RESET);
+                    }
+                }
+                case "--benutzername","--btn" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    String benutzername;
+                    Console lesenKennwort = System.console();
+                    char[] kennwort = lesenKennwort.readPassword( "Schreiben Sie einen kennwort: ");
+                    try(BufferedReader prufenKennwort = new BufferedReader(new FileReader("PasswordManager.txt"))) {
+                        if(Arrays.equals(kennwort, prufenKennwort.readLine().toCharArray())) {
+                            try(BufferedReader lesenBenutzerName = new BufferedReader(new FileReader("Username.txt"))) {
+                                benutzername = lesenBenutzerName.readLine();
+                                if(benutzername == null || benutzername.isEmpty()) {
+                                    benutzername = "";
+                                }
+                            }
+                            System.out.println(GRUN + benutzername + RESET);
+                        } else {
+                            System.err.println(ROT + "Dieser kennwort ist falsch oder Sie haben abmelden vom Utilitys system" + RESET);
+                            System.exit(0);
                         }
                     } catch (IOException exc) {
                         throw new RuntimeException(exc.getLocalizedMessage());
                     }
-                    try(BufferedReader readTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
-                        aktivVom = readTime.readLine();
-                        if(aktivVom == null || aktivVom.isEmpty()) {
-                            aktivVom = "";
-                        }
-                    } catch (IOException aus) {
-                        throw new RuntimeException(aus.getLocalizedMessage());
-                    }
-                    System.out.println("BENUTZERNAME: " + benutzerName + " | AKTIV VOM: " + aktivVom + " | ZEIT JETZT: " + LocalDateTime.now());
-                }
-                case "--benutzername","--btn" -> {
-                    hinzufugenGeschichte((index) + " | " + arg);
-                    String benutzerName;
-                    try(BufferedReader lesenBenutzerName = new BufferedReader(new FileReader("Username.txt"))) {
-                        benutzerName = lesenBenutzerName.readLine();
-                        if(benutzerName == null || benutzerName.isEmpty()) {
-                            benutzerName = "";
-                        }
-                    } catch (IOException aus) {
-                        throw new RuntimeException(aus.getLocalizedMessage());
-                    }
-                    System.out.println(GRUN + benutzerName + RESET);
                 }
                 case "--vorschau","--vsc" -> {
                     hinzufugenGeschichte((index) + " | " + arg);
@@ -1694,6 +1739,71 @@ public class KonsoleDienstProgramm {
                     for(String zukunftBefehlen : zeigenAlleZukunfteBefehlen) {
                         System.out.println(zeigenAlleZukunfteBefehlen.indexOf(zukunftBefehlen) + 1 + "> " + zukunftBefehlen);
                     }
+                }
+                case "--schneiden","--scn" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    int startIndex, endIndex, wahlen;
+                    System.out.println("Schreiben Sie eine name fur datei: ");
+                    String dateiName = operation.nextLine();
+                    String daten;
+                    if(Files.exists(Path.of(dateiName))) {
+                        try(BufferedReader lesenDaten = new BufferedReader(new FileReader(dateiName))) {
+                            daten = lesenDaten.readLine();
+                            if(daten == null || daten.isEmpty()) {
+                                daten = "";
+                            }
+                        }
+                        System.out.println("Wahlen Sie eine variante fur schneidenung stringen: ");
+                        System.out.println("1. Scnneiden stringen mit indexen");
+                        System.out.println("2. Schneiden stringen mit trennzeichnen: ");
+                        wahlen = operation.nextInt();
+                        if(wahlen == 1) {
+                            System.out.println("Schreiben einen erste index: ");
+                            startIndex = operation.nextInt();
+                            System.out.println("Schreiben einen zweite index: ");
+                            endIndex = operation.nextInt();
+                            if(startIndex < 0) {startIndex = 0;}
+                            if(endIndex >= daten.length()) {endIndex = daten.length();}
+                            System.out.println(daten.substring(startIndex,endIndex));
+                        } else if(wahlen == 2) {
+                            StringTokenizer dividierenStringFurTokenen = new StringTokenizer(daten);
+                            while(dividierenStringFurTokenen.hasMoreTokens()) {
+                                System.out.println(dividierenStringFurTokenen.nextToken());
+                            }
+                        }
+                    } else {
+                        System.err.println(ROT + "Diese datei existiert nicht" + RESET);
+                    }
+                }
+                case "--andkent","--ank" -> {
+                    hinzufugenGeschichte((index) + " | " + arg);
+                    File spreichernKennwort = new File("PasswordManager.txt");
+                    Console deinKennwort = System.console(), andernKennwort = System.console();
+                    char[] kennwort = deinKennwort.readPassword("Schreiben deinen kennwort: ");
+                    try(BufferedReader lesen = new BufferedReader(new FileReader(spreichernKennwort))) {
+                        if(Arrays.equals(kennwort, lesen.readLine().toCharArray())) {
+                            char[] neueKennwort = andernKennwort.readPassword("Andern Sie einen kennwort: ");
+                            if(neueKennwort.length < 8) {
+                                System.err.println(ROT + "Grose fur kennwort muss nicht kleiner als 8 symbolen sein" + RESET);
+                            } else {
+                                try(BufferedWriter schreibenEineNeueKennwort = new BufferedWriter(new FileWriter(spreichernKennwort))) {
+                                    schreibenEineNeueKennwort.write(neueKennwort);
+                                } catch (IOException exc) {
+                                    throw new RuntimeException(exc.getLocalizedMessage());
+                                }
+                                System.out.println(GRUN + "Kennwort war andert erfolgreich" + RESET);
+                            }
+                        } else {
+                            System.err.println(ROT + "Fehler. Dieser kennwort existiert nicht oder war abmeldet vom DienstProgramm" + RESET);
+                        }
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--abmelden","--abn" -> {
+                    Files.deleteIfExists(Path.of("Username.txt"));
+                    Files.deleteIfExists(Path.of("PasswordManager.txt"));
+                    System.out.println(GRUN + "Loschenung kennwort war erfolgreich" + RESET);
                 }
                 case null, default -> System.err.println(ROT + "Diese operation existiert nicht" + RESET);
             }
@@ -1783,7 +1893,10 @@ public class KonsoleDienstProgramm {
                         "--jungste        / --jng = zeigt die Informationen zur letzten Eingabe durch Anmeldung oder Registrierung im Dienstprogramm an",
                         "--aktiv          / --akt = zeigt die Informationen über den Benutzer im System und seine Aktivität ab dem Zeitpunkt der Anmeldung oder Registrierung im Dienstprogramm an",
                         "--benutzername   / --btn = zeigt den eindeutigen zufälligen Spitznamen für den Benutzer im System an",
-                        "--vorschau       / --vsc = zeigt die Liste der zukünftigen Befehle an, die in das Dienstprogramm integriert werden"
+                        "--vorschau       / --vsc = zeigt die Liste der zukünftigen Befehle an, die in das Dienstprogramm integriert werden",
+                        "--schneiden      / --scn = schneiden eine stringen mit schablone",
+                        "--andkent        / --ank = andern kennwort in deiner system in DienstProgramm",
+                        "--abmelden       / --abn = abmelden vom Utilitys system"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
