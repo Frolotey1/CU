@@ -14,4 +14,4 @@ If you want to offer the improvements for this project, you can find me in:
 - [Habr](https://habr.com/ru/users/fr1zb3e/) / WebSite
 
 # License
-This project works under GPL 2.0 license
+This project works under `GPL 2.0 license`
