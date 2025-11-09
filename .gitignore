@@ -7,6 +7,9 @@
 # Ini Files
 *.ini
 
+# Toml files
+.toml
+
 # Csv Files
 *.csv
 
