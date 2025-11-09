@@ -81,7 +81,8 @@ public class ConsoleUtilityItself {
                     "--filter or --fr","--md5gen or --mg","--sha256gen or --sn","--freeze or --fe",
                     "--unique or --uq","--stat or --sa","--split or --sp","--rsync or --rc",
                     "----cmp or --cp","--sysinfo or --si","--recent or --rn","--active or --ae",
-                    "--username or --un","--preview or --pw"
+                    "--username or --un","--preview or --pw","--cut or --ct","--chgpass or --ps",
+                    "--logout or --lg"
             ));
             for(String all : prompt) {
                 System.out.println(all);
@@ -89,7 +90,7 @@ public class ConsoleUtilityItself {
         }
         for (String arg : args) {
             final Path fromFile = Path.of("Directory.txt");
-            final Path source = Path.of("ReserveCopy.bin"); 
+            final Path source = Path.of("ReserveCopy.bin");
             switch (arg) {
                 case "--help", "--hp" -> {
                     appendHistory((index++) + " | " + arg);
@@ -328,7 +329,15 @@ public class ConsoleUtilityItself {
                 }
                 case "--history", "--hi" -> {
                     appendHistory((index++) + " | " + arg);
-                    loadHistory().forEach(System.out::println);
+                    System.out.println("Write your username: ");
+                    String username = operation.nextLine();
+                    if(Objects.equals(Files.readString(Path.of("Username.txt")),username)) {
+                        for(int readAllCommands = 1; readAllCommands < loadHistory().size(); ++readAllCommands) {
+                            System.out.println(loadHistory().get(readAllCommands));
+                        }
+                    } else {
+                        System.err.println(RED + "This username doesn't exist" + RESET);
+                    }
                 }
                 case "--find", "--fd" -> {
                     appendHistory((index++) + " | " + arg);
@@ -463,7 +472,8 @@ public class ConsoleUtilityItself {
                                     "interrupt", "filter","md5gen","sha256gen",
                                     "freeze", "unique","stat","split","rsync",
                                     "cmp","sysinfo","recent","active",
-                                    "username","preview"
+                                    "username","preview","cut","chgpass",
+                                    "logout"
                             };
                     for (int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -843,6 +853,19 @@ public class ConsoleUtilityItself {
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--preview / --pw -> [ENTER] -> " + "will show the list of the future commands which will integrate in utility");
+                        case 63 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--cut / --cut -> [ENTER] -> " + "(next you'll get the variants for working with cutting strings. Cutting strings with indexes or with delimiter)");
+                        case 64 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--chgpass / --ps -> [ENTER] -> " + "Change your password: (your current password) -> {IF SUCCESS} -> Write new password (new password) -> {IF SUCCESS}" +
+                                " -> <MESSAGE> Password was changed successfully");
+                        case 65 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--logout / --lg -> [ENTER] -> " + "<MESSAGE> Deleting username and password are successful");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -1239,7 +1262,8 @@ public class ConsoleUtilityItself {
                             "--filter or --fr","--md5gen or --mg","--sha256gen or --sn","--freeze or --fe",
                             "--unique or --uq","--stat or --sa","--split or --sp","--rsync or --rc",
                             "----cmp or --cp","--sysinfo or --si","--recent or --rn","--active or --ae",
-                            "--username or --un","--preview or --pw"
+                            "--username or --un","--preview or --pw","--cut or --ct","--chgpass or --ps",
+                            "--logout or --lg"
                     ));
                     System.out.println("Write which command you find: ");
                     String command = operation.nextLine();
@@ -1636,43 +1660,131 @@ public class ConsoleUtilityItself {
                     new ArrayList<>(Files.readAllLines(allRecentActive)).forEach(System.out::println);
                 }
                 case "--active","--ae" -> {
+                    appendHistory((index++) + " | " + arg);
                     String username, activefrom;
-                    try(BufferedReader readUserName = new BufferedReader(new FileReader("Username.txt"))) {
-                        username = readUserName.readLine();
-                        if(username == null || username.isEmpty()) {
-                            username = "";
+                    if(Files.exists(Path.of("Username.txt"))) {
+                        try(BufferedReader readUserName = new BufferedReader(new FileReader("Username.txt"))) {
+                            username = readUserName.readLine();
+                            if(username == null || username.isEmpty()) {
+                                username = "";
+                            }
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
                         }
-                    } catch (IOException exc) {
-                        throw new RuntimeException(exc.getLocalizedMessage());
-                    }
-                    try(BufferedReader readTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
-                        activefrom = readTime.readLine();
-                        if(activefrom == null || activefrom.isEmpty()) {
-                            activefrom = "";
+                        try(BufferedReader readTime = new BufferedReader(new FileReader("UtilityStatistic.txt"))) {
+                            activefrom = readTime.readLine();
+                            if(activefrom == null || activefrom.isEmpty()) {
+                                activefrom = "";
+                            }
+                        } catch (IOException exc) {
+                            throw new RuntimeException(exc.getLocalizedMessage());
                         }
-                    } catch (IOException exc) {
-                        throw new RuntimeException(exc.getLocalizedMessage());
+                        StringTokenizer divideTimeData = new StringTokenizer(activefrom);
+                        List<String> timeIntervals = new ArrayList<>();
+                        while(divideTimeData.hasMoreTokens()) {
+                            timeIntervals.add(divideTimeData.nextToken());
+                        }
+                        String formatTime = timeIntervals.getFirst() + ":" + timeIntervals.get(1) + ":" + timeIntervals.getLast();
+                        timeIntervals.clear();
+                        System.out.println("USERNAME: " + username + " | ACTIVE FROM: " + formatTime + " | TIME NOW: " + LocalDateTime.now());
+                    } else {
+                        System.err.println(RED + "You logged out from Utility's system." + RESET);
                     }
-                    System.out.println("USERNAME: " + username + " | ACTIVE FROM: " + activefrom + " | TIME NOW: " + LocalDateTime.now());
                 }
                 case "--username","--un" -> {
+                    appendHistory((index++) + " | " + arg);
                     String username;
-                    try(BufferedReader readUserName = new BufferedReader(new FileReader("Username.txt"))) {
-                        username = readUserName.readLine();
-                        if(username == null || username.isEmpty()) {
-                            username = "";
+                    Console readPassword = System.console();
+                    char[] password = readPassword.readPassword( "Write the password: ");
+                    try(BufferedReader checkThePassword = new BufferedReader(new FileReader("PasswordManager.txt"))) {
+                        if(Arrays.equals(password, checkThePassword.readLine().toCharArray())) {
+                            try(BufferedReader readUserName = new BufferedReader(new FileReader("Username.txt"))) {
+                                username = readUserName.readLine();
+                                if(username == null || username.isEmpty()) {
+                                    username = "";
+                                }
+                            }
+                            System.out.println(GREEN + username + RESET);
+                        } else {
+                            System.err.println(RED + "This password is false or was log out from Utility" + RESET);
+                            System.exit(0);
                         }
                     } catch (IOException exc) {
                         throw new RuntimeException(exc.getLocalizedMessage());
                     }
-                    System.out.println(GREEN + username + RESET);
                 }
                 case "--preview","--pw" -> {
+                    appendHistory((index++) + " | " + arg);
                     Preview show = new Preview();
                     List<String> showAllFutureCommands = show.commandList();
                     for(String futureCommand : showAllFutureCommands) {
                         System.out.println(showAllFutureCommands.indexOf(futureCommand) + 1 + "> " + futureCommand);
                     }
+                }
+                case "--cut","--ct" -> {
+                    appendHistory((index++) + " | " + arg);
+                    int startIndex, endIndex, select;
+                    System.out.println("Write the name for your file: ");
+                    String filename = operation.nextLine();
+                    String data;
+                    if(Files.exists(Path.of(filename))) {
+                        try(BufferedReader readData = new BufferedReader(new FileReader(filename))) {
+                            data = readData.readLine();
+                            if(data == null || data.isEmpty()) {
+                                data = "";
+                            }
+                        }
+                        System.out.println("Select the variant for cutting the data from file: ");
+                        System.out.println("1. Cut string with indexes");
+                        System.out.println("2. Cut string for delimiter: ");
+                        select = operation.nextInt();
+                        if(select == 1) {
+                            System.out.println("Write first index: ");
+                            startIndex = operation.nextInt();
+                            System.out.println("Write second index: ");
+                            endIndex = operation.nextInt();
+                            if(startIndex < 0) {startIndex = 0;}
+                            if(endIndex >= data.length()) {endIndex = data.length();}
+                            System.out.println(data.substring(startIndex,endIndex));
+                        } else if(select == 2) {
+                            StringTokenizer divideStringForTokens = new StringTokenizer(data);
+                            while(divideStringForTokens.hasMoreTokens()) {
+                                System.out.println(divideStringForTokens.nextToken());
+                            }
+                        }
+                    } else {
+                        System.err.println(RED + "This file doesn't exist" + RESET);
+                    }
+                }
+                case "--chgpass","--ps" -> {
+                    appendHistory((index++) + " | " + arg);
+                    File saveThePassword = new File("PasswordManager.txt");
+                    Console ownPassword = System.console(), changePassword = System.console();
+                    char[] currentPassword = ownPassword.readPassword("Write your password: ");
+                    try(BufferedReader read = new BufferedReader(new FileReader(saveThePassword))) {
+                        if(Arrays.equals(currentPassword, read.readLine().toCharArray())) {
+                            char[] newPassword = changePassword.readPassword("Change the password: ");
+                            if(newPassword.length < 8) {
+                                System.err.println(RED + "Size for the password must be greater or equal 8 symbols" + RESET);
+                            } else {
+                                try(BufferedWriter writeTheNewPassword = new BufferedWriter(new FileWriter(saveThePassword))) {
+                                    writeTheNewPassword.write(newPassword);
+                                } catch (IOException exc) {
+                                    throw new RuntimeException(exc.getLocalizedMessage());
+                                }
+                                System.out.println(GREEN + "Password was changes successfully" + RESET);
+                            }
+                        } else {
+                            System.err.println(RED + "Error. This password doesn't exist or was log out from Utility" + RESET);
+                        }
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
+                }
+                case "--logout","--lg" -> {
+                    Files.deleteIfExists(Path.of("Username.txt"));
+                    Files.deleteIfExists(Path.of("PasswordManager.txt"));
+                    System.out.println(GREEN + "Deleting username and password are successful" + RESET);
                 }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
@@ -1781,7 +1893,10 @@ public class ConsoleUtilityItself {
                         "--recent       /       --rn = show the information about recent enter for register or login in utility",
                         "--active       /       --ae = show the information about username which actived in utility",
                         "--username     /       --un = show the username for user",
-                        "--preview      /       --pw = show the list with future commands which will integrate in utility"
+                        "--preview      /       --pw = show the list with future commands which will integrate in utility",
+                        "--cut          /       --ct = cut the part of data from file",
+                        "--chgpass      /       --ps = change the password in Utility's system",
+                        "--logout       /       --lg = log out from Utility. Deleting username and password"
                 )).forEach(System.out::println);
     }
     private static class ConsoleUtilitysGUI extends JFrame {
@@ -1897,7 +2012,7 @@ public class ConsoleUtilityItself {
     }
     private static class Preview {
         public List<String> commandList() {
-            return new ArrayList<>(List.of("id (check id for user in utility)","exit (exit from Utility)","cut (cut strings from files)","chgatr (change attributes for files)"));
+            return new ArrayList<>(List.of("id (check id for user in utility)","exit (exit from Utility and terminal)","cut (cut strings from files)","chgatr (change attributes for files)"));
         }
     }
 }
