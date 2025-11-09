@@ -1,6 +1,7 @@
 package com.console.application;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -29,6 +30,7 @@ public class Main {
         return result.toString();
     }
     public static void main(String[] args) throws IOException {
+        Path HistoricalFile = Path.of(System.getProperty("user.home"), ".consoleutility_history");
         try(BufferedWriter writeTheTime = new BufferedWriter(new FileWriter("UtilityStatistic.txt"))) {
             writeTheTime.write(LocalTime.now().getHour() + " " + LocalTime.now().getMinute() + " " + LocalTime.now().getSecond());
         }
@@ -42,6 +44,10 @@ public class Main {
         int choose = loginOrRegister.nextInt();
         if(choose == 1) {
             char[] password = console.readPassword(PURPLE + "Write the password: " + RESET);
+            if(password.length < 8) {
+                System.err.println(RED + "Size for the password must be greater or equal 8 symbols" + RESET);
+                System.exit(0);
+            }
             try(BufferedReader read = new BufferedReader(new FileReader("PasswordManager.txt"))) {
                 if(Arrays.equals(password, read.readLine().toCharArray())) {
                     System.out.println(GREEN + "You completed the system. Welcome to Console Utility" + RESET);
@@ -64,6 +70,10 @@ public class Main {
             if(console != null) {
                 System.out.println(PURPLE + "Write the password: " + RESET);
                 char[]password = console.readPassword();
+                if(password.length < 8) {
+                    System.err.println(RED + "Size for the password must be greater or equal 8 symbols" + RESET);
+                    System.exit(0);
+                }
                 try(BufferedWriter write = new BufferedWriter(new FileWriter(saveThePassword))) {
                     write.write(password);
                     System.out.println(GREEN + "Your password is created and saved. Welcome to Console Utility" + RESET);
@@ -76,6 +86,9 @@ public class Main {
                     writeTheUserName.write(userNameString());
                 } catch (IOException exc) {
                     throw new RuntimeException(exc.getLocalizedMessage());
+                }
+                try(BufferedWriter writeUserNameInHistory = new BufferedWriter(new FileWriter(HistoricalFile.toFile()))) {
+                    writeUserNameInHistory.write(userNameString());
                 }
             } else {
                 System.err.println(RED + "Console doesn't support the IDE, which you use" + RESET);
