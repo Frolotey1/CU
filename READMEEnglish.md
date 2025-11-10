@@ -18,7 +18,7 @@ And path will changing on ``C:\CU-ConsoleUtility`` (in Windows). In the Linux Sy
  
 And for familiarization with syntax of tthe commands you can use `--tldr` or `--tl` commands. 
 # Assembly's system 
-ConsoleUtility like project was collected by Maven's system.
+ConsoleUtility like project was collected by `Maven's system`.
 # Example of working with the project: 
 <img width="1153" height="294" alt="2025-08-30_00-02" src="https://github.com/user-attachments/assets/6e95aef3-fdf1-4a3c-8800-6f9f03f61626" />
 
