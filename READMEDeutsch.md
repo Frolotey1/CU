@@ -7,7 +7,7 @@ ConsoleUtility funktioniert in `Windows PowerShell` in Windows und der `Bash-Zei
 # Kompilator für Java
 Zum Starten dieses Projekts benötigen Sie einen java-Compiler oder `javac`. Unter Windows wird dieser Compiler automatisch hinzugefügt, wenn Sie die `Intellig Idea IDE` verwenden. Wenn Sie unter Linux das Standard-JDK-Paket nicht haben, müssen Sie es in Ihre `Bash-Zeile` und Ihre verwendete Distribution importieren. Sie können das Standard-JDK-Paket einfach mit `sudo apt install default-jdk` installieren (Beispiel für die Ubuntu-Distribution unter Linux).
 # Wie starte ich das Projekt?
-Laden Sie die Datei CU aus diesem Repository herunter und platzieren Sie sie in Windows PowerShell nach dem Pfad `C:\` oder in Linux nach dem Pfad `/home/` in der Bash-Zeile.
+Laden Sie die Datei `CU` aus diesem Repository herunter und platzieren Sie sie in Windows PowerShell nach dem Pfad `C:\` oder in Linux nach dem Pfad `/home/` in der Bash-Zeile.
 
 *(Hinweis: Verwenden Sie zum Ändern des Pfads (unter Windows) den Befehl set-location wie in Windows PowerShell. Unter Linux können Sie mit cd in das Verzeichnis dieses Repositorys wechseln und mit cd - zum vorherigen Katalog bzw. zum Home-Verzeichnis /home/ zurückkehren.)*
 
