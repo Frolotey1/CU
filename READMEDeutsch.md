@@ -5,7 +5,7 @@ Dieses Projekt wurde in einer Java Sprache erstellt. Die Java-Version ist `23`. 
 # Befehlszeilen
 ConsoleUtility funktioniert in `Windows PowerShell` in Windows und der `Bash-Zeile` unter Linux.
 # Kompilator für Java
-Zum Starten dieses Projekts benötigen Sie einen Java-Compiler oder javac. Unter Windows wird dieser Compiler automatisch hinzugefügt, wenn Sie die `Intellig Idea IDE` verwenden. Wenn Sie unter Linux das Standard-JDK-Paket nicht haben, müssen Sie es in Ihre Bash-Zeile und Ihre verwendete Distribution importieren. Sie können das Standard-JDK-Paket einfach mit `sudo apt install default-jdk` installieren (Beispiel für die Ubuntu-Distribution unter Linux).
+Zum Starten dieses Projekts benötigen Sie einen java-Compiler oder `javac`. Unter Windows wird dieser Compiler automatisch hinzugefügt, wenn Sie die `Intellig Idea IDE` verwenden. Wenn Sie unter Linux das Standard-JDK-Paket nicht haben, müssen Sie es in Ihre Bash-Zeile und Ihre verwendete Distribution importieren. Sie können das Standard-JDK-Paket einfach mit `sudo apt install default-jdk` installieren (Beispiel für die Ubuntu-Distribution unter Linux).
 # Wie starte ich das Projekt?
 Laden Sie die Datei CU-ConsoleUtility aus diesem Repository herunter und platzieren Sie sie in Windows PowerShell nach dem Pfad `C:\` oder in Linux nach dem Pfad `/home/` in der Bash-Zeile.
 
