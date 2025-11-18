@@ -87,7 +87,8 @@ public class KonsoleDienstProgramm {
                     "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
                     "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
                     "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc","--schneiden oder --scn",
-                    "--andkent oder ank","--abmelden oder --abn"
+                    "--andkent oder ank","--abmelden oder --abn","--fbef oder --fbf","--gzip oder --gzp",
+                    "--fdir oder --fdi","--tilden oder --tln"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -483,7 +484,8 @@ public class KonsoleDienstProgramm {
                                     "sha256gen","frieren","einzartig","stat",
                                     "teilen","rsync","verglen","sysinfo",
                                     "jungste","aktiv","benutzername","vorschau",
-                                    "schneiden","andkent","abmelden"
+                                    "schneiden","andkent","abmelden","fbef",
+                                    "gzip","fdir","tilden"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -883,6 +885,27 @@ public class KonsoleDienstProgramm {
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--abmelden / --abn -> [ENTER] -> " + "<NACHRICHT> Benutzername und Password wurden erfolgreich gelöscht");
+                        case 65 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--fbef / --fbf -> [ENTER] -> " +
+                                " Geben Sie den Namen des Befehls aus dem Verlauf ein: (Name des Befehls aus dem Verlauf) -> (zeigt den Verlauf der Befehle anhand regulärer Ausdrücke im Dienstprogramm an)");
+                        case 66 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--gzip / --gzp -> [EINGABE] -> " +
+                                "Geben Sie den Namen der zu lesenden Datei ein: (Name der zu lesenden Datei) -> " +
+                                "Wählen Sie die Option: 1. Datei komprimieren 2. Datei dekomprimieren (Sie können eine von zwei Varianten für die Bearbeitung der Daten aus der Datei auswählen) -> " +
+                                "{WENN ERFOLG} -> Originalgröße: (Größe der Daten) Komprimierte Datei: (Größe der komprimierten Daten in der Datei)");
+                        case 67 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--fdir / --fdi -> [ENTER] -> " +
+                                "Geben Sie den Namen Ihres Verzeichnisses ein: (Name für Ihr Verzeichnis) -> (zeigt die Liste der Verzeichnisse per regulärem Ausdruck im Dienstprogramm an)");
+                        case 68 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--erase / --es -> [ENTER] -> " + "<MESSAGE> Liste der Verzeichnisse wurde erfolgreich gelöscht");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1288,7 +1311,8 @@ public class KonsoleDienstProgramm {
                             "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
                             "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
                             "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc","--schneiden oder --scn",
-                            "--andkent oder ank","--abmelden oder --abn"
+                            "--andkent oder ank","--abmelden oder --abn","--fbef oder --fbf","--gzip oder --gzp",
+                            "--fdir oder --fdi","--tilden oder --tln"
                     ));
                     System.out.println("Schreiben welche befehle wollen Sie finden: ");
                     String befehle = operation.nextLine();
@@ -1805,9 +1829,78 @@ public class KonsoleDienstProgramm {
                     Files.deleteIfExists(Path.of("PasswordManager.txt"));
                     System.out.println(GRUN + "Loschenung kennwort war erfolgreich" + RESET);
                 }
+                case "--fbef", "--fbf" -> {
+                    System.out.println("Schreiben eine name fur befehle vom geschichte: ");
+                    String befehleName = operation.nextLine();
+                    loadenGeschichte().stream().filter(findenBefehle -> findenBefehle.endsWith(befehleName)).forEach(System.out::println);
+                }
+                case "--gzip", "--gzp" -> {
+                    List<byte[]> bytes = new ArrayList<>();
+                    List<String> dateis = new ArrayList<>();
+                    System.out.println("Schreiben eine name fur datei fur lesenung daten vom:");
+                    String dateiName = operation.nextLine();
+                    if (Files.exists(Path.of(dateiName))) {
+                        dateis.add(dateiName);
+                        String daten;
+                        try (BufferedReader readDataString = new BufferedReader(new FileReader(dateiName))) {
+                            daten = readDataString.readLine();
+                            if (daten == null || daten.isEmpty()) {
+                                daten = "";
+                            }
+                        }
+                        System.out.println("Wahlen eine optionen: ");
+                        System.out.println("1. Kompresse datei");
+                        System.out.println("2. Dekompresse datei");
+                        int option = operation.nextInt();
+                        if (option < 1 || option > 2) {
+                            System.err.println(ROT + "Wahlerung datei fehler" + RESET);
+                        } else if (option == 1) {
+                            ByteArrayOutputStream AusGabeByteString = new ByteArrayOutputStream();
+                            try (GZIPOutputStream schreibenStringenBytes = new GZIPOutputStream(AusGabeByteString)) {
+                                schreibenStringenBytes.write(dateiName.getBytes());
+                            } catch (IOException exc) {
+                                throw new RuntimeException(exc.getLocalizedMessage());
+                            }
+                            System.out.println(GRUN + "Original grose: " + daten.length() + RESET);
+                            System.out.println(GRUN + "Kompresse grose: " + AusGabeByteString.size() + RESET);
+                            byte[] bekommeBytesString = Base64.getEncoder().encodeToString(AusGabeByteString.toByteArray()).getBytes();
+                            bytes.add(bekommeBytesString);
+                        } else {
+                            ByteArrayInputStream EinGabeByteString = new ByteArrayInputStream(bytes.get(dateis.indexOf(dateiName)));
+                            String dekompresseString =  bekommenString(EinGabeByteString);
+                            System.out.println(GRUN + "Dekompresse daten: " + dekompresseString + RESET);
+                            System.out.println(GRUN + "Dekompresse grose: " + dekompresseString.length() + RESET);
+                        }
+                    }
+                }
+                case "--fdir", "--fdi" -> {
+                    System.out.println("Schreiben eine name fur deinem direktorei: ");
+                    String findenDirektorei = operation.nextLine();
+                    loadenWegDirectoreis().stream().filter(findenDir -> findenDir.endsWith(findenDirektorei)).forEach(System.out::println);
+                }
+                case "--tilgen", "--tlg" -> {
+                    Files.deleteIfExists(DirektoreiDatei);
+                    try (BufferedWriter herstellen = new BufferedWriter(new FileWriter(DirektoreiDatei.toFile()))) {
+                        herstellen.write("");
+                    } catch (IOException aus) {
+                        throw new RuntimeException(aus.getLocalizedMessage());
+                    }
+                    System.out.println(GRUN + "Eine liste fur direktoreis " + RESET);
+                }
                 case null, default -> System.err.println(ROT + "Diese operation existiert nicht" + RESET);
             }
         }
+    }
+    private static String bekommenString(ByteArrayInputStream InPutByteString) throws IOException {
+        StringBuilder dekompresseString = new StringBuilder();
+        try(GZIPInputStream lesenStringBytes = new GZIPInputStream(InPutByteString)) {
+            byte[] bytePuffer = new byte[1024];
+            int len;
+            while((len = lesenStringBytes.read(bytePuffer)) > 0) {
+                dekompresseString.append(new String(bytePuffer,0,len));
+            }
+        }
+        return dekompresseString.toString();
     }
     private static String[] bekommCpuInfo() {
         OperatingSystemMXBean sysinfo = ManagementFactory.getOperatingSystemMXBean();
@@ -1896,7 +1989,11 @@ public class KonsoleDienstProgramm {
                         "--vorschau       / --vsc = zeigt die Liste der zukünftigen Befehle an, die in das Dienstprogramm integriert werden",
                         "--schneiden      / --scn = schneiden eine stringen mit schablone",
                         "--andkent        / --ank = andern kennwort in deiner system in DienstProgramm",
-                        "--abmelden       / --abn = abmelden vom Utilitys system"
+                        "--abmelden       / --abn = abmelden vom Utilitys system",
+                        "--fbef           / --fbf = finden befehle vom befehles geschichte",
+                        "--gzip           / --gzp = kompressen und dekompressen daten vom datei",
+                        "--fdir           / --fdi = finden direktorei vom liste fur direktoreis",
+                        "--tilden         / --tln = tilden direktoreis vom list fur direktoreis"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
