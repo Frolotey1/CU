@@ -18,7 +18,7 @@ Und der Pfad ändert sich zu `C:\CU-ConsoleUtility` (unter Windows). Im Linux-Sy
 
 Und fur kennenlernenung mit befehlens syntax sie konnen benutzen: `--tldr` oder `--tld`.
 
-# Montagesystem
+# Aufbaussystem
 ConsoleUtility wie ein Projekt, das mit dem `Mavens system` gesammelt wurde
 # Ein Beispiel für die Arbeit mit diesem Projekt: 
 <img width="1153" height="294" alt="2025-08-30_00-02" src="https://github.com/user-attachments/assets/efd2713d-ae73-49f7-b11f-932b18dcd796" />
