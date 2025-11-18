@@ -22,7 +22,6 @@ public class ConsoleUtilityItself {
     private static final
     Path HistoricalFile = Path.of(System.getProperty("user.home"), ".consoleutility_history"),
         DirectoryFile = Paths.get("Directory.txt");
-    private static final List<String> fileNames = new ArrayList<>();
     private static void appendPathOfDirectory(String directoryName) throws IOException {
         Files.writeString(DirectoryFile, directoryName + System.lineSeparator(),
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND);
