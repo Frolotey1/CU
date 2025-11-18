@@ -16,7 +16,7 @@
 # Deb files
 .deb
 
-#Exe files
+# Exe files
 .exe
 
 # Mobile Tools For Java (J2ME)
