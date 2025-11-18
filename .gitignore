@@ -8,19 +8,19 @@
 *.ini
 
 # Toml files
-.toml
+*.toml
 
 # Csv Files
 *.csv
 
 # Deb files
-.deb
+*.deb
 
 # Exe files
-.exe
+*.exe
 
 # Mobile Tools For Java (J2ME)
-.mtj.tmp/
+*.mtj.tmp/
 
 # Package Files #
 *.war
