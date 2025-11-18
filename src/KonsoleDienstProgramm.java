@@ -905,7 +905,7 @@ public class KonsoleDienstProgramm {
                         case 68 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
-                                "--erase / --es -> [ENTER] -> " + "<MESSAGE> Liste der Verzeichnisse wurde erfolgreich gelöscht");
+                                "--tilden / --tln -> [ENTER] -> " + "<MESSAGE> Liste der Verzeichnisse wurde erfolgreich gelöscht");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
