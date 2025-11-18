@@ -13,6 +13,12 @@
 # Csv Files
 *.csv
 
+# Deb files
+.deb
+
+#Exe files
+.exe
+
 # Mobile Tools For Java (J2ME)
 .mtj.tmp/
 
