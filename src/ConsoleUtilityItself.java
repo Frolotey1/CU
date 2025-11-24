@@ -50,6 +50,7 @@ public class ConsoleUtilityItself {
                 "---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"));
         List<Character> numberRights = new ArrayList<>();
         List<String> resultRights = new ArrayList<>();
+        List<String> fileNames = new ArrayList<>();
         List<String> historyOFCommands = loadHistory();
         int index = historyOFCommands.size(), indexPath = loadPathsOfDirectory().size();
         File file;
@@ -1871,6 +1872,7 @@ public class ConsoleUtilityItself {
                     }
                     System.out.println(GREEN + "List of directories was erased successfully" + RESET);
                 }
+
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
         }
