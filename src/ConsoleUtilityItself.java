@@ -50,7 +50,6 @@ public class ConsoleUtilityItself {
                 "---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx"));
         List<Character> numberRights = new ArrayList<>();
         List<String> resultRights = new ArrayList<>();
-        List<String> fileNames = new ArrayList<>();
         List<String> historyOFCommands = loadHistory();
         int index = historyOFCommands.size(), indexPath = loadPathsOfDirectory().size();
         File file;
@@ -106,7 +105,6 @@ public class ConsoleUtilityItself {
                     Files.writeString(Path.of(nameFile), text + System.lineSeparator(),
                             StandardOpenOption.CREATE, StandardOpenOption.APPEND);
                     System.out.println(GREEN + "File was added successfully" + RESET);
-                    fileNames.add(nameFile);
                 }
                 case "--read", "--rd" -> {
                     appendHistory((index++) + " | " + arg);
