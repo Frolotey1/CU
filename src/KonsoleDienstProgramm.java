@@ -58,7 +58,13 @@ public class KonsoleDienstProgramm {
         List<Character> nummerRichten = new ArrayList<>();
         List<String>ergebnisRichten = new ArrayList<>();
         List<String> geschichteBefehlen = loadenGeschichte();
+        String istLogoutValue = "";
         int index = geschichteBefehlen.size(), indexWeg = loadenWegDirectoreis().size();
+        try(BufferedReader lesenIsLogout = new BufferedReader(new FileReader("IsLogout.txt"))) {
+            istLogoutValue = lesenIsLogout.readLine();
+        } catch (IOException exc) {
+            throw new RuntimeException(exc.getLocalizedMessage());
+        }
         File datei;
         Scanner operation = new Scanner(System.in);
         if(args.length == 0) {
@@ -88,7 +94,7 @@ public class KonsoleDienstProgramm {
                     "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
                     "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc","--schneiden oder --scn",
                     "--andkent oder ank","--abmelden oder --abn","--fbef oder --fbf","--gzip oder --gzp",
-                    "--fdir oder --fdi","--tilden oder --tln"
+                    "--fdir oder --fdi","--tilden oder --tln, --spiegel oder --spl, --aktualisieren oder --akl"
             ));
             for(String alle : prompt) {
                 System.out.println(alle);
@@ -96,6 +102,10 @@ public class KonsoleDienstProgramm {
         }
         for (String arg : args) {
             final Path vomDatei = Paths.get("Directory.txt");
+            if(Objects.equals(istLogoutValue, "true")) {
+                System.err.println(ROT + "Sie konnen diese befehle aktuellen nicht" + RESET);
+                System.exit(0);
+            }
             switch (arg) {
                 case "--helfen", "--hel" -> alleBefehlen();
                 case "--hinzufugen", "--hin" -> {
@@ -485,7 +495,8 @@ public class KonsoleDienstProgramm {
                                     "teilen","rsync","verglen","sysinfo",
                                     "jungste","aktiv","benutzername","vorschau",
                                     "schneiden","andkent","abmelden","fbef",
-                                    "gzip","fdir","tilden"
+                                    "gzip","fdir","tilden","spiegel",
+                                    "aktualisieren"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -901,11 +912,21 @@ public class KonsoleDienstProgramm {
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--fdir / --fdi -> [ENTER] -> " +
-                                "Geben Sie den Namen Ihres Verzeichnisses ein: (Name für Ihr Verzeichnis) -> (zeigt die Liste der Verzeichnisse per regulärem Ausdruck im Dienstprogramm an)");
+                                "Geben Sie den Namen Ihres Verzeichnisses ein: (" +
+                                "Name für Ihr Verzeichnis) -> (zeigt die Liste der Verzeichnisse per regulärem Ausdruck im Dienstprogramm an)");
                         case 68 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
-                                "--tilden / --tln -> [ENTER] -> " + "<MESSAGE> Liste der Verzeichnisse wurde erfolgreich gelöscht");
+                                "--tilden / --tln -> [ENTER] -> " + "<NACHRICHT> Liste der Verzeichnisse wurde erfolgreich gelöscht");
+                        case 69 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--spiegel / --spl -> [ENTER] -> " + "Schreiben eine name vom datei: (deine datei) -> [ENTER] -> {WENN ERFOLG}"
+                                + "Daten vom datei waren geandert erfolgreich");
+                        case 70 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows)" +
+                                "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
+                                "--aktualisieren / --akl -> [ENTER] -> " + "<NACHRICHT> Dateis fur konfiguration were geaktualisiert erfolgreich");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1303,16 +1324,16 @@ public class KonsoleDienstProgramm {
                             "--umkehren oder --umk","--entAlle oder --ena",
                             "--entfernen oder --ent","--integrieren oder ing",
                             "--grsdti oder --grs","--editieren oder --edt","--symzln oder --szn",
-                            "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport or --xp","--ximport or --xm",
+                            "--andegrose oder --agr", "--version oder --vrs","--sicherung oder --scr","--xexport dder --xp","--ximport oder --xm",
                             "--herstellen oder --hen","--stats oder --sts","--suchen oder --sun",
                             "--hostinfo oder --hos","--abshalten oder --abs","--neustarten oder --nsn","--fspr oder --fsp",
-                            "--sauber oder --sab", "--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
+                            "--sauber oder --sab","--pingen oder --png","--intprok oder --ipk","--unterbrechen oder --ubk",
                             "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
                             "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
                             "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
                             "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc","--schneiden oder --scn",
                             "--andkent oder ank","--abmelden oder --abn","--fbef oder --fbf","--gzip oder --gzp",
-                            "--fdir oder --fdi","--tilden oder --tln"
+                            "--fdir oder --fdi","--tilden oder --tln, --spiegel oder --spl, --aktualisieren oder --akl"
                     ));
                     System.out.println("Schreiben welche befehle wollen Sie finden: ");
                     String befehle = operation.nextLine();
@@ -1827,6 +1848,11 @@ public class KonsoleDienstProgramm {
                 case "--abmelden","--abn" -> {
                     Files.deleteIfExists(Path.of("Username.txt"));
                     Files.deleteIfExists(Path.of("PasswordManager.txt"));
+                    try(BufferedWriter istLogout = new BufferedWriter(new FileWriter("IsLogout.txt"))) {
+                        istLogout.write("true");
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
                     System.out.println(GRUN + "Loschenung kennwort war erfolgreich" + RESET);
                 }
                 case "--fbef", "--fbf" -> {
@@ -1886,6 +1912,50 @@ public class KonsoleDienstProgramm {
                         throw new RuntimeException(aus.getLocalizedMessage());
                     }
                     System.out.println(GRUN + "Eine liste fur direktoreis " + RESET);
+                }
+                case "--spiegel","--spl" -> {
+                    System.out.println("Schreiben eine name vom datei: ");
+                    String dateiName = operation.nextLine();
+                    Path weg = Path.of(dateiName);
+                    if(Files.exists(weg)) {
+                        List<String> bekStringen = Files.readAllLines(weg);
+                        Files.delete(weg);
+                        StringBuilder ersString = new StringBuilder();
+                        while(!bekStringen.isEmpty()) {
+                            ersString.append(bekStringen.getFirst());
+                            ersString.append(" ");
+                            bekStringen.remove(bekStringen.getFirst());
+                        }
+                        String forByteString = ersString.toString();
+                        String reversedString = new StringBuilder(forByteString).reverse().toString();
+                        byte[] bekBytes = reversedString.getBytes();
+                        Files.write(weg,bekBytes,StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                        System.out.println(GRUN + "Daten vom datei waren geandert erfolgreich" + RESET);
+                        bekStringen.clear();
+                    } else {
+                        System.err.println(ROT + "Diese datei existiert nicht" + RESET);
+                    }
+                }
+                case "--aktualisieren","--akl" -> {
+                    Path utilityStatistic = Path.of("utilityStatistic.txt"),
+                            fromReserve = Path.of("FromReserve.txt"),
+                            getDirectory = Path.of("Directory.txt"),
+                            recent = Path.of("Recent.txt"),
+                            reserveCopy = Path.of("ReserveCopy.bin"),
+                            islogout = Path.of("IsLogout.txt");
+                    Files.deleteIfExists(utilityStatistic);
+                    Files.deleteIfExists(fromReserve);
+                    Files.deleteIfExists(getDirectory);
+                    Files.deleteIfExists(recent);
+                    Files.deleteIfExists(reserveCopy);
+                    Files.deleteIfExists(islogout);
+                    Files.writeString(utilityStatistic," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(fromReserve," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(getDirectory," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(recent," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(reserveCopy," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(islogout," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    System.out.println(GRUN + "Dateis fur konfiguration were geaktualisiert erfolgreich" + RESET);
                 }
                 case null, default -> System.err.println(ROT + "Diese operation existiert nicht" + RESET);
             }
@@ -1993,7 +2063,9 @@ public class KonsoleDienstProgramm {
                         "--fbef           / --fbf = finden befehle vom befehles geschichte",
                         "--gzip           / --gzp = kompressen und dekompressen daten vom datei",
                         "--fdir           / --fdi = finden direktorei vom liste fur direktoreis",
-                        "--tilden         / --tln = tilden direktoreis vom list fur direktoreis"
+                        "--tilden         / --tln = tilden direktoreis vom list fur direktoreis",
+                        "--spiegel        / --spl = umkehren stringen mit bytes",
+                        "--aktualisieren  / --akl = aktualisieren alle dateis fur konfiguration fur datei"
                 )).forEach(System.out::println);
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
