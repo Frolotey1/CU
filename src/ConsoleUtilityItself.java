@@ -21,7 +21,7 @@ import javax.xml.stream.*;
 public class ConsoleUtilityItself {
     private static final
     Path HistoricalFile = Path.of(System.getProperty("user.home"), ".consoleutility_history"),
-        DirectoryFile = Paths.get("Directory.txt");
+            DirectoryFile = Paths.get("Directory.txt");
     private static void appendPathOfDirectory(String directoryName) throws IOException {
         Files.writeString(DirectoryFile, directoryName + System.lineSeparator(),
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND);
@@ -51,6 +51,12 @@ public class ConsoleUtilityItself {
         List<Character> numberRights = new ArrayList<>();
         List<String> resultRights = new ArrayList<>();
         List<String> historyOFCommands = loadHistory();
+        String isLogoutValue = "";
+        try(BufferedReader readisLogout = new BufferedReader(new FileReader("IsLogout.txt"))) {
+            isLogoutValue = readisLogout.readLine();
+        } catch (IOException exc) {
+            throw new RuntimeException(exc.getLocalizedMessage());
+        }
         int index = historyOFCommands.size(), indexPath = loadPathsOfDirectory().size();
         File file;
         String directory;
@@ -83,7 +89,7 @@ public class ConsoleUtilityItself {
                     "----cmp or --cp", "--sysinfo or --si", "--recent or --rn", "--active or --ae",
                     "--username or --un", "--preview or --pw", "--cut or --ct", "--chgpass or --ps",
                     "--logout or --lg","--fcmd or --fc","--gzip or --gz","--fdir or --fi",
-                    "--erase or --es"
+                    "--erase or --es","--mirror or --mr","--update or --ue"
             ));
             for (String all : prompt) {
                 System.out.println(all);
@@ -92,6 +98,10 @@ public class ConsoleUtilityItself {
         for (String arg : args) {
             final Path fromFile = Path.of("Directory.txt");
             final Path source = Path.of("ReserveCopy.bin");
+            if(Objects.equals(isLogoutValue, "true")) {
+                System.err.println(RED + "You can't perform this command. You logged out" + RESET);
+                System.exit(0);
+            }
             switch (arg) {
                 case "--help", "--hp" -> {
                     appendHistory((index++) + " | " + arg);
@@ -190,7 +200,7 @@ public class ConsoleUtilityItself {
                     System.out.println("Write the extension for the file: ");
                     String extension = operation.nextLine();
                     try {
-                        Path stopGapPath = Files.createTempFile(stopGapNameForFile, extension);
+                        Path stopGapPath  = Files.createTempFile(stopGapNameForFile, extension);
                         System.out.println(GREEN + "The stopgap file was created successfully: " +
                                 stopGapPath.toAbsolutePath() + RESET);
                         Files.writeString(stopGapPath, "The stopgap file was created successfully | " + LocalDateTime.now());
@@ -886,6 +896,14 @@ public class ConsoleUtilityItself {
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--erase / --es -> [ENTER] -> " + "<MESSAGE> List of directories was erased successfully");
+                        case 70 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--mirror / --mr -> [ENTER] -> " + "Write the name of your file: (your file) -> [ENTER] -> {IF SUCCESS} -> Data from file were changed successfully");
+                        case 71 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--update / --ue -> [ENTER] -> " + "<MESSAGE> Configuration files for Utility were updated successfully");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -1264,7 +1282,7 @@ public class ConsoleUtilityItself {
                             "--read or --rd", "--delete or --dt", "--copy or --cp",
                             "--move or --mv", "--newname or --nn",
                             "--stopgap or --sg", "--GUI or --gi", "--jar or --jr",
-                            "--zip or --zp (Windows)", "--tar.gz or -tr (Linux)",
+                            "--zip or -zp (Windows) / --tar.gz or -tr (Linux)",
                             "--write or --wt", "--grep or --gp",
                             "--history or --hi", "--find or --fd",
                             "--lstcat or --ls", "--replace or --re", "--crtdir or --cr",
@@ -1274,17 +1292,18 @@ public class ConsoleUtilityItself {
                             "--empty or --em", "--sort or --st",
                             "--reverse or --rv", "--remall or --ra",
                             "--remove or --rm", "--integrate or --ig",
-                            "--sizfls or -sf", "--edit or --et", "--symcnt or --sc", "--resize or --rs",
-                            "--version or --vs", "--backup or --bp", "--xexport or --xp", "--ximport or --xm",
-                            "--restore or --rt", "--stats or --ss", "--search or --sh", "--hostinfo or --ho",
-                            "--shutdown or --sd", "--restart or --rr", "--fmem or --fm", "--clean or --cn",
-                            "--ping or --pg", "--intproc or --ip", "--interrupt or --ir",
+                            "--sizfls or --sf", "--edit or --et", "--symcnt or --sc",
+                            "--resize or --rs", "--version or --vs",
+                            "--backup,--bp", "--xexport,--xp", "--ximport or --xm",
+                            "--restore or --rt", "--stats or --ss", "--search or --sh",
+                            "--hostinfo or --ho", "--shutdown or sd", "--restart or --rr", "--fmem or --fm",
+                            "--clean or --cn", "--ping or --pg", "--intproc or --ip", "--interrupt or --ir",
                             "--filter or --fr", "--md5gen or --mg", "--sha256gen or --sn", "--freeze or --fe",
                             "--unique or --uq", "--stat or --sa", "--split or --sp", "--rsync or --rc",
                             "----cmp or --cp", "--sysinfo or --si", "--recent or --rn", "--active or --ae",
                             "--username or --un", "--preview or --pw", "--cut or --ct", "--chgpass or --ps",
                             "--logout or --lg","--fcmd or --fc","--gzip or --gz","--fdir or --fi",
-                            "--erase or --es"
+                            "--erase or --es","--mirror or --mr","--update or --ue"
                     ));
                     System.out.println("Write which command you find: ");
                     String command = operation.nextLine();
@@ -1810,6 +1829,11 @@ public class ConsoleUtilityItself {
                 case "--logout", "--lg" -> {
                     Files.deleteIfExists(Path.of("Username.txt"));
                     Files.deleteIfExists(Path.of("PasswordManager.txt"));
+                    try(BufferedWriter isLogout = new BufferedWriter(new FileWriter("IsLogout.txt"))) {
+                        isLogout.write("true");
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
                     System.out.println(GREEN + "Deleting username and password are successful" + RESET);
                 }
                 case "--fcmd", "--fc" -> {
@@ -1870,7 +1894,50 @@ public class ConsoleUtilityItself {
                     }
                     System.out.println(GREEN + "List of directories was erased successfully" + RESET);
                 }
-
+                case "--mirror","--mr" -> {
+                    System.out.println("Write the name of your file: ");
+                    String nameFile = operation.nextLine();
+                    Path path = Path.of(nameFile);
+                    if(Files.exists(path)) {
+                        List<String> getStrings = Files.readAllLines(path);
+                        Files.delete(path);
+                        StringBuilder createString = new StringBuilder();
+                        while(!getStrings.isEmpty()) {
+                            createString.append(getStrings.getFirst());
+                            createString.append(" ");
+                            getStrings.remove(getStrings.getFirst());
+                        }
+                        String forByteString = createString.toString();
+                        String reversedString = new StringBuilder(forByteString).reverse().toString();
+                        byte[] getBytes = reversedString.getBytes();
+                        Files.write(path,getBytes,StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                        System.out.println(GREEN + "Data from file were changed successfully" + RESET);
+                        getStrings.clear();
+                    } else {
+                        System.err.println(RED + "This file doesn't exist" + RESET);
+                    }
+                }
+                case "--update","--ue" -> {
+                    Path utilityStatistic = Path.of("utilityStatistic.txt"),
+                            fromReserve = Path.of("FromReserve.txt"),
+                            getDirectory = Path.of("Directory.txt"),
+                            recent = Path.of("Recent.txt"),
+                            reserveCopy = Path.of("ReserveCopy.bin"),
+                            islogout = Path.of("IsLogout.txt");
+                    Files.deleteIfExists(utilityStatistic);
+                    Files.deleteIfExists(fromReserve);
+                    Files.deleteIfExists(getDirectory);
+                    Files.deleteIfExists(recent);
+                    Files.deleteIfExists(reserveCopy);
+                    Files.deleteIfExists(islogout);
+                    Files.writeString(utilityStatistic," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(fromReserve," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(getDirectory," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(recent," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(reserveCopy," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    Files.writeString(islogout," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
+                    System.out.println(GREEN + "Configuration files for Utility were updated successfully" + RESET);
+                }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
         }
@@ -1997,7 +2064,9 @@ public class ConsoleUtilityItself {
                         "--fcmd         /       --fc = find command from history of commands",
                         "--gzip         /       --gz = compress and uncompress data from file with bytes",
                         "--fdir         /       --fi = find directory from list of directories",
-                        "--erase        /       --es = erase the list of directories"
+                        "--erase        /       --es = erase the list of directories",
+                        "--mirror       /       --mr = reverse data from the file with bytes",
+                        "--update       /       --ue = update the configuration files for utility"
                 )).forEach(System.out::println);
     }
     private static class ConsoleUtilitysGUI extends JFrame {
