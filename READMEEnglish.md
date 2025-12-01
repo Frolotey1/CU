@@ -6,7 +6,7 @@ Java like language was used for creation of this project. The Java's version is 
 ConsoleUtility can work in `Windows PowerShell` in Windows and the `bash-line` in Linux. 
 # Compiler for Java 
 For starting of this project you must have java compiler or `javac`. In Windows this compiler added automatically when you use the `Intellig Idea IDE`. In Linux System if you don't have the default-jdk packet, so you need to import it in your bash-line and your distrib which you use. You can easy install default-jdk packet using: `sudo apt install default-jdk` (example for Ubuntu and Debian distributions in Linux)
-# How start the project? 
+# How can you start the project? 
 You must download from this repository `CU` like file and put it after `C:\` path in Windows PowerShell or `/home/` path in Bash-Line in Linux.
 
 *(Advice: use set-location like command in Windows PowerShell for the changing path (for Windows). In the Linux system you can use cd to this repositories's directory and cd - for comeback to past catalog, to home).*
