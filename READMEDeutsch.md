@@ -6,7 +6,7 @@ Dieses Projekt wurde in einer `Java Sprache` erstellt. Die Java-Version ist `23`
 Konsole Dienst Programm funktioniert in `Windows PowerShell` in Windows und der `Bash-Zeile` unter Linux.
 # Kompilator für Java
 Zum Starten dieses Projekts benötigen Sie einen java-Compiler oder `javac`. Unter Windows wird dieser Compiler automatisch hinzugefügt, wenn Sie die `Intellig Idea IDE` verwenden. Wenn Sie unter Linux das Standard-JDK-Paket nicht haben, müssen Sie es in Ihre `Bash-Zeile` und Ihre verwendete Distribution importieren. Sie können das Standard-JDK-Paket einfach mit `sudo apt install default-jdk` installieren (Beispiel für die Ubuntu und Debian Distributionen unter Linux).
-# Wie konnen Sie diese projekt startent?
+# Wie konnen Sie diese projekt starten?
 Laden Sie die Datei `CU` aus diesem Repository herunter und platzieren Sie sie in Windows PowerShell nach dem Pfad `C:\` oder in Linux nach dem Pfad `/home/` in der Bash-Zeile.
 
 *(Hinweis: Verwenden Sie zum Ändern des Pfads (unter Windows) den Befehl set-location wie in Windows PowerShell. Unter Linux können Sie mit cd in das Verzeichnis dieses Repositorys wechseln und mit cd - zum vorherigen Katalog bzw. zum Home-Verzeichnis /home/ zurückkehren.)*
