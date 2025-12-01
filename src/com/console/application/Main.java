@@ -51,6 +51,11 @@ public class Main {
             try(BufferedReader read = new BufferedReader(new FileReader("PasswordManager.txt"))) {
                 if(Arrays.equals(password, read.readLine().toCharArray())) {
                     System.out.println(GREEN + "You completed the system. Welcome to Console Utility" + RESET);
+                    try(BufferedWriter writeFalse = new BufferedWriter(new FileWriter("IsLogout.txt"))) {
+                        writeFalse.write("false");
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
                 } else {
                     System.err.println(RED + "This password is false" + RESET);
                     System.exit(0);
@@ -77,6 +82,11 @@ public class Main {
                 try(BufferedWriter write = new BufferedWriter(new FileWriter(saveThePassword))) {
                     write.write(password);
                     System.out.println(GREEN + "Your password is created and saved. Welcome to Console Utility" + RESET);
+                    try(BufferedWriter writeFalse = new BufferedWriter(new FileWriter("IsLogout.txt"))) {
+                        writeFalse.write("false");
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc.getLocalizedMessage());
+                    }
                 } catch (IOException e) {
                     System.err.println(RED + "This is error for writing the password." + RESET);
                 }
