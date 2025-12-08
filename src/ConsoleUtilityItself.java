@@ -484,8 +484,8 @@ public class ConsoleUtilityItself {
                                     "freeze", "unique", "stat", "split", "rsync",
                                     "cmp", "sysinfo", "recent", "active",
                                     "username", "preview", "cut", "chgpass",
-                                    "logout","--fcmd or --fc","--gzip or --gz",
-                                    "--fdir or --fi", "--erase or --es"
+                                    "logout","fcmd","gzip",
+                                    "fdir", "erase"
                             };
                     for (int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -2186,3 +2186,4 @@ public class ConsoleUtilityItself {
         }
     }
 }
+
