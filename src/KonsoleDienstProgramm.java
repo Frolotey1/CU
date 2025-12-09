@@ -66,6 +66,7 @@ public class KonsoleDienstProgramm {
             throw new RuntimeException(exc.getLocalizedMessage());
         }
         File datei;
+        List<String> DienstProgrammBefehlen = alleBefehlen();
         Scanner operation = new Scanner(System.in);
         if(args.length == 0) {
             System.out.println(GELB + "Maybe you wanted to put: " + RESET);
@@ -92,7 +93,7 @@ public class KonsoleDienstProgramm {
                     "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
                     "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
                     "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
-                    "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc","--schneiden oder --scn",
+                    "--aktiv oder --akt","--benutzername oder --btn","--schneiden oder --scn",
                     "--andkent oder ank","--abmelden oder --abn","--fbef oder --fbf","--gzip oder --gzp",
                     "--fdir oder --fdi","--tilden oder --tln, --spiegel oder --spl, --aktualisieren oder --akl"
             ));
@@ -493,10 +494,11 @@ public class KonsoleDienstProgramm {
                                     "intprok","unterbrechen","filterieren", "md5gen",
                                     "sha256gen","frieren","einzartig","stat",
                                     "teilen","rsync","verglen","sysinfo",
-                                    "jungste","aktiv","benutzername","vorschau",
+                                    "jungste","aktiv","benutzername",
                                     "schneiden","andkent","abmelden","fbef",
                                     "gzip","fdir","tilden","spiegel",
-                                    "aktualisieren"
+                                    "aktualisieren","wasIst","bekweg","erste",
+                                    "letzte"
                             };
                     for(int i = 1; i < allCommandsInstruction.length; ++i) {
                         System.out.println(i + ") " + allCommandsInstruction[i]);
@@ -880,53 +882,68 @@ public class KonsoleDienstProgramm {
                                 "oder/home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--benutzername / --btn -> [ENTER] -> " + "zeigt den eindeutigen zufälligen Spitznamen für den Benutzer im System an");
                         case 61 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
-                                "java src\\ConsoleUtilityItself.java (Windows) " +
-                                "oder/home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "--vorschau / --vsc -> [ENTER] -> " + "zeigt die Liste der zukünftigen Befehle an, die in das Dienstprogramm integriert werden");
-                        case 62 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--schneiden / --scn -> [ENTER] -> " + "(Als Nächstes erhalten Sie die Varianten zum Arbeiten mit dem Aufteilen von Zeichenketten. Aufteilen von Zeichenketten mit Indizes oder mit Trennzeichen)");
-                        case 63 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                        case 62 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--andkent / --ank -> [EINGABE] -> " + "Kennwort ändern: (Ihr aktuelles Kennwort) -> {WENN ERFOLG} -> Neues Kennwort eingeben (neues Kennwort) -> {WENN ERFOLG}" +
                                 "<NACHRICHT> Kennwort wurde erfolgreich geändert");
-                        case 64 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                        case 63 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--abmelden / --abn -> [ENTER] -> " + "<NACHRICHT> Benutzername und Password wurden erfolgreich gelöscht");
-                        case 65 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                        case 64 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--fbef / --fbf -> [ENTER] -> " +
                                 " Geben Sie den Namen des Befehls aus dem Verlauf ein: (Name des Befehls aus dem Verlauf) -> (zeigt den Verlauf der Befehle anhand regulärer Ausdrücke im Dienstprogramm an)");
-                        case 66 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                        case 65 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--gzip / --gzp -> [EINGABE] -> " +
                                 "Geben Sie den Namen der zu lesenden Datei ein: (Name der zu lesenden Datei) -> " +
                                 "Wählen Sie die Option: 1. Datei komprimieren 2. Datei dekomprimieren (Sie können eine von zwei Varianten für die Bearbeitung der Daten aus der Datei auswählen) -> " +
                                 "{WENN ERFOLG} -> Originalgröße: (Größe der Daten) Komprimierte Datei: (Größe der komprimierten Daten in der Datei)");
-                        case 67 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                        case 66 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--fdir / --fdi -> [ENTER] -> " +
                                 "Geben Sie den Namen Ihres Verzeichnisses ein: (" +
                                 "Name für Ihr Verzeichnis) -> (zeigt die Liste der Verzeichnisse per regulärem Ausdruck im Dienstprogramm an)");
-                        case 68 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                        case 67 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--tilden / --tln -> [ENTER] -> " + "<NACHRICHT> Liste der Verzeichnisse wurde erfolgreich gelöscht");
-                        case 69 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                        case 68 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--spiegel / --spl -> [ENTER] -> " + "Schreiben eine name vom datei: (deine datei) -> [ENTER] -> {WENN ERFOLG}"
                                 + "Daten vom datei waren geandert erfolgreich");
-                        case 70 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
+                        case 69 -> System.out.println("Ihr Pfad (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows)" +
                                 "oder /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)" +
                                 "--aktualisieren / --akl -> [ENTER] -> " + "<NACHRICHT> Dateis fur konfiguration were geaktualisiert erfolgreich");
+                        case 70 -> System.out.println("Ihr Pfad (C:\\\\CU-ConsoleUtility)" +
+                                "\"java src\\\\ConsoleUtilityItself.java (Windows)" +
+                                "\"oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux))" +
+                                "\"--wasIst / --was -> [ENTER] -> \" + \"Schreiben Sie eine befehle von DienstProgramm: (befehle von DienstProgramm) -> [ENTER] -> (eine definische befehle von DienstProgramm)");
+                        case 71 -> System.out.println("Ihr Pfad (C:\\\\CU-ConsoleUtility)" +
+                                "\"java src\\\\ConsoleUtilityItself.java (Windows)" +
+                                "\"oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux))" +
+                                "\"--bekweg / --bkw -> [ENTER] -> \" + \"Schreiben einen Namen für die Datei: (Name für die Datei) -> [ENTER]" +
+                                "\"(eine kanonische und absolute wegs für datei)\n");
+                        case 72 -> System.out.println("Ihr Pfad (C:\\\\CU-ConsoleUtility)" +
+                                "\"java src\\\\ConsoleUtilityItself.java (Windows)" +
+                                "\"oder /home/CU-ConsoleUtility java src\\\\ConsoleUtilityItself.java (Linux))" +
+                                "\"--erste / --est -> [ENTER] -> \" + \"Schreiben einen Namen für die Datei: (name für die Datei) -> [ENTER] -> " +
+                                "„Schreiben Sie die erste Anzahl der Zeichenfolgen in der Datei: (erste Anzahl der Zeichenfolgen) -> (zeigt die definitive Anzahl der Zeichenfolgen aus der Datei an)");
+                        case 73 -> System.out.println("Ihr Pfad (C:\\\\\\\\CU-ConsoleUtility)" +
+                                "\"\\\"java src\\\\\\\\ConsoleUtilityItself.java (Windows)" +
+                                "\"\\\"oder /home/CU-ConsoleUtility java src\\\\\\\\ConsoleUtilityItself.java (Linux))" +
+                                "\"\\\"--letzte / --lzt -> [ENTER] -> \\\" + \\\"Schreiben Sie den Namen der Datei: (Name für Ihre Datei) -> [ENTER] -> " +
+                                "„Schreiben Sie die letzte Anzahl der Zeilen in der Datei: (letzte Anzahl der Zeilen) -> (zeigt die definitive Anzahl der Zeilen aus der Datei an)");
                         default -> System.err.println("Diese befehle existiert nicht oder es ist noch nicht standartisch in system");
                     }
                 }
@@ -1331,7 +1348,7 @@ public class KonsoleDienstProgramm {
                             "--filterieren oder --fir","--md5gen oder --mgn", "--sha256gen oder --sgn",
                             "--frieren oder --frn","--einzigartig oder --ezn","--stat oder --sat","--teilen oder --ten",
                             "--rsync oder --rnc","verglen oder --ven","--sysinfo oder --sin","--jungste oder --jng",
-                            "--aktiv oder --akt","--benutzername oder --btn","--vorschau oder --vsc","--schneiden oder --scn",
+                            "--aktiv oder --akt","--benutzername oder --btn","--schneiden oder --scn",
                             "--andkent oder ank","--abmelden oder --abn","--fbef oder --fbf","--gzip oder --gzp",
                             "--fdir oder --fdi","--tilden oder --tln, --spiegel oder --spl, --aktualisieren oder --akl"
                     ));
@@ -1777,14 +1794,6 @@ public class KonsoleDienstProgramm {
                         throw new RuntimeException(exc.getLocalizedMessage());
                     }
                 }
-                case "--vorschau","--vsc" -> {
-                    hinzufugenGeschichte((index) + " | " + arg);
-                    Vorschau zeigen = new Vorschau();
-                    List<String> zeigenAlleZukunfteBefehlen = zeigen.befehleListe();
-                    for(String zukunftBefehlen : zeigenAlleZukunfteBefehlen) {
-                        System.out.println(zeigenAlleZukunfteBefehlen.indexOf(zukunftBefehlen) + 1 + "> " + zukunftBefehlen);
-                    }
-                }
                 case "--schneiden","--scn" -> {
                     hinzufugenGeschichte((index) + " | " + arg);
                     int startIndex, endIndex, wahlen;
@@ -1957,6 +1966,65 @@ public class KonsoleDienstProgramm {
                     Files.writeString(islogout," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
                     System.out.println(GRUN + "Dateis fur konfiguration were geaktualisiert erfolgreich" + RESET);
                 }
+                case "--wasIst","--was" -> {
+                    hinzufugenGeschichte((index++) + " | " + arg);
+                    System.out.println("Schreiben Sie eine befehle von DienstProgramm: ");
+                    String befehle = operation.nextLine();
+                    if(befehle.length() <= 2) {
+                        System.err.println(ROT + "Diese befehle existiert nicht" + RESET);
+                    } else {
+                        DienstProgrammBefehlen.stream().filter(getCommand -> getCommand.startsWith(befehle)).forEach(System.out::println);
+                    }
+                }
+                case "--bekweg","--bkw" -> {
+                    System.out.println("Schreiben eine name fur datei: ");
+                    String dateiName = operation.nextLine();
+                    if(Files.exists(Path.of(dateiName))) {
+                        String[]typWeg = new String[3];
+                        typWeg[0] = "";
+                        typWeg[1] = "Absolute weg: " + new File(dateiName).getAbsolutePath();
+                        typWeg[2] = "Kanonisch weg: " + new File(dateiName).getCanonicalPath();
+                        for(int bekweg = 1; bekweg < typWeg.length; ++bekweg) {
+                            System.out.println(typWeg[bekweg]);
+                        }
+                    } else {
+                        System.err.println(ROT + "Diese datei existiert nicht" + RESET);
+                    }
+                }
+                case "--erste","--est" -> {
+                    System.out.println("Schreiben Sie eine name fur datei: ");
+                    String dateiName = operation.nextLine();
+                    System.out.println("Schreiben Sie erste zahlen fur stringen von datei: ");
+                    int ersteZahlen = operation.nextInt();
+                    List<String> datenVonDatei = Files.readAllLines(Path.of(dateiName));
+                    if(ersteZahlen <= 0 || ersteZahlen > datenVonDatei.size()) {
+                        System.err.println(ROT + "Ungültige Zählzeichenfolgen" + RESET);
+                    } else {
+                        for(int getAllData = 0; getAllData < ersteZahlen; ++getAllData) {
+                            if(datenVonDatei.get(getAllData).isEmpty()) {
+                                break;
+                            }
+                            System.out.println(datenVonDatei.get(getAllData));
+                        }
+                    }
+                }
+                case "--letzte","--lzt" -> {
+                    System.out.println("Schreiben Sie eine name fur datei: ");
+                    String dateiName = operation.nextLine();
+                    List<String> datenVonDatei = Files.readAllLines(Path.of(dateiName));
+                    System.out.println("Schreiben Sie letzte zahlen fur stringen von datei: ");
+                    int letzteZahlen = operation.nextInt(),aktuelleZahlung = datenVonDatei.size() - letzteZahlen;
+                    if(letzteZahlen <= 0) {
+                        System.err.println(ROT + "Ungültige Zählzeichenfolgen" + RESET);
+                    } else {
+                        for(int bekAlleDaten = aktuelleZahlung; bekAlleDaten < datenVonDatei.size(); ++bekAlleDaten) {
+                            if(datenVonDatei.get(bekAlleDaten).isEmpty()) {
+                                break;
+                            }
+                            System.out.println(datenVonDatei.get(bekAlleDaten));
+                        }
+                    }
+                }
                 case null, default -> System.err.println(ROT + "Diese operation existiert nicht" + RESET);
             }
         }
@@ -1991,8 +2059,8 @@ public class KonsoleDienstProgramm {
                 GELB  + "Usable Heap > " + RESET + (getHeapInfo.maxMemory() - getHeapInfo.freeMemory())
         };
     }
-    public static void alleBefehlen() {
-        new LinkedList<>(
+    public static List<String> alleBefehlen() {
+        return new LinkedList<>(
                 List.of("--helfen         / --hel = eine manual mit allem konsoleDienstprogramms befehlen",
                         "--hinzufugen     / --hin = hinzufugen eine datei und schreiben eine information zu Komputers system",
                         "--lesen          / --les = lesen eine daten vom datei",
@@ -2065,8 +2133,12 @@ public class KonsoleDienstProgramm {
                         "--fdir           / --fdi = finden direktorei vom liste fur direktoreis",
                         "--tilden         / --tln = tilden direktoreis vom list fur direktoreis",
                         "--spiegel        / --spl = umkehren stringen mit bytes",
-                        "--aktualisieren  / --akl = aktualisieren alle dateis fur konfiguration fur datei"
-                )).forEach(System.out::println);
+                        "--aktualisieren  / --akl = aktualisieren alle dateis fur konfiguration fur datei",
+                        "--wasIst         / --was = bekommen einen definitiv string von datei",
+                        "--bekweg         / --bkw = typen fur dateis weg - absolute und kanonisch",
+                        "--erste          / --est = bekommen definitiv erste stringen von datei",
+                        "--letzte         / --lzt = bekommen definitiv letzte stringen von datei"
+                ));
     }
     private static class KonsoleDienstProgrammsGBS extends JFrame {
         private final JLabel wahlEtikett;
@@ -2171,11 +2243,6 @@ public class KonsoleDienstProgramm {
                     }
                 }
             }
-        }
-    }
-    private static class Vorschau {
-        public List<String> befehleListe() {
-            return new ArrayList<>(List.of("id (prufen id fur benutzer in DienstProgramm)","ausgang (ausgang vom DienstProgramm)","schneiden (cut stringen vom datei)","adratr (andern attributen fur datei)"));
         }
     }
 }
