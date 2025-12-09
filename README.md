@@ -8,5 +8,10 @@ You can watch the full description for the project in / Sie konnen sehen eine vo
 - 🇩🇪 **Deutsch** → [READMEDeutsch.md](./READMEDeutsch.md)
 - 🇬🇧 **English** → [READMEEnglish.md](./READMEEnglish.md)
 
+# Contacts
+
+- **Telegram** → [Telegram](https://t.me/fr1zb3e)
+- **Habr** → [Habr](https://habr.com/ru/users/fr1zb3e/)
+
 # License
 This project works under `GPL-2.0 license`
