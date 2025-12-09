@@ -919,7 +919,7 @@ public class ConsoleUtilityItself {
                         case 74 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "--first / --ft -> [ENTER] -> " + "Write the name of the file: (name for your file) -> [ENTER] -> " +
+                                "--last / --lt -> [ENTER] -> " + "Write the name of the file: (name for your file) -> [ENTER] -> " +
                                 "Write the last count of the strings in the file: (last count of the strings) -> (will showed the definite count of the strings from file)");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
