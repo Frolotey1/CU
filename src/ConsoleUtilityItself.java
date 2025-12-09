@@ -61,6 +61,7 @@ public class ConsoleUtilityItself {
         File file;
         String directory;
         Scanner operation = new Scanner(System.in);
+        List<String> shellCommands = allCommands();
         if (args.length == 0) {
             System.out.println(YELLOW + "Maybe you wanted to put: " + RESET);
             List<String> prompt = new ArrayList<>(List.of(
@@ -87,9 +88,10 @@ public class ConsoleUtilityItself {
                     "--filter or --fr", "--md5gen or --mg", "--sha256gen or --sn", "--freeze or --fe",
                     "--unique or --uq", "--stat or --sa", "--split or --sp", "--rsync or --rc",
                     "----cmp or --cp", "--sysinfo or --si", "--recent or --rn", "--active or --ae",
-                    "--username or --un", "--preview or --pw", "--cut or --ct", "--chgpass or --ps",
+                    "--username or --un" "--cut or --ct", "--chgpass or --ps",
                     "--logout or --lg","--fcmd or --fc","--gzip or --gz","--fdir or --fi",
-                    "--erase or --es","--mirror or --mr","--update or --ue"
+                    "--erase or --es","--mirror or --mr","--update or --ue","--what or --wa",
+                    "--getpth or --gh","--first or --ft","--last or --lt"
             ));
             for (String all : prompt) {
                 System.out.println(all);
@@ -105,7 +107,7 @@ public class ConsoleUtilityItself {
             switch (arg) {
                 case "--help", "--hp" -> {
                     appendHistory((index++) + " | " + arg);
-                    allCommands();
+                    shellCommands.forEach(System.out::println);
                 }
                 case "--add", "--ad" -> {
                     appendHistory((index++) + " | " + arg);
@@ -483,7 +485,7 @@ public class ConsoleUtilityItself {
                                     "interrupt", "filter", "md5gen", "sha256gen",
                                     "freeze", "unique", "stat", "split", "rsync",
                                     "cmp", "sysinfo", "recent", "active",
-                                    "username", "preview", "cut", "chgpass",
+                                    "username", "cut", "chgpass",
                                     "logout","fcmd","gzip",
                                     "fdir", "erase"
                             };
@@ -864,46 +866,61 @@ public class ConsoleUtilityItself {
                         case 62 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
-                                "--preview / --pw -> [ENTER] -> " + "will show the list of the future commands which will integrate in utility");
-                        case 63 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
-                                "java src\\ConsoleUtilityItself.java (Windows) " +
-                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--cut / --cut -> [ENTER] -> " + "(next you'll get the variants for working with cutting strings. Cutting strings with indexes or with delimiter)");
-                        case 64 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                        case 63 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--chgpass / --ps -> [ENTER] -> " + "Change your password: (your current password) -> {IF SUCCESS} -> Write new password (new password) -> {IF SUCCESS}" +
                                 " -> <MESSAGE> Password was changed successfully");
-                        case 65 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                        case 64 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--logout / --lg -> [ENTER] -> " + "<MESSAGE> Deleting username and password are successful");
-                        case 66 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                        case 65 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--fcmd / --fc -> [ENTER] -> " + "Write the name of command from history: (name of command from history) -> (will showed the history of commands  by regex in utility)");
-                        case 67 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                        case 66 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--gzip / --gz -> [ENTER] -> " + "Write the file's name for reading data: (name of file for reading data) -> " +
                                 "Select the option: 1. Compress file 2. Uncompress file (you can select one of two variants for working with data from file) -> " +
                                 "{IF SUCCESS} -> Original size: (data's size) Compress file: (file's compress data)");
-                        case 68 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                        case 67 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--fdir / --fi -> [ENTER] -> " + "Write the name of your directory: (name for your directory) -> (will showed the list of directories by regex in utility");
-                        case 69 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                        case 68 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--erase / --es -> [ENTER] -> " + "<MESSAGE> List of directories was erased successfully");
-                        case 70 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                        case 69 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--mirror / --mr -> [ENTER] -> " + "Write the name of your file: (your file) -> [ENTER] -> {IF SUCCESS} -> Data from file were changed successfully");
-                        case 71 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                        case 70 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
                                 "java src\\ConsoleUtilityItself.java (Windows) " +
                                 "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
                                 "--update / --ue -> [ENTER] -> " + "<MESSAGE> Configuration files for Utility were updated successfully");
+                        case 71 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--what / --wa -> [ENTER] -> " + "Write the command from utility: (command from utility) -> [ENTER] -> (will showed the definite command from help and utility)");
+                        case 72 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--getpth / --gh -> [ENTER] -> " + "Write the name of the file: (name for the file) -> [ENTER] -> " +
+                                "(will showed the canonical and absolute paths for file)");
+                        case 73 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--first / --ft -> [ENTER] -> " + "Write the name of the file: (name for your file) -> [ENTER] -> " +
+                                "Write the first count of the strings in the file: (first count of the strings) -> (will showed the definite count of the strings from file)");
+                        case 74 -> System.out.println("your path (C:\\CU-ConsoleUtility)" +
+                                "java src\\ConsoleUtilityItself.java (Windows) " +
+                                "or /home/CU-ConsoleUtility java src\\ConsoleUtilityItself.java (Linux)) " +
+                                "--first / --ft -> [ENTER] -> " + "Write the name of the file: (name for your file) -> [ENTER] -> " +
+                                "Write the last count of the strings in the file: (last count of the strings) -> (will showed the definite count of the strings from file)");
                         default -> System.err.println("This command doesn't exist or not the standard yet");
                     }
                 }
@@ -1301,9 +1318,10 @@ public class ConsoleUtilityItself {
                             "--filter or --fr", "--md5gen or --mg", "--sha256gen or --sn", "--freeze or --fe",
                             "--unique or --uq", "--stat or --sa", "--split or --sp", "--rsync or --rc",
                             "----cmp or --cp", "--sysinfo or --si", "--recent or --rn", "--active or --ae",
-                            "--username or --un", "--preview or --pw", "--cut or --ct", "--chgpass or --ps",
+                            "--username or --un", "--cut or --ct", "--chgpass or --ps",
                             "--logout or --lg","--fcmd or --fc","--gzip or --gz","--fdir or --fi",
-                            "--erase or --es","--mirror or --mr","--update or --ue"
+                            "--erase or --es","--mirror or --mr","--update or --ue","--what or --wa",
+                            "--getpth or --gh","--first or --ft","--last or --lt"
                     ));
                     System.out.println("Write which command you find: ");
                     String command = operation.nextLine();
@@ -1754,14 +1772,6 @@ public class ConsoleUtilityItself {
                         throw new RuntimeException(exc.getLocalizedMessage());
                     }
                 }
-                case "--preview", "--pw" -> {
-                    appendHistory((index++) + " | " + arg);
-                    Preview show = new Preview();
-                    List<String> showAllFutureCommands = show.commandList();
-                    for (String futureCommand : showAllFutureCommands) {
-                        System.out.println(showAllFutureCommands.indexOf(futureCommand) + 1 + "> " + futureCommand);
-                    }
-                }
                 case "--cut", "--ct" -> {
                     appendHistory((index++) + " | " + arg);
                     int startIndex, endIndex, select;
@@ -1837,11 +1847,13 @@ public class ConsoleUtilityItself {
                     System.out.println(GREEN + "Deleting username and password are successful" + RESET);
                 }
                 case "--fcmd", "--fc" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name of command from history: ");
                     String commandName = operation.nextLine();
                     loadHistory().stream().filter(findCommand -> findCommand.endsWith(commandName)).forEach(System.out::println);
                 }
                 case "--gzip", "--gz" -> {
+                    appendHistory((index++) + " | " + arg);
                     List<byte[]> bytes = new ArrayList<>();
                     List<String> files = new ArrayList<>();
                     System.out.println("Write the file's name for reading data:");
@@ -1881,11 +1893,13 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--fdir", "--fi" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name of your directory: ");
                     String findDirectory = operation.nextLine();
                     loadPathsOfDirectory().stream().filter(findDir -> findDir.endsWith(findDirectory)).forEach(System.out::println);
                 }
                 case "--erase", "--es" -> {
+                    appendHistory((index++) + " | " + arg);
                     Files.deleteIfExists(DirectoryFile);
                     try (BufferedWriter restore = new BufferedWriter(new FileWriter(DirectoryFile.toFile()))) {
                         restore.write("");
@@ -1895,6 +1909,7 @@ public class ConsoleUtilityItself {
                     System.out.println(GREEN + "List of directories was erased successfully" + RESET);
                 }
                 case "--mirror","--mr" -> {
+                    appendHistory((index++) + " | " + arg);
                     System.out.println("Write the name of your file: ");
                     String nameFile = operation.nextLine();
                     Path path = Path.of(nameFile);
@@ -1918,6 +1933,7 @@ public class ConsoleUtilityItself {
                     }
                 }
                 case "--update","--ue" -> {
+                    appendHistory((index++) + " | " + arg);
                     Path utilityStatistic = Path.of("utilityStatistic.txt"),
                             fromReserve = Path.of("FromReserve.txt"),
                             getDirectory = Path.of("Directory.txt"),
@@ -1937,6 +1953,65 @@ public class ConsoleUtilityItself {
                     Files.writeString(reserveCopy," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
                     Files.writeString(islogout," " + System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);
                     System.out.println(GREEN + "Configuration files for Utility were updated successfully" + RESET);
+                }
+                case "--what","--wa" -> {
+                    appendHistory((index++) + " | " + arg);
+                    System.out.println("Write the command from utility: ");
+                    String command = operation.nextLine();
+                    if(command.length() <= 2) {
+                        System.err.println(RED + "This command doesn't exist" + RESET);
+                    } else {
+                        shellCommands.stream().filter(getCommand -> getCommand.startsWith(command)).forEach(System.out::println);
+                    }
+                }
+                case "--getpth","--gt" -> {
+                    System.out.println("Write the name of the file: ");
+                    String filename = operation.nextLine();
+                    if(Files.exists(Path.of(filename))) {
+                        String[]typePaths = new String[3];
+                        typePaths[0] = "";
+                        typePaths[1] = "Absolute path: " + new File(filename).getAbsolutePath();
+                        typePaths[2] = "Canonical path: " + new File(filename).getCanonicalPath();
+                        for(int getPath = 1; getPath < typePaths.length; ++getPath) {
+                            System.out.println(typePaths[getPath]);
+                        }
+                    } else {
+                        System.err.println(RED + "This file doesn't exist" + RESET);
+                    }
+                }
+                case "--first","--ft" -> {
+                    System.out.println("Write the name of the file: ");
+                    String filename = operation.nextLine();
+                    System.out.println("Write the first count of the strings in the file: ");
+                    int firstCount = operation.nextInt();
+                    List<String> dataFromFile = Files.readAllLines(Path.of(filename));
+                    if(firstCount <= 0 || firstCount > dataFromFile.size()) {
+                        System.err.println(RED + "Invalid count strings" + RESET);
+                    } else {
+                        for(int getAllData = 0; getAllData < firstCount; ++getAllData) {
+                            if(dataFromFile.get(getAllData).isEmpty()) {
+                                break;
+                            }
+                            System.out.println(dataFromFile.get(getAllData));
+                        }
+                    }
+                }
+                case "--last","--lt" -> {
+                    System.out.println("Write the name of the file: ");
+                    String filename = operation.nextLine();
+                    List<String> dataFromFile = Files.readAllLines(Path.of(filename));
+                    System.out.println("Write the last count of the strings in the file: ");
+                    int lastCount = operation.nextInt(),currentCount = dataFromFile.size() - lastCount;
+                    if(lastCount <= 0) {
+                        System.err.println(RED + "Invalid count strings" + RESET);
+                    } else {
+                        for(int getAllData = currentCount; getAllData < dataFromFile.size(); ++getAllData) {
+                            if(dataFromFile.get(getAllData).isEmpty()) {
+                                break;
+                            }
+                            System.out.println(dataFromFile.get(getAllData));
+                        }
+                    }
                 }
                 case null, default -> System.err.println(RED + "This operation doesn't exist" + RESET);
             }
@@ -1993,8 +2068,8 @@ public class ConsoleUtilityItself {
         };
     }
 
-    public static void allCommands() {
-        new LinkedList<>(
+    public static List<String> allCommands() {
+        return new LinkedList<>(
                 List.of("--help      / --hp = familiarization with commands of the programm",
                         "--add          /       --ad = add file and write information in computer system",
                         "--read         /       --rd = read the information from the file",
@@ -2057,7 +2132,6 @@ public class ConsoleUtilityItself {
                         "--recent       /       --rn = show the information about recent enter for register or login in utility",
                         "--active       /       --ae = show the information about username which actived in utility",
                         "--username     /       --un = show the username for user",
-                        "--preview      /       --pw = show the list with future commands which will integrate in utility",
                         "--cut          /       --ct = cut the part of data from file",
                         "--chgpass      /       --ps = change the password in Utility's system",
                         "--logout       /       --lg = log out from Utility. Deleting username and password",
@@ -2066,8 +2140,12 @@ public class ConsoleUtilityItself {
                         "--fdir         /       --fi = find directory from list of directories",
                         "--erase        /       --es = erase the list of directories",
                         "--mirror       /       --mr = reverse data from the file with bytes",
-                        "--update       /       --ue = update the configuration files for utility"
-                )).forEach(System.out::println);
+                        "--update       /       --ue = update the configuration files for utility",
+                        "--what         /       --wa = find the definite command and not using --help for searching",
+                        "--getpth       /       --gh = get absolute and canonical paths for file",
+                        "--first        /       --ft = get the first count of the strings in the file",
+                        "--last         /       --lst = get the last count of the strings in the file"
+                ));
     }
     private static class ConsoleUtilitysGUI extends JFrame {
         private final JLabel selectedLabel;
@@ -2180,10 +2258,4 @@ public class ConsoleUtilityItself {
             }
         }
     }
-    private static class Preview {
-        public List<String> commandList() {
-            return new ArrayList<>(List.of("chgatr (change attributes for files)"));
-        }
-    }
 }
-
