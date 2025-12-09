@@ -88,7 +88,7 @@ public class ConsoleUtilityItself {
                     "--filter or --fr", "--md5gen or --mg", "--sha256gen or --sn", "--freeze or --fe",
                     "--unique or --uq", "--stat or --sa", "--split or --sp", "--rsync or --rc",
                     "----cmp or --cp", "--sysinfo or --si", "--recent or --rn", "--active or --ae",
-                    "--username or --un" "--cut or --ct", "--chgpass or --ps",
+                    "--username or --un", "--cut or --ct", "--chgpass or --ps",
                     "--logout or --lg","--fcmd or --fc","--gzip or --gz","--fdir or --fi",
                     "--erase or --es","--mirror or --mr","--update or --ue","--what or --wa",
                     "--getpth or --gh","--first or --ft","--last or --lt"
