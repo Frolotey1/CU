@@ -2125,7 +2125,6 @@ public class KonsoleDienstProgramm {
                         "--aktiv          / --akt = zeigt die Informationen über den Benutzer im System und seine Aktivität ab dem Zeitpunkt der Anmeldung oder Registrierung im Dienstprogramm an",
                         "--benutzername   / --btn = zeigt den eindeutigen zufälligen Spitznamen für den Benutzer im System an",
                         "--vorschau       / --vsc = zeigt die Liste der zukünftigen Befehle an, die in das Dienstprogramm integriert werden",
-                        "--schneiden      / --scn = schneiden eine stringen mit schablone",
                         "--andkent        / --ank = andern kennwort in deiner system in DienstProgramm",
                         "--abmelden       / --abn = abmelden vom Utilitys system",
                         "--fbef           / --fbf = finden befehle vom befehles geschichte",
