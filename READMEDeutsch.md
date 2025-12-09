@@ -29,6 +29,6 @@ Sie können dieses Projekt für Ihre IDE integrieren. Diese Repositorei enthält
 # Andere Wege wie dieses Projekt erstellen
 Sie können dieses Projekt mit `<> Code` Taste im GitHub erstellen. Anderer Weg: mit diesen Befehlen: 
 ```
-git clone https://github.com/Frolotey1/CU.git`
+git clone https://github.com/Frolotey1/CU.git
 ```
  Diese Befehle werden das Projekt dort erstellen, wo sie die Befehle gestartet haben.
